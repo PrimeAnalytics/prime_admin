@@ -1,0 +1,223 @@
+<?php use Phalcon\Tag as Tag ?>
+
+<?php $this->assets->outputCss() ?>
+<?php $this->assets->outputJs() ?>
+
+<?php echo $this->getContent() ?>
+
+<div class="page-title">
+  <i class="icon-custom-left"></i>
+  <h3>Support</h3>
+  <div class="pull-right actions">
+    <button class="btn btn-primary btn-cons" type="button" id="btn-new-ticket">New Ticket</button>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="grid simple transparent" id="new-ticket-wrapper" style="display:none">
+      <div class="grid-title no-border">
+        <h4 class="semi-bold">How can we help you?</h4>
+      </div>
+      <div class="grid-body">
+<?php echo Tag::form(array(
+    'support/send',
+    'class' => '',
+)) ?>
+        <fieldset>
+        <div class="row form-row">
+          <div class="col-md-8">
+            <?php echo Tag::textField(array('subject', 'class' => 'form-control', 'placeholder'=>'Subject')) ?>
+                  </div>
+
+          <div class="col-md-4">
+            <?php echo Tag::selectStatic(array('priority', 'class' => 'form-control'), array('High' => 'High Priority', 'Meduim' => 'Meduim Priority','Low' => 'Low Priority')) ?>
+          </div>
+        </div>
+        <div class="row form-row">
+          <div class="col-md-12">
+            <?php echo Tag::textArea(array('comment', 'rows' => '8', 'class' => 'form-control', 'placeholder'=>'Please detail your issue or question')) ?>
+          </div>
+        </div>
+        <div class="row form-row">
+          <div class="col-md-12 margin-top-10">
+            <div class="pull-right">
+              <button class="btn btn-cons" type="button" id="btn-close-ticket">Close</button>
+              <?php echo Tag::submitButton(array('Send', 'class' => 'btn btn-primary btn-cons')) ?>
+            </div>
+          </div>
+        </div>
+          </fieldset>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<h4>
+  Open <span class="semi-bold">Tickets</span>
+</h4>
+<br/>
+<div class="row">
+<?php
+foreach ($open_tickets as $ticket) {
+?>
+  <div class="col-md-12">
+    <div class="grid simple no-border">
+        <div class="grid-title no-border descriptive clickable">
+          <h4 class="semi-bold">
+          <?php echo $ticket->subject ?></h4>
+          <p >
+            <span class="text-success bold">
+              Ticket #<?php echo $ticket->id ?>
+            </span>
+          </p>
+          <div class="actions">
+            <a class="view" href="javascript:;">
+              <i class="fa fa-search"></i>
+            </a>
+            <a class="remove_ticket" href="/support/delete/<?php echo $ticket->id ?>">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
+        </div>
+      <div class="grid-body  no-border" style="display:none">
+
+        <?php
+foreach ($ticket->comment as $comment) {
+?>
+
+          <div class="post">
+            <div class="user-profile-pic-wrapper">
+              <div class="user-profile-pic-normal">
+                <img width="35" height="35" data-src-retina="/assets/img/profiles/avatar_small2x.jpg" data-src="/assets/img/profiles/avatar_small.jpg" src="/assets/img/profiles/avatar_small.jpg" alt=""></img>
+              </div>
+            </div>
+            <div class="info-wrapper">
+              <div class="info">
+               <?php echo $comment->content ?>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        <br/>
+        <hr/>
+        <?php
+
+}
+?>
+        <div class="form-actions">
+          <?php echo Tag::form(array(
+    'support/comment/'.$ticket->id,
+    'class' => '', 'id' => 'commentForm'.$ticket->id,
+)) ?>
+          <div class="post col-md-12">
+            <div class="info-wrapper">
+              <div class="form-group">
+                <a href="javascript:{}" onclick="commentForm<?php echo $ticket->id ?>.submit();" >
+                <label class="form-label">
+                  <i class="fa fa-reply"></i>&nbsp;Post a reply
+                </label>
+                </a>
+                <div class="controls">
+                  <input type="text" class="form-control" name="comment">
+                      </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          </form>
+        </div>
+      </div>
+      </div>
+    </div>
+        <?php 
+               
+        }
+        
+         ?>
+</div>
+
+
+<h4>
+  Closed <span class="semi-bold">Tickets</span>
+</h4>
+<br/>
+<div class="row">
+  <?php
+foreach ($closed_tickets as $ticket) {
+?>
+  <div class="col-md-12">
+    <div class="grid simple no-border">
+      <div class="grid-title no-border descriptive clickable">
+        <h4 class="semi-bold">
+          <?php echo $ticket->subject ?>
+        </h4>
+        <p >
+          <span class="text-success bold">
+            Ticket #<?php echo $ticket->id ?>
+          </span>
+        </p>
+        <div class="actions">
+          <a class="view" href="javascript:;">
+            <i class="fa fa-search"></i>
+          </a>
+        </div>
+      </div>
+      <div class="grid-body  no-border" style="display:none">
+
+        <?php
+foreach ($ticket->comment as $comment) {
+?>
+
+        <div class="post">
+          <div class="user-profile-pic-wrapper">
+            <div class="user-profile-pic-normal">
+              <img width="35" height="35" data-src-retina="/assets/img/profiles/avatar_small2x.jpg" data-src="/assets/img/profiles/avatar_small.jpg" src="/assets/img/profiles/avatar_small.jpg" alt=""></img>
+            </div>
+          </div>
+          <div class="info-wrapper">
+            <div class="info">
+              <?php echo $comment->content ?>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <br/>
+        <?php
+
+}
+?>
+        <div class="form-actions">
+          <div class="post col-md-12">
+            <div class="info-wrapper">
+              <div class="form-group">
+                <label class="form-label">
+                  <i href="#" class="fa fa-reply"></i>&nbsp;Post a reply
+                </label>
+                <div class="controls">
+                  <input type="text" class="form-control">
+                      </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <?php 
+               
+        }
+        
+         ?>
+</div>

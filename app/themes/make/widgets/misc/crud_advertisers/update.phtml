@@ -1,0 +1,35 @@
+<?php
+    use YAP\Models\OrgDatabase;
+
+    $auth = $this->session->get("auth");
+    $organisation_id= $auth['organisation_id'];
+
+    
+    $database = OrgDatabase::findFirstByorganisation_id($organisation_id);
+            
+    $host= $database->db_host; 
+    $mySqlUser= $database->db_username;          
+    $mySqlPassword=$database->db_password;      
+    $mySqlDatabase=$database->db_name;
+    
+    include('/assets/xcrud/xcrud/xcrud.php');
+    
+    $xcrud = Xcrud::get_instance();
+    $xcrud -> connection($mySqlUser,$mySqlPassword,$mySqlDatabase,$host);
+    $xcrud->table("advertiser_crud");
+    
+    $xcrud->unset_view();
+    $xcrud->unset_remove();
+    $xcrud->hide_button('add','remove');
+    $xcrud->hide_button('save_new,save_edit');
+    $xcrud->highlight('Addsuite_Margin', '=', '', '#9ADAFF');
+
+    $xcrud->highlight('Agency_Commission', '=', '', '#9ADAFF');
+
+    $xcrud->fields('Agency_Commission,Addsuite_Margin');
+    $xcrud->order_by('Advertiser');
+$xcrud->columns('Advertiser,Agency_Commission,Addsuite_Margin');
+    
+    //$data['parm']['table']
+    echo $xcrud->render();
+?>

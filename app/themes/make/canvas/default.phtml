@@ -1,0 +1,25 @@
+<div class="<?php echo $canvas_width ?>" data-canvasId="<?php echo $canvas_id ?>">    
+<div class="grid simple">
+      <div class="grid-title no-border">
+        <h4>
+          <?php echo $canvas_title ?>
+        </h4>
+        <div class="tools">
+          <a href="javascript:void(0);" onclick="canvas_edit(<?php echo "'".$canvas_id."'" ?>)" class="config"></a>
+          <a href="javascript:void(0);" onclick="canvas_delete(<?php echo "'".$canvas_id."'" ?>)" class="remove"></a>
+        </div>
+      </div>
+      <div class="grid-body no-border" style="overflow:hidden">
+		<div class="row-fluid">
+            <div class="col-md-12">
+			  <div class="<?php echo $class ?>" data-canvasId="<?php echo $canvas_id ?>" data-canvasRowNumber="1"></div>
+			  </div>
+		</div>
+      </div>
+    </div>
+</div>
+
+
+<?php echo $this->getContent() ?>
+
+ 

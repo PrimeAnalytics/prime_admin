@@ -1,0 +1,56 @@
+<?php use Phalcon\Tag; ?>
+
+<?php echo $this->getContent(); ?>
+
+<table width="100%">
+    <tr>
+        <td align="left">
+            <?php echo $this->tag->linkTo(array("database/index", "Go Back")); ?>
+        </td>
+        <td align="right">
+            <?php echo $this->tag->linkTo(array("database/new", "Create ")); ?>
+        </td>
+    </tr>
+</table>
+
+<table class="browse" align="center">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Db Of Host</th>
+            <th>Db Of Username</th>
+            <th>Db Of Password</th>
+            <th>Db Of Name</th>
+            <th>Organisation</th>
+         </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($page->items as $database) { ?>
+        <tr>
+            <td><?php echo $database->id ?></td>
+            <td><?php echo $database->db_host ?></td>
+            <td><?php echo $database->db_username ?></td>
+            <td><?php echo $database->db_password ?></td>
+            <td><?php echo $database->db_name ?></td>
+            <td><?php echo $database->organisation_id ?></td>
+            <td><?php echo $this->tag->linkTo(array("database/edit/" . $database->id, "Edit")); ?></td>
+            <td><?php echo $this->tag->linkTo(array("database/delete/" . $database->id, "Delete")); ?></td>
+        </tr>
+    <?php } ?>
+    </tbody>
+    <tbody>
+        <tr>
+            <td colspan="2" align="right">
+                <table align="center">
+                    <tr>
+                        <td><?php echo $this->tag->linkTo("database/search", "First") ?></td>
+                        <td><?php echo $this->tag->linkTo("database/search?page=" . $page->before, "Previous") ?></td>
+                        <td><?php echo $this->tag->linkTo("database/search?page=" . $page->next, "Next") ?></td>
+                        <td><?php echo $this->tag->linkTo("database/search?page=" . $page->last, "Last") ?></td>
+                        <td><?php echo $page->current, "/", $page->total_pages ?></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

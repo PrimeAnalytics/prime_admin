@@ -1,0 +1,80 @@
+	
+  <div id="<?php echo "w_".$widget->id ?>" >
+  </div>
+
+  <?php 
+
+  function transpose($arr) {
+	$out = array();
+    foreach ($arr as $key => $subarr) {
+			$out[$key] = "['".$subarr['labels']."' , ".$subarr['values']." ]" ;
+    }
+    return $out;
+}
+  $dataOut = transpose($data['db']['hc_table1']);
+
+  $out = array();
+
+  $out= "{innerSize: '50%', name: 'values', data: [ ".join($dataOut, ',')."]}";
+
+ ?>
+
+<script>
+  $(function () {
+    $('#<?php echo "w_".$widget->id ?>').highcharts({
+        chart: {
+		type: 'pie'
+			},
+		colors: <?php echo $data['parm']['color_scheme'] ?>,
+        title: {
+            text: '<?php echo $data['parm']['title'] ?>',
+			align: 'center',
+            verticalAlign: 'middle',
+            y: 50
+        },
+		  credits: {
+  enabled: false
+  },
+        subtitle: {
+            text: '<?php echo $data['parm']['subtitle'] ?>'
+        },
+        tooltip: {
+            pointFormat: '{series.name}<b></br>{point.y}<b><br>'
+        },
+        plotOptions: {
+            pie: {
+                dataLabels: {
+                    enabled: true,
+                    distance: -50,
+                    style: {
+                        fontWeight: 'bold',
+                        color: 'white',
+                        textShadow: '0px 1px 2px black'
+                    }
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ['50%', '75%']
+            }
+        },
+        series: [<?php echo $out ?>],
+
+    });
+});
+
+  
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

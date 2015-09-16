@@ -1,0 +1,83 @@
+		<!-- BEGIN REALTIME SALES GRAPH -->
+			<div class="tiles white">
+			  <div class="row">
+				<div class="sales-graph-heading">
+				<div class="col-md-4 col-sm-4">
+				  <h5 class="no-margin">You have earned</h5>
+				  <h4><span class="item-count animate-number semi-bold" data-value="<?php echo round($data['db']['table1'][0]['overall']) ?>" data-animation-duration="700">0</span> USD</h4>
+				</div>
+				<div class="col-md-4 col-sm-3">
+				  <p class="semi-bold">THIS MONTH</p>
+				  <h4><span class="item-count animate-number semi-bold" data-value="<?php echo round($data['db']['table1'][0]['month_last']) ?>" data-animation-duration="700">0</span> USD</h4>
+				</div>
+				<div class="col-md-4 col-sm-3">
+				  <p class="semi-bold">LAST MONTH</p>
+				  <h4><span class="item-count animate-number semi-bold" data-value="<?php echo round($data['db']['table1'][0]['month']) ?>" data-animation-duration="700">0</span> USD</h4>
+				</div>
+				<div class="clearfix"></div>
+			  </div>
+			  </div>
+			  <h5 class="semi-bold m-t-30 m-l-30">
+          <?php echo $data['parm']['title'] ?>
+        </h5>
+        <table class="table no-more-tables m-t-20 m-l-20 m-b-30">
+          <thead >
+            <tr>
+              <?php echo '<td class="v-align-middle">'.implode("</td><td>", array_keys($data['db']['table2'][0])).'</td>'  ?>
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+            $i=0;
+      foreach ($data['db']['table2'] as $key => $subarr) {
+      $i++;
+      if($i>3)
+      {
+      break;
+      }
+      
+      echo '<tr><td>'.implode("</td><td>", $subarr).'</td></tr>';
+      
+      }
+      ?>
+          </tbody>
+        </table>
+          
+			  <div id="<?php echo "w_".$widget->id ?>"> </div>
+		
+          </div>
+		<!-- END REALTIME SALES GRAPH -->
+
+<script>
+
+
+  var seriesData = [ [], []];
+  var random = new Rickshaw.Fixtures.RandomData(50);
+
+  for (var i = 0; i < 50; i++) {
+		random.addData(seriesData);
+	}
+
+	graph = new Rickshaw.Graph( {
+		element: document.querySelector('#<?php echo "w_".$widget->id ?>'),
+		height: 108,
+		renderer: 'area',
+		series: [
+			{
+				data: seriesData[0],
+				color: color_danger,
+			},{
+				data: seriesData[1],
+				color: '#f2f4f6',
+			}
+		]
+	} );
+	setInterval( function() {
+		random.removeData(seriesData);
+		random.addData(seriesData);
+		graph.update();
+
+	},1000);
+
+  
+</script>

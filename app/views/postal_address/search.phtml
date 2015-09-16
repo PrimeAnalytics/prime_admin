@@ -1,0 +1,58 @@
+<?php use Phalcon\Tag; ?>
+
+<?php echo $this->getContent(); ?>
+
+<table width="100%">
+    <tr>
+        <td align="left">
+            <?php echo $this->tag->linkTo(array("postal_address/index", "Go Back")); ?>
+        </td>
+        <td align="right">
+            <?php echo $this->tag->linkTo(array("postal_address/new", "Create ")); ?>
+        </td>
+    </tr>
+</table>
+
+<table class="browse" align="center">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Country</th>
+            <th>State</th>
+            <th>City</th>
+            <th>Street</th>
+            <th>Postal Of Code</th>
+            <th>Organisation</th>
+         </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($page->items as $postal_addres) { ?>
+        <tr>
+            <td><?php echo $postal_addres->id ?></td>
+            <td><?php echo $postal_addres->country ?></td>
+            <td><?php echo $postal_addres->state ?></td>
+            <td><?php echo $postal_addres->city ?></td>
+            <td><?php echo $postal_addres->street ?></td>
+            <td><?php echo $postal_addres->postal_code ?></td>
+            <td><?php echo $postal_addres->organisation_id ?></td>
+            <td><?php echo $this->tag->linkTo(array("postal_address/edit/" . $postal_addres->id, "Edit")); ?></td>
+            <td><?php echo $this->tag->linkTo(array("postal_address/delete/" . $postal_addres->id, "Delete")); ?></td>
+        </tr>
+    <?php } ?>
+    </tbody>
+    <tbody>
+        <tr>
+            <td colspan="2" align="right">
+                <table align="center">
+                    <tr>
+                        <td><?php echo $this->tag->linkTo("postal_address/search", "First") ?></td>
+                        <td><?php echo $this->tag->linkTo("postal_address/search?page=" . $page->before, "Previous") ?></td>
+                        <td><?php echo $this->tag->linkTo("postal_address/search?page=" . $page->next, "Next") ?></td>
+                        <td><?php echo $this->tag->linkTo("postal_address/search?page=" . $page->last, "Last") ?></td>
+                        <td><?php echo $page->current, "/", $page->total_pages ?></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

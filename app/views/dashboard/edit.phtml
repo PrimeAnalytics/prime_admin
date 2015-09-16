@@ -1,0 +1,506 @@
+<?php echo $this->getContent(); ?>
+
+    <link href="/assets/plugins/bootstrap-tag/bootstrap-tagsinput.min.css" rel="stylesheet">
+    <link href="/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="/assets/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/plugins/icon-picker/css/fontawesome-iconpicker.min.css" rel="stylesheet">
+    <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet"></link>
+    
+    <script src='/assets/plugins/bootstrap-tag/bootstrap-tagsinput.min.js'></script>
+    <script src="/assets/plugins/icon-picker/js/fontawesome-iconpicker.js"></script>
+    <script src="/assets/js/tabs_accordian.js" type="text/javascript"></script>
+    <script src="/assets/plugins/bootstrap-select2/select2.js" type="text/javascript"></script>
+    
+    <script>
+    var links =<?php echo json_encode($links)?>;
+    </script>
+    
+
+    <ul class="breadcrumb">
+      <li>
+        <p>YOU ARE HERE</p>
+      </li>
+      <li>
+        <a href="#" class="active">Edit Dashboard</a>
+      </li>
+    </ul>
+    <div class="page-title">
+      <a href="/organisation/edit/<?php echo $organisation_id ?>">
+      <i  class="icon-custom-left"></i>
+      </a>
+      <h3>
+        Edit - <span class="semi-bold">Dashboard</span>
+      </h3>
+    </div>
+
+      <div class="row-fluid">
+        <div class="col-md-12">
+          <div id="page-builder" >
+            <ul class="nav nav-tabs">
+              <li class="width-16p active">
+                <a href="#info" data-toggle="tab">
+                  <span class="text-center">Basic Info</span>
+                </a>
+              </li>
+              <li class="width-16p">
+                <a href="#layout" data-toggle="tab">
+                  <span class="text-center">Layout</span>
+                </a>
+              </li>
+
+              <?php  
+            
+              $directory = '../app/widgets/'.$theme.'/';
+
+              //get all files in specified directory
+              $files = glob($directory . "*", GLOB_BRACE);
+    
+              //print each file name
+              foreach($files as $file)
+              {
+              //check to see if the file is a folder/directory
+              if(is_dir($file))
+              {
+              echo '<li class="width-16p"><a href="#'.basename($file).'" data-toggle="tab"><span class="text-center">'.ucwords (basename($file)).'</span></a></li>';
+              }
+              }
+   
+              ?>
+            </ul>
+            <div class="tab-content clearfix" style="overflow:visible">
+              <div class="tab-pane fade in active" id="info">
+                <?php echo $this->tag->form("dashboard/save") ?>
+                <div class="row column-seperation">
+                  <div class="col-md-6">
+                    <h4>Menu Settings</h4>
+                    <div class="row">
+
+                      <div class="form-group col-md-7">
+                        <label class="form-label">Title</label>
+                        <span class="help">e.g. "Market Metrics"</span>
+                        <div class="input-with-icon  right">
+                          <i class=""></i>
+                          <?php echo $this->tag->textField(array("title", "class" => "form-control")) ?>
+                        </div>
+                      </div>
+
+                      <div class="form-group col-md-5">
+                        <label class="form-label">Menu Weight</label>
+                        <span class="help">e.g. "Please Select"</span>
+                        <div class="input-with-icon  right">
+                          <i class=""></i>
+                          <?php echo $this->tag->textField(array("weight", "class" => "form-control")) ?>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-md-7">
+                        <label class="form-label">Icon</label>
+                        <span class="help">e.g. "Please Select"</span>
+                        <div class="input-group">
+                          <?php echo $this->tag->textField(array("icon", "class"=>"form-control icp icp-auto","data-placement"=>"bottomRight")) ?>
+                          <span class="input-group-addon"></span>
+                        </div>
+                      </div>
+                      
+                        <div class="form-group col-md-5">
+                          <label class="form-label">Style</label>
+                          <span class="help">e.g. "Please Select"</span>
+                          <div class="input">
+                            
+                      <select class="form-control" name="style">
+
+                        <?php  
+                        echo $theme;
+            
+                      //path to directory to scan
+                        $directory = "../app/themes/".$theme."/layouts/";
+
+                        //get all files in specified directory
+                        $files = glob($directory . "*.{phtml}", GLOB_BRACE);
+    
+                        //print each file name
+                        foreach($files as $file)
+                        {
+                        $type = str_replace(".phtml","",basename($file));
+                        echo '<option value="'.$type.'" >'.ucwords($type).'</option>';
+                        }
+   
+                        ?>
+                      </select>
+                          </div>
+                        </div>
+                      </div>
+                    <?php echo $this->tag->hiddenField("organisation_id") ?>
+                    <?php echo $this->tag->hiddenField("id") ?>
+                  </div>
+
+                  <div class="col-md-6">
+                    <h4>Dashboard Links</h4>
+                    <div class="row">
+
+                      <div class="form-group col-md-6">
+                        <label class="form-label">Name</label>
+                        <span class="help">e.g. "Please Select"</span>
+                        <div style="width:100%">
+                          <input type="text" id="link_name" style="width:100%"></input>
+                        </div>
+                      </div>
+
+                      <div class="form-group col-md-6">
+                        <label class="form-label">Database Column</label>
+                        <span class="help">e.g. "Please Select"</span>
+                        <div style="width:100%">
+                          <input type="text" id="link_table_column" style="width:100%"></input>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="form-group col-md-6">
+                        <label class="form-label">Database Column</label>
+                        <span class="help">e.g. "Please Select"</span>
+                        <div style="width:100%">
+                          <select style="width:100%" id="link_type">
+                            <option value="=">=</option>
+                            <option value="!=">&ne;</option>
+                            <option value=">">></option>
+                            <option value=">=">&ge;</option>
+                            <option value="<"><</option>
+                            <option value="<=">&le;</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group col-md-4">
+                        <label class="form-label">Defaul Value</label>
+                        <span class="help">e.g. "Please Select"</span>
+                        <div style="width:100%">
+                          <input type="text" id="link_default_value" style="width:100%"></input>
+                        </div>
+                      </div>
+
+                      <div class="form-group col-md-2 ">
+                        <label class="form-label">
+                          </br>
+                        </label>
+                        <span class="help">
+                          </br>
+                        </span>
+                        <div class= "pull-right">
+                          <button class="add_field_button btn btn-default ">
+                            <i class="fa fa-plus"></i>&nbsp;&nbsp;<span >Add Link</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-md-12">
+                        <label class="form-label">Links</label>
+                        <span class="help">e.g. "Please Select"</span>
+                        <div style="width:100%">
+                          <input id="links-input" class="bootstrap-tagsinput" type="text" />
+                        </div>
+                      </div>
+
+                      <?php echo $this->tag->hiddenField("links") ?>
+
+                    </div>
+                  </div>
+                </div>
+
+
+                <p class="pull-right">
+                  <?php echo $this->tag->submitButton(array("Save", "class" => "btn btn-success btn-cons")) ?>
+                  <button type="button" class="btn btn-white btn-cons">Cancel</button>
+                </p>
+                </form>
+              </div>
+              <div class="tab-pane fade" id="layout">
+                <div data-type="canvas" class="drag">
+                  <p>
+                    <strong>New Canvas</strong>
+                  </p>
+                </div>
+
+              </div>
+
+              <?php  
+              //path to directory to scan
+                $directory = '../app/widgets/'.$theme.'/';
+
+                //get all files in specified directory
+                $files = glob($directory . "*", GLOB_BRACE);
+    
+
+                //print each file name
+                foreach($files as $file)
+                {
+                //check to see if the file is a folder/directory
+                if(is_dir($file))
+                {
+                echo '<div class="tab-pane fade" id="'.basename($file).'">';  
+                $subdirectory = '../app/widgets/'.$theme.'/'.basename($file).'/';
+                //get all files in specified directory
+                $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);  
+    
+                    foreach($subfiles as $subfile)
+                {
+                $type = str_replace("Controller.php","",basename($subfile));
+                $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
+                $type= "w_".basename($file)."/".strtolower(str_replace(" ","_",$name)) ;
+
+                echo '<div data-type="'.$type.'" class="drag">'.$name.'</div>';
+    
+              }  
+              echo '</div>';
+   
+                }
+                }
+   
+                ?>
+             
+            </div>
+
+
+            <script>
+
+              function update_dropzone(){
+              contents = $("#dashboard_iframe").contents();
+              
+              contents.find('.widget_drag').draggable({
+              iframeFix: true,
+              handle: ".draghandle",
+              appendTo: 'body',
+              zIndex: 100,
+              helper: "clone"
+              });
+
+              contents.find('.dropzone-canvas').droppable({
+              iframeFix: true,
+              activeClass: 'active',
+              hoverClass: 'hover',
+              tolerance: "pointer",
+              accept: ":not(.ui-sortable-helper)", // Reject clones generated by sortable
+              drop: function (e, ui) {
+
+              var draggable = ui.draggable;
+              var datatype = draggable.attr("data-type");
+
+
+              var canvasId = $(this).attr("data-canvasId");
+              var rowNumber = $(this).attr("data-canvasRowNumber");
+              var columnNumber = $(this).children().length;
+
+              if(datatype.substr(0, 2)=="u_")
+              {
+
+              $("#modal_content").load("/widget/move/"+ canvasId + "/" + rowNumber + "/" + columnNumber + "/" + draggable.attr("data-widget_id") , function () {
+              $("#myModal").modal("show");
+              });
+              }
+
+              else if(datatype.substr(0, 2)=="w_")
+              {
+              $("#modal_content").load("/widgets/"+datatype.substring(2)+"/new/"+ canvasId + "/" + rowNumber + "/" + columnNumber, function () {
+              $("#myModal").modal("show");
+              });
+              }
+              }
+              });
+
+              };
+
+
+              function canvas_edit(id){
+              $("#modal_content").load("/canvas/edit/" + id, function () {
+              $("#myModal").modal("show");
+              })};
+
+              function canvas_delete(id){
+              $("#modal_content").load("/canvas/delete/" + id, function () {
+              $("#myModal").modal("show");
+              })};
+
+              function widget_edit(type,id){
+              $("#modal_content").load("/widgets/"+type.trim()+"/edit/" + id, function () {
+              $("#myModal").modal("show");
+              })};
+
+              function widget_delete(id){
+              $("#modal_content").load("/widget/delete/" + id, function () {
+              $("#myModal").modal("show");
+              })};
+
+
+            </script>
+            
+
+          </div>
+        </div>
+      </div>
+
+      <iframe width="100%" src="/dashboard/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe"  height="5000px" frameborder="0" >
+      </iframe>
+
+     
+
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog"  id="modal">
+          <div id="modal_content"></div>
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
+
+
+      <script>
+
+        $(document).ready(function () {
+
+        var dataIn;
+        $.getJSON("/widget/getAllTables", function(data){
+        $("#link_table_column").select2({
+        data:data,
+        placeholder: "Select a Linking Column"
+        });
+        });
+
+        var data= <?php echo $links ?>;
+
+        $('#links-input').tagsinput({
+        itemValue: 'value',
+        itemText: 'value',
+        });
+
+        function update_link_tags(){
+        $('#links-input').tagsinput('removeAll');
+        if(data!=null){
+        $.each(data, function(i, item) {
+        $('#links-input').tagsinput('add', { "value": data[i].name , "text": data[i].name});
+        });
+        };
+
+        $("input[name='links']").val(JSON.stringify(data));
+
+        };
+
+        function add_link(name, table, column, type, default_value){
+        var jsonObj =
+        {
+        "name":name,
+        "table": table,
+        "column": column,
+        "type": type,
+        "default_value": default_value
+        }
+
+        data.push(jsonObj);
+
+        update_link_tags();
+
+        $("#link_name").val("");
+        $("#link_default_value").val("");
+        };
+
+        function remove_link(value)
+        {
+        $.each(data, function(index, result) {
+        if(result.name == value) {
+        data.splice(index, 1);
+        }
+        });
+
+        update_link_tags();
+        };
+
+        $(".add_field_button").click(function(e){ //on add input button click
+        e.preventDefault();
+
+        var name =  $("#link_name").val();
+
+        var type =  $("#link_type").val();
+
+        var opt = $('#link_table_column').val();
+
+        opt= JSON.parse(opt);
+
+        var table = opt['table'];
+        var column = opt['column'];
+
+        var default_value = $("#link_default_value").val();
+
+        add_link(name,table,column,type,default_value);
+
+        });
+
+        $('#links-input').on('itemRemoved', function(event) {
+        var name =event.item['value'];
+        remove_link(name)
+        });
+
+        update_link_tags();
+
+        $('.icp-auto').iconpicker();
+
+        $("#dashboard_iframe").load(function () {
+        var $this = $(this);
+        var contents = $this.contents();
+        // here, catch the droppable div and create a droppable widget
+
+        contents.find('.dropzone-row').droppable({
+        iframeFix: true,
+        activeClass: 'active', greedy: true,
+        hoverClass: 'hover',
+        tolerance: "pointer",
+        accept: ":not(.ui-sortable-helper)", // Reject clones generated by sortable
+        drop: function (e, ui) {
+
+        var rowNumber = $(this).attr("data-rowNumber");
+        var columnNumber = $(this).children().length;
+
+        var draggable = ui.draggable;
+        var datatype = draggable.attr("data-type");
+
+        switch (datatype) {
+        case "canvas":
+        $("#modal_content").load("/Canvas/new/<?php echo $dashboard_id ?>" + "/" + rowNumber + "/" + columnNumber, function () {
+          $("#myModal").modal("show");
+          });
+          break;
+          }
+          }
+          });
+          });
+
+
+          $(".drag").draggable({
+          revert: "invalid",
+          iframeFix: true,
+          appendTo: 'body',
+          zIndex: 100,
+          helper: "clone"
+          });
+          });
+
+
+
+
+        </script>
+
+      
+
+
+
+
+
+
+
+    

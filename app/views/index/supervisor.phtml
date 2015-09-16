@@ -1,0 +1,10 @@
+<?php use Phalcon\Tag as Tag ?>
+
+<?php $auth = $this->session->get('auth');?>
+
+<?php $this->assets->outputCss() ?>
+<?php $this->assets->outputJs() ?>
+
+<?php echo $this->getContent() ?>
+
+ 

@@ -1,0 +1,106 @@
+		
+  <div id="<?php echo "w_".$widget->id ?>" >
+  </div>
+
+  <?php 
+
+  function transpose($arr,$type) {
+	$out = array();
+    foreach ($arr as $key => $subarr) {
+    	foreach ($subarr as $subkey => $subvalue) {
+		if($subkey!='x_axis'){
+			if($type == "date")
+			{
+    		$out[$subkey][$key] = "[Date.parse('".$subarr['x_axis']."') , ".$subvalue."]" ;
+			}
+			else if ($type == "number")
+			{
+			$out[$subkey][$key] = "[".$subarr['x_axis']." , ".$subvalue."]" ;
+			}
+			else if ($type == "category")
+			{
+			$out[$subkey][$key] = "['".$subarr['x_axis']."' , ".$subvalue."]" ;
+			}
+			}
+    	}
+    }
+    return $out;
+}
+  $dataOut = transpose($data['db']['hc_table1'], $data['parm']['x_type'] );
+
+  $out = array();
+  foreach ($dataOut as $key => $subarr) {
+  $out[]= "{ name: '".$key."', data: [ ".join($subarr, ',')."]}";
+		}
+ ?>
+
+<script>
+  $(function () {
+    $('#<?php echo "w_".$widget->id ?>').highcharts({
+        chart: {
+            type: 'column',
+			zoomType: 'xy'
+			},
+			  credits: {
+  enabled: false
+  },
+		colors: <?php echo $data['parm']['color_scheme'] ?>,
+        title: {
+            text: '<?php echo $data['parm']['title'] ?>'
+        },
+        subtitle: {
+            text: '<?php echo $data['parm']['subtitle'] ?>  (Note this chart is zoomable; With a mouse pointer, the zooming is performed by dragging out a rectangle in the chart.)'
+        },
+        xAxis: {
+		title: {
+                text: '<?php echo $data['parm']['x_label'] ?>'
+            },
+		<?php if($data['parm']['x_type'] =="date")
+			{
+	echo "type: 'datetime',
+	";
+			}
+			else if($data['parm']['x_type'] =="category")
+			{
+				echo "type: 'category',
+	";
+			}
+			?>
+
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $data['parm']['y_label'] ?>'
+            }
+            },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [<?php echo join($out, ',') ?>],
+
+    });
+});
+
+  
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

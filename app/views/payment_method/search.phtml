@@ -1,0 +1,60 @@
+<?php use Phalcon\Tag; ?>
+
+<?php echo $this->getContent(); ?>
+
+<table width="100%">
+    <tr>
+        <td align="left">
+            <?php echo $this->tag->linkTo(array("payment_method/index", "Go Back")); ?>
+        </td>
+        <td align="right">
+            <?php echo $this->tag->linkTo(array("payment_method/new", "Create ")); ?>
+        </td>
+    </tr>
+</table>
+
+<table class="browse" align="center">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Company Of Registered Of Name</th>
+            <th>Registration Of Number</th>
+            <th>Vat Of Number</th>
+            <th>Payment Of Method</th>
+            <th>Billing Of Contact</th>
+            <th>Organisation</th>
+         </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($page->items as $payment_method) { ?>
+        <tr>
+            <td><?php echo $payment_method->id ?></td>
+            <td><?php echo $payment_method->name ?></td>
+            <td><?php echo $payment_method->company_registered_name ?></td>
+            <td><?php echo $payment_method->registration_number ?></td>
+            <td><?php echo $payment_method->vat_number ?></td>
+            <td><?php echo $payment_method->payment_method ?></td>
+            <td><?php echo $payment_method->billing_contact ?></td>
+            <td><?php echo $payment_method->organisation_id ?></td>
+            <td><?php echo $this->tag->linkTo(array("payment_method/edit/" . $payment_method->id, "Edit")); ?></td>
+            <td><?php echo $this->tag->linkTo(array("payment_method/delete/" . $payment_method->id, "Delete")); ?></td>
+        </tr>
+    <?php } ?>
+    </tbody>
+    <tbody>
+        <tr>
+            <td colspan="2" align="right">
+                <table align="center">
+                    <tr>
+                        <td><?php echo $this->tag->linkTo("payment_method/search", "First") ?></td>
+                        <td><?php echo $this->tag->linkTo("payment_method/search?page=" . $page->before, "Previous") ?></td>
+                        <td><?php echo $this->tag->linkTo("payment_method/search?page=" . $page->next, "Next") ?></td>
+                        <td><?php echo $this->tag->linkTo("payment_method/search?page=" . $page->last, "Last") ?></td>
+                        <td><?php echo $page->current, "/", $page->total_pages ?></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

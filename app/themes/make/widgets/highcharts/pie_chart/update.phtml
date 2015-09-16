@@ -1,0 +1,68 @@
+
+  <div id="<?php echo "w_".$widget->id ?>" >
+  </div>
+
+  <?php 
+
+  function transpose($arr) {
+	$out = array();
+    foreach ($arr as $key => $subarr) {
+			$out[$key] = "['".$subarr['labels']."' , ".$subarr['values']." ]" ;
+    }
+    return $out;
+}
+  $dataOut = transpose($data['db']['hc_table1']);
+
+  $out = array();
+
+  $out= "{ name: 'values', data: [ ".join($dataOut, ',')."]}";
+
+ ?>
+
+<script>
+  $(function () {
+    $('#<?php echo "w_".$widget->id ?>').highcharts({
+        chart: {
+		type: 'pie'
+			},
+		colors: <?php echo $data['parm']['color_scheme'] ?>,
+        title: {
+            text: '<?php echo $data['parm']['title'] ?>'
+        },
+		  credits: {
+  enabled: false
+  },
+        subtitle: {
+            text: '<?php echo $data['parm']['subtitle'] ?>'
+        },
+        plotOptions: {
+          pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [<?php echo $out ?>],
+
+    });
+});
+
+  
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

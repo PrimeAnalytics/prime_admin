@@ -1,0 +1,42 @@
+<div class="tiles <?php echo $data['parm']['style'] ?> m-b-10">
+              <div class="tiles-body">
+			  <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
+                <div class="tiles-title text-white"><?php echo $data['parm']['title'] ?> </div>
+			         <div class="widget-stats">
+                      <div class="wrapper transparent"> 
+						<span class="item-title">Overall</span> <span class="item-count animate-number semi-bold" data-value="<?php echo $data['db']['table1'][0]['overall']?>" data-animation-duration="700">0</span>
+					  </div>
+                    </div>
+                    <div class="widget-stats">
+                      <div class="wrapper transparent">
+						<span class="item-title">Last Month</span> <span class="item-count animate-number semi-bold" data-value="<?php echo $data['db']['table1'][0]['month_last']?>" data-animation-duration="700">0</span> 
+					  </div>
+                    </div>
+                    <div class="widget-stats ">
+                      <div class="wrapper last"> 
+						<span class="item-title">This Month</span> <span class="item-count animate-number semi-bold" data-value="<?php echo $data['db']['table1'][0]['month']?>" data-animation-duration="700">0</span> 
+					 </div>
+                    </div>
+
+					<?php $var = round((($data['db']['table1'][0]['month']-$data['db']['table1'][0]['month_last'])/$data['db']['table1'][0]['month_last'])*100) ?>
+
+                    <div class="progress transparent progress-small no-radius m-t-20" style="width:90%">
+                      <div class="progress-bar progress-bar-white animate-progress-bar" data-percentage="<?php echo abs( $var) ?>%" ></div>
+                    </div>
+                    <div class="description"> <span class="text-white mini-description "><?php echo $var ?>% change <span class="blend">from last month</span></span></div>
+			  </div>			
+			</div>	
+
+
+
+			<script>
+			    $('.animate-number').each(function () {
+        $(this).animateNumbers($(this).attr("data-value"), true, parseInt($(this).attr("data-animation-duration"), 10));
+    });
+    $('.animate-progress-bar').each(function () {
+        $(this).css('width', $(this).attr("data-percentage"));
+
+    });
+			
+			</script>
+

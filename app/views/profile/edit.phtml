@@ -1,0 +1,181 @@
+<?php use Phalcon\Tag as Tag ?>
+
+<?php echo Tag::form("canvas/save") ?>
+
+<?php echo $this->getContent() ?>
+
+
+<div class="page-title">
+  <i class="icon-custom-left"></i>
+  <h3>
+    Edit <span class="semi-bold">Profile</span>
+  </h3>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="grid simple">
+      <div class="grid-title no-border">
+        <h4>
+          Profile <span class="semi-bold">Information</span>
+        </h4>
+        <div class="tools">
+          <a href="javascript:;" class="collapse"></a>
+          <a href="javascript:;" class="reload"></a>
+        </div>
+      </div>
+      <div class="grid-body no-border">
+              <?php echo Tag::form(array(
+    'session/register',
+    'id' => 'registerForm',
+    'class' => 'form-no-horizontal-spacing',
+    'onbeforesubmit' => 'return false',
+)) ?>
+
+        <div class="row column-seperation">
+          <div class="col-md-6">
+            <h4>Basic Information</h4>
+            <div class="row form-row">
+
+              <div class="col-md-12">
+                <label class="form-label" for="full_name">Full Name</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::textField(array('full_name', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row form-row">
+
+              <div class="col-md-12">
+                <label class="form-label" for="full_name">Email Address</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::emailField(array('email', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row form-row">
+
+              <div class="col-md-12">
+                <label class="form-label" for="full_name">Password</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::passwordField(array('password', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row form-row">
+
+              <div class="col-md-12">
+                <label class="form-label" for="full_name">Repeat Password</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::passwordField(array('repeat_password', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row form-row">
+
+              <div class="col-md-12">
+                <label class="form-label" for="full_name">Profile Picture</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::fileField(array('file', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="col-md-6">
+
+            <h4>Postal Information</h4>
+
+            <div class="row form-row">
+              <div class="col-md-12">
+                <label class="form-label" for="full_name">Address</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::textField(array('address', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+            </div>
+            <div class="row form-row">
+              <div class="col-md-6">
+                <label class="form-label" for="full_name">City</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::textField(array('city', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="full_name">State</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::textField(array('state', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+            </div>
+            <div class="row form-row">
+              <div class="col-md-8">
+                <label class="form-label" for="full_name">Country</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::textField(array('country', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="full_name">Postal Code</label>
+                <div class="input-with-icon  right">
+                  <i class=""></i>
+                  <?php echo Tag::textField(array('postal_code', 'class' => 'form-control')) ?>
+                </div>
+              </div>
+            </div>
+              <div class="row form-row">
+                <div class="col-md-12">
+                  <label class="form-label" for="full_name">Phone Number</label>
+                  <div class="input-with-icon  right">
+                    <i class=""></i>
+                    <?php echo Tag::textField(array('phone_number', 'class' => 'form-control')) ?>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+            <div class="form-actions">
+              <div class="pull-left">
+                <div class="checkbox checkbox check-success 	">
+                  <input type="checkbox" value="1" id="chkTerms">
+                    <label for="chkTerms">I Here by agree on the Term and condition. </label>
+                  </div>
+              </div>
+              <div class="pull-right">
+                <?php echo Tag::submitButton(array(
+                'Update',
+                'class' => 'btn btn-danger btn-cons',
+                'onclick' => 'return SignUp.validate();',
+            )) ?>
+                <button class="btn btn-white btn-cons" type="button">Cancel</button>
+              </div>
+            </div>
+            
+              </form>
+            </div>
+        </div>
+    </div>
+  </div>
+
+
+<script src="/assets/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+

@@ -1,0 +1,31 @@
+<?php
+    use YAP\Models\Database;
+
+    $auth = $this->session->get("auth");
+    $organisation_id= $auth['organisation_id'];
+
+    
+    $database = Database::findFirstByorganisation_id($organisation_id);
+            
+    $host= $database->db_host; 
+    $mySqlUser= $database->db_username;          
+    $mySqlPassword=$database->db_password;      
+    $mySqlDatabase=$database->db_name;
+    
+    include('/assets/xcrud/xcrud/xcrud.php');
+    
+    $xcrud = Xcrud::get_instance();
+    $xcrud -> connection($mySqlUser,$mySqlPassword,"addswitch_dashboard",$host);
+    $xcrud->table("tbl_ad_tag_region");
+    
+    $xcrud->unset_view();
+    $xcrud->unset_remove();
+    $xcrud->hide_button('add','remove');
+    $xcrud->hide_button('save_new,save_edit');
+    $xcrud->highlight('region_code', '=', 'n/a', '#9ADAFF');
+    $xcrud->fields('region_code,revenue_split,include');
+    $xcrud->order_by('region_code');
+    
+    //$data['parm']['table']
+    echo $xcrud->render();
+?>

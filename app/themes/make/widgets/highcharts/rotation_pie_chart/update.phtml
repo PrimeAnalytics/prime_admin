@@ -1,0 +1,115 @@
+		<div id="<?php echo "w_".$widget->id ?>" >
+  </div>
+
+
+  <div>
+	<table>
+		<tr><td>Alpha Angle</td><td><input id="<?php echo "R0".$widget->id ?>" type="range" min="0" max="45" value="15"/> <span id="<?php echo "R0".$widget->id."-value" ?>" class="value"></span></td></tr>
+	    <tr><td>Beta Angle</td><td><input id="<?php echo "R1".$widget->id ?>" type="range" min="0" max="45" value="15"/> <span id="<?php echo "R1".$widget->id."-value" ?>" class="value"></span></td></tr>
+	</table>
+</div>
+
+
+
+		  <?php 
+
+  function transpose($arr) {
+	$out = array();
+    foreach ($arr as $key => $subarr) {
+			$out[$key] = "['".$subarr['labels']."' , ".$subarr['values']." ]" ;
+    }
+    return $out;
+}
+  $dataOut = transpose($data['db']['hc_table1']);
+
+  $out = array();
+
+  $out= "{ type: 'pie', name: 'values', data: [ ".join($dataOut, ',')."]}";
+
+ ?>
+
+    <script>
+
+
+    $(function () {
+
+    var chart<?php echo "_".$widget->id ?> = new Highcharts.Chart({
+        chart: {
+		renderTo: '<?php echo "w_".$widget->id ?>',
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+                beta: 0
+            }
+        },
+		  credits: {
+  enabled: false
+  },
+		colors: <?php echo $data['parm']['color_scheme'] ?>,
+        title: {
+            text: '<?php echo $data['parm']['title'] ?>'
+        },
+        subtitle: {
+            text: '<?php echo $data['parm']['subtitle'] ?>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                depth: 35,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}'
+                }
+            }
+        },
+		series: [<?php echo $out ?>],
+    });
+
+
+	function showValues<?php echo "_".$widget->id ?>() {
+        $('#<?php echo "R0".$widget->id."-value" ?>').html(chart<?php echo "_".$widget->id ?>.options.chart.options3d.alpha);
+        $('#<?php echo "R1".$widget->id."-value" ?>').html(chart<?php echo "_".$widget->id ?>.options.chart.options3d.beta);
+    }
+
+    // Activate the sliders
+    $('#<?php echo "R0".$widget->id ?>').on('change', function () {
+        chart<?php echo "_".$widget->id ?>.options.chart.options3d.alpha = this.value;
+        showValues<?php echo "_".$widget->id ?>();
+        chart<?php echo "_".$widget->id ?>.redraw(true);
+    });
+    $('#<?php echo "R1".$widget->id ?>').on('change', function () {
+        chart<?php echo "_".$widget->id ?>.options.chart.options3d.beta = this.value;
+        showValues<?php echo "_".$widget->id ?>();
+        chart<?php echo "_".$widget->id ?>.redraw(true);
+    });
+
+    showValues<?php echo "_".$widget->id ?>();
+
+
+
+
+});
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

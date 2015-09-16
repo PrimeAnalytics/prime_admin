@@ -1,0 +1,22 @@
+<div style="text-align: center;">
+ <h4> <?php echo $data['parm']['title'] ?> </h4>
+<div id="<?php echo "widget_".$widget->id ?>" >
+</div>
+</div>
+
+<script>
+
+  var widget_id = <?php echo $widget->id?>;
+	
+Morris.Donut({
+  element: '<?php echo "widget_".$widget->id ?>',
+  colors: <?php echo $data['parm']['color_scheme'] ?>,
+  data: <?php echo json_encode($data['db']['mc_table1']) ?>,
+  });
+
+</script>
+
+
+
+
+
