@@ -34,7 +34,7 @@ class ThemeCreatorController extends ControllerBase
                 $css[]=$node->getAttribute('href');
             }
 
-
+            $base='';
             foreach($css as &$url)
             {
                 if (strpos($url,'//') !== false) {
@@ -43,17 +43,32 @@ class ThemeCreatorController extends ControllerBase
                 else
                 {
                     $script=explode ( "/", $url);
-                    $path = str_replace ('public','',$_SERVER['DOCUMENT_ROOT']).'app/themes/'.$theme.'/';
-                    $it = new \RecursiveDirectoryIterator($path);
-                    $file_name=end($script);
-                    foreach(new \RecursiveIteratorIterator($it) as $file)
+                    $path = $_SERVER['DOCUMENT_ROOT'].'/themes/'.$theme.'/';
+                    $temp=array();
+                    foreach($script as $part)
                     {
-                        if (strpos($file,$file_name) !== false) {
-                            $file= str_replace (substr_replace($path ,"",-1),"",$file);
-                            $url='<link href="'.'/../app/themes/'.$theme.str_replace("\\","/",$file).'" rel="stylesheet">';
+                        if($part!=="..")
+                        {
+                            $temp[]=$part;
                         }
                     }
-                    
+                    $file_name=implode( "/", $temp);
+
+                    if($base=='')
+                    {
+                        $it = new \RecursiveDirectoryIterator($path);
+                        foreach(new \RecursiveIteratorIterator($it) as $file)
+                        {
+                            $file=str_replace("\\","/",$file);
+                            if (strpos($file,$file_name) !== false) {
+                                $file= str_replace ($_SERVER['DOCUMENT_ROOT'],"",$file);
+                                $base=  str_replace ($file_name,"",$file);
+                                break;
+                            }
+                        }
+                    }
+
+                    $url='<link href="'.$base.$file_name.'" rel="stylesheet">';
                 }
             }
             
@@ -79,16 +94,35 @@ class ThemeCreatorController extends ControllerBase
                 else
                 {
                     $script=explode ( "/", $url);
-                    $path = str_replace ('public','',$_SERVER['DOCUMENT_ROOT']).'app/themes/'.$theme.'/';
-                    $it = new \RecursiveDirectoryIterator($path);
-                    $file_name=end($script);
-                    foreach(new \RecursiveIteratorIterator($it) as $file)
+                    $path = $_SERVER['DOCUMENT_ROOT'].'/themes/'.$theme.'/';
+
+                    $temp=array();
+                    foreach($script as $part)
                     {
-                        if (strpos($file,$file_name) !== false) {
-                            $file= str_replace (substr_replace($path ,"",-1),"",$file);
-                            $url='<script src="'.'/../app/themes/'.$theme.str_replace("\\","/",$file).'"></script>';
+                    if($part!=="..")
+                    {
+                        $temp[]=$part;
+                    }
+                    
+                    }
+                    $file_name=implode( "/", $temp);
+
+                    if($base=='')
+                    {
+                        $it = new \RecursiveDirectoryIterator($path);
+                        foreach(new \RecursiveIteratorIterator($it) as $file)
+                        {
+                            $file=str_replace("\\","/",$file);
+                            if (strpos($file,$file_name) !== false) {
+                                $file= str_replace ($_SERVER['DOCUMENT_ROOT'],"",$file);
+                                $base=  str_replace ($file_name,"",$file);
+                                break;
+                            }
                         }
                     }
+
+                    $url='<script src="'.$base.$file_name.'"></script>';
+
                     
                 }
             }
@@ -146,6 +180,20 @@ class ThemeCreatorController extends ControllerBase
        
         
     } 
+
+
+    public function previewAction()
+    {
+        $this->view->disable();
+        echo '<head>';
+        echo $css=$this->request->getPost("css");
+        echo $style=$this->request->getPost("style");
+        echo '</head><body>';
+        echo $html=$this->request->getPost("html");
+        echo $js=$this->request->getPost("js");
+        echo $script=$this->request->getPost("script");
+        echo '</body>';
+    }
 
 
     public function layout_editorAction()

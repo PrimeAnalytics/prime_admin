@@ -1,0 +1,26 @@
+{
+    "name": "grumpydictator/nest-oauth2-provider",
+    "description": "A Nest provider for league/oauth2-client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "James Cole",
+            "email": "thegrumpydictator@gmail.com",
+            "homepage": "https://github.com/JC5",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "league/oauth2-client": "~0.7"
+    },
+    "autoload": {
+        "psr-0": {
+            "Grumpydictator\\NestOauth2Provider": "src/"
+        }
+    },
+    "suggest": {
+        "illuminate/support": "Laravel integration"
+    },
+    "minimum-stability": "stable"
+}

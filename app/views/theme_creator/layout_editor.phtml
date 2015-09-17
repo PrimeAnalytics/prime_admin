@@ -45,6 +45,8 @@
         <div class="panel">
             <div class="panel-header panel-controls">
                 <h3>Live  <strong>Preview</strong></h3>
+                <button id="previewrun" class="btn btn-info">Run</button>
+                <iframe src="/theme_creator/preview" id="previewframe" width="100%" height="700"></iframe>
             </div>
             <div class="panel-content">
 
@@ -76,6 +78,23 @@
     var csslinks = ace.edit("css-links");
     csslinks.setTheme("ace/theme/monokai");
     csslinks.getSession().setMode("ace/mode/html");
+
+    $("#previewrun").click(function () {
+        var request = $.ajax({
+            url: "/theme_creator/preview",
+            type: "Post",
+            data: {css:csslinks.getValue(),js:jslinks.getValue(),script:jseditor.getValue(),style:csseditor.getValue(),html:htmleditor.getValue()},
+            dataType: "html",
+            success: function (result) {
+                var previewDoc = window.frames[0].document;
+                previewDoc.write("<!DOCTYPE html>");
+                previewDoc.write("<html>");
+                previewDoc.write(result);
+                previewDoc.write("</html>");
+                previewDoc.close();
+            }
+        });
+    });
 
     $("#csslinks").click(function () {
         var request = $.ajax({
