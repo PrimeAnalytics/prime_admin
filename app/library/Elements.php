@@ -20,7 +20,13 @@ class Elements extends Phalcon\Mvc\User\Component
                 'caption' => 'Theme Creator',
                 'action' => 'index',
                 'icon' =>'fa fa-file-text-o'
+            ),
+            'virtual_machine' => array(
+                'caption' => 'VM Manager',
+                'action' => 'index',
+                'icon' =>'fa fa-file-text-o'
             )
+            
     );
     
 

@@ -26,6 +26,16 @@
       <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
       <script src="/assets/global/plugins/jquery-cookies/jquery.cookies.min.js"></script> <!-- Jquery Cookies, for theme -->
       <script src="/assets/global/plugins/jquery-block-ui/jquery.blockUI.min.js"></script> <!-- simulate synchronous behavior when using AJAX -->
+
+      <link href="/assets/plugins/bootstrap-tag/bootstrap-tagsinput.min.css" rel="stylesheet">
+      <link href="/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen" />
+      <link href="/assets/plugins/icon-picker/css/fontawesome-iconpicker.min.css" rel="stylesheet">
+      <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet"></link>
+
+      <script src='/assets/plugins/bootstrap-tag/bootstrap-tagsinput.min.js'></script>
+      <script src="/assets/plugins/icon-picker/js/fontawesome-iconpicker.js"></script>
+      <script src="/assets/plugins/bootstrap-select2/select2.js" type="text/javascript"></script>
+
   </head>
   <!-- LAYOUT: Apply "submenu-hover" class to body element to have sidebar submenu show on mouse hover -->
   <!-- LAYOUT: Apply "sidebar-collapsed" class to body element to have collapsed sidebar -->
@@ -59,7 +69,7 @@
       <div class="sidebar">
         <div class="logopanel">
           <h1>
-            <a href="dashboard.html"></a>
+            <a href="https://primeanalytics.io"></a>
           </h1>
         </div>
         <div class="sidebar-inner">
@@ -70,7 +80,7 @@
             <div class="userlogged clearfix">
               <i class="icon icons-faces-users-01"></i>
               <div class="user-details">
-                <h4>Mike Mayers</h4>
+                <h4><?php echo $auth['full_name'] ?></h4>
                 <div class="dropdown user-login">
                   <button class="btn btn-xs dropdown-toggle btn-rounded" type="button" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" data-delay="300">
                   <i class="online"></i><span>Available</span><i class="fa fa-angle-down"></i>
@@ -138,7 +148,7 @@
             <i class="icon-size-fullscreen"></i></a>
             <a class="pull-left" href="user-lockscreen.html" data-rel="tooltip" data-placement="top" data-original-title="Lockscreen">
             <i class="icon-lock"></i></a>
-            <a class="pull-left btn-effect" href="user-login-v1.html" data-modal="modal-1" data-rel="tooltip" data-placement="top" data-original-title="Logout">
+            <a class="pull-left btn-effect" href="/session/end" data-modal="modal-1" data-rel="tooltip" data-placement="top" data-original-title="Logout">
             <i class="icon-power"></i></a>
           </div>
         </div>

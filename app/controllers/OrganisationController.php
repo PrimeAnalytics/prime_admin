@@ -5,6 +5,7 @@ use PRIME\Models\Users;
 use PRIME\Models\Dashboard;
 use PRIME\Models\Widget;
 use PRIME\Models\Process;
+use PRIME\Models\VirtualMachine;
 use PRIME\Models\OrgDatabase;
 use PRIME\Models\DataConnector;
 
@@ -76,6 +77,10 @@ class OrganisationController extends ControllerBase
             $data = Process::find("organisation_id= ".$organisation->id);
             
             $this->view->setVar("processes", $data);  
+
+            $data = VirtualMachine::find("organisation_id= ".$organisation->id);
+            
+            $this->view->setVar("virtual_machines", $data); 
             
             $data = Users::find("organisation_id= ".$organisation->id);
             
