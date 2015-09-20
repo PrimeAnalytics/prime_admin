@@ -1,235 +1,83 @@
-<?php echo $this->getContent() ?>
+<?php use Phalcon\Tag; ?>
 
-<div class="col-md-12 portlets">
-    <div class="panel">
-        <div class="panel-header panel-controls">
-            <h3><strong>Settings</strong></h3>
-        </div>
-        <div class="panel-content">
-            <ul class="nav nav-tabs nav-primary">
-                <li class=""><a href="#tab2_1" data-toggle="tab"><i class="icon-home"></i> Home</a></li>
-                <li class="active"><a href="#tab2_2" data-toggle="tab"><i class="icon-user"></i> Profile</a></li>
-                <li><a href="#tab2_3" data-toggle="tab"><i class="icon-cloud-download"></i> Other Tab</a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade" id="tab2_1">
-                    <div class="row column-seperation">
-                        <div class="col-md-6 line-separator">
-                            <h3><strong>Big</strong> Title for your tab</h3>
-                            <h4>Customize your tab as you want easily</h4>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="light">default, the textarea element comes with a vertical scrollbar (and maybe even a horizontal scrollbar). This vertical scrollbar enables the user to continue entering and reviewing their text (by scrolling up and down).</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade active in" id="tab2_2">
-                    <h3>"Sooner or later, those who win are those who think they <strong>can</strong>."</h3>
-                    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial.</p>
-                </div>
-                <div class="tab-pane fade" id="tab2_3">
-                    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-12 portlets">
-    <div class="panel">
-        <div class="panel-header">
-            <h3><i class="fa fa-table"></i> <strong>Dashboards</strong></h3>
-            <div class="control-btn">
-                <a href="#" class="panel-reload hidden"><i class="icon-reload"></i></a>
-                <a class="hidden" id="dropdownMenu1" data-toggle="dropdown">
+<?php
+ echo $this->getContent(); ?>
+   <div class="col-md-12 portlets">
+              <div class="panel">
+                <div class="panel-header">
+                  <h3><i class="fa fa-table"></i> <strong>Themes</strong></h3>
+                  <div class="control-btn">
+                    <a href="#" class="panel-reload hidden"><i class="icon-reload"></i></a>
+                    <a class="hidden" id="dropdownMenu1" data-toggle="dropdown">
                     <i class="icon-settings"></i>
-                </a>
-                <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
-                    <li>
-                        <a href="#">Action</a>
-                    </li>
-                    <li>
-                        <a href="#">Another action</a>
-                    </li>
-                    <li>
-                        <a href="#">Something else here</a>
-                    </li>
-                </ul>
-                <a href="#" class="panel-popout hidden tt" title="Pop Out/In"><i class="icons-office-58"></i></a>
-                <a href="#" class="panel-maximize hidden"><i class="icon-size-fullscreen"></i></a>
-                <a href="#" class="panel-toggle"><i class="fa fa-angle-down"></i></a>
-                <a href="#" class="panel-close"><i class="icon-trash"></i></a>
+                    </a>
+                    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+                      <li><a href="#">Action</a>
+                      </li>
+                      <li><a href="#">Another action</a>
+                      </li>
+                      <li><a href="#">Something else here</a>
+                      </li>
+                    </ul>
+                    <a href="#" class="panel-popout hidden tt" title="Pop Out/In"><i class="icons-office-58"></i></a>
+                    <a href="#" class="panel-maximize hidden"><i class="icon-size-fullscreen"></i></a>
+                    <a href="#" class="panel-toggle"><i class="fa fa-angle-down"></i></a>
+                    <a href="#" class="panel-close"><i class="icon-trash"></i></a>
+                      <button class="btn btn-primary btn-xs btn-small" onClick="create_new('theme')">New Theme</button>
+                  </div>
+                    
+                </div>
+                <div class="panel-content">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                          <th>Id</th>
+                          <th>Name</th>
+                      </tr>
+                    </thead>
+                      <tbody>
+                          <?php foreach ($themes as $theme) { ?>
+                          <tr>
+                              <td>
+                                  <?php echo $theme->id ?>
+                              </td>
+                              <td>
+                                  <?php echo $theme->name ?>
+                              </td>
+                              <td>
+                                  <?php echo $this->tag->linkTo(array("theme_creator/edit/" . $theme->id, "Edit",'class'=>"btn btn-success btn-xs btn-small")); ?>
+                                  <?php echo $this->tag->linkTo(array("theme_creator/delete_layout/" . $theme->id, "Delete",'class'=>"btn btn-danger btn-xs btn-small")); ?>
+                              </td>
+                          </tr>
+                          <?php } ?>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-        </div>
-        <div class="panel-content">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Steve</td>
-                        <td>Urkel</td>
-                        <td>@steve</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="modal">
+        <div id="modal_content"></div>
     </div>
+    <!-- /.modal-dialog -->
 </div>
 
-<div class="col-md-12 portlets">
-    <div class="panel">
-        <div class="panel-header">
-            <h3><i class="fa fa-table"></i> <strong>Canvas</strong></h3>
-            <div class="control-btn">
-                <a href="#" class="panel-reload hidden"><i class="icon-reload"></i></a>
-                <a class="hidden" id="dropdownMenu1" data-toggle="dropdown">
-                    <i class="icon-settings"></i>
-                </a>
-                <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
-                    <li>
-                        <a href="#">Action</a>
-                    </li>
-                    <li>
-                        <a href="#">Another action</a>
-                    </li>
-                    <li>
-                        <a href="#">Something else here</a>
-                    </li>
-                </ul>
-                <a href="#" class="panel-popout hidden tt" title="Pop Out/In"><i class="icons-office-58"></i></a>
-                <a href="#" class="panel-maximize hidden"><i class="icon-size-fullscreen"></i></a>
-                <a href="#" class="panel-toggle"><i class="fa fa-angle-down"></i></a>
-                <a href="#" class="panel-close"><i class="icon-trash"></i></a>
-            </div>
-        </div>
-        <div class="panel-content">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Steve</td>
-                        <td>Urkel</td>
-                        <td>@steve</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<script>
 
-<div class="col-md-12 portlets">
-    <div class="panel">
-        <div class="panel-header">
-            <h3><i class="fa fa-table"></i> <strong>Widgets</strong></h3>
-            <div class="control-btn">
-                <a href="#" class="panel-reload hidden"><i class="icon-reload"></i></a>
-                <a class="hidden" id="dropdownMenu1" data-toggle="dropdown">
-                    <i class="icon-settings"></i>
-                </a>
-                <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
-                    <li>
-                        <a href="#">Action</a>
-                    </li>
-                    <li>
-                        <a href="#">Another action</a>
-                    </li>
-                    <li>
-                        <a href="#">Something else here</a>
-                    </li>
-                </ul>
-                <a href="#" class="panel-popout hidden tt" title="Pop Out/In"><i class="icons-office-58"></i></a>
-                <a href="#" class="panel-maximize hidden"><i class="icon-size-fullscreen"></i></a>
-                <a href="#" class="panel-toggle"><i class="fa fa-angle-down"></i></a>
-                <a href="#" class="panel-close"><i class="icon-trash"></i></a>
-            </div>
-        </div>
-        <div class="panel-content">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Steve</td>
-                        <td>Urkel</td>
-                        <td>@steve</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+            function create_new(datatype)
+            {
+                $("#modal_content").load("/"+datatype+"/new/<?php echo $organisation_id ?>", function () {
+                    $("#myModal").modal("show");
+                });
+            }
+
+
+</script>
+
+
+
+
 

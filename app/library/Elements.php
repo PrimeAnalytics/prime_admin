@@ -16,25 +16,10 @@ class Elements extends Phalcon\Mvc\User\Component
                 'action' => 'index',
                 'icon' =>'icon-custom-home'
             ),
-            'report' => array(
-                'caption' => 'Report',
+            'theme_creator' => array(
+                'caption' => 'Theme Creator',
                 'action' => 'index',
                 'icon' =>'fa fa-file-text-o'
-            ),
-            'calendar' => array(
-                'caption' => 'Calendar',
-                'action' => 'index',
-                'icon' =>'fa fa-calendar-o'
-            ),
-            'profile' => array(
-                'caption' => 'Profile',
-                'action' => 'edit',
-                'icon' =>'fa fa-user'
-            ),
-            'support' => array(
-                'caption' => 'Support',
-                'action' => 'index',
-                'icon' =>'fa fa-envelope'
             )
     );
     

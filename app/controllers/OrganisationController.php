@@ -4,6 +4,7 @@ use PRIME\Models\Organisation;
 use PRIME\Models\Users;
 use PRIME\Models\Dashboard;
 use PRIME\Models\Widget;
+use PRIME\Models\Process;
 use PRIME\Models\OrgDatabase;
 use PRIME\Models\DataConnector;
 
@@ -71,6 +72,10 @@ class OrganisationController extends ControllerBase
             $data = Dashboard::find("organisation_id= ".$organisation->id);
             
             $this->view->setVar("dashboards", $data);  
+
+            $data = Process::find("organisation_id= ".$organisation->id);
+            
+            $this->view->setVar("processes", $data);  
             
             $data = Users::find("organisation_id= ".$organisation->id);
             

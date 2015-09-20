@@ -1,5 +1,6 @@
 <?php
 namespace PRIME\Controllers;
+use PRIME\Models\ThemeLayout;
 
 class ThemeCreatorController extends ControllerBase
 {
@@ -12,8 +13,10 @@ class ThemeCreatorController extends ControllerBase
     }
     
     public function indexAction()
-    {           
+    {   
+        $themes = ThemeLayout::find();
         
+        $this->view->setVar("themes", $themes);  
         
     } 
 
@@ -177,7 +180,6 @@ class ThemeCreatorController extends ControllerBase
                 }
             }
         }
-       
         
     } 
 
