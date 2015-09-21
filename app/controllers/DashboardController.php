@@ -80,6 +80,10 @@ class DashboardController extends ControllerBase
             echo " <script>
                        var links = $dashboard->links ;
                        </script>";
+
+            $WidgetList=\PRIME\Controllers\WidgetController::getWidgets();
+
+            $this->view->setVar("widgetList", $WidgetList); 
             
             $canvas = $dashboard->Canvas;
             

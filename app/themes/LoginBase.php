@@ -9,11 +9,11 @@ use PRIME\Models\Canvas;
 
 class WidgetBase extends Controller
 {    
+    public $icon = "fa-cogs";
     public $widget_name = "";
     public $organisation_id ="";
     private $view_dir;
     public $form_struct='';
-    public $theme='';
     
     function onConstruct()
     {
@@ -29,8 +29,6 @@ class WidgetBase extends Controller
         
         $organisation = Organisation::findFirstById($this->organisation_id);
         
-        $this->theme=$organisation->theme;
-
         $this->view->setViewsDir('../app/widgets/'.$organisation->theme.'/');
         
         $this->view->setLayoutsDir('/');
@@ -340,6 +338,7 @@ class WidgetBase extends Controller
         
     }
             
+    
     /**
      * Creates a new widget
      */
@@ -1007,6 +1006,7 @@ class WidgetBase extends Controller
        
     }
       
+    
     public function builderAction($id)
     {  
         $this->view->disable();
@@ -1189,6 +1189,7 @@ class WidgetBase extends Controller
         
     }
     
+
     public function editAction($id)
     {
         $this->view->pick(strtolower($this->view_dir."/".$this->router->getControllerName()).'/edit');

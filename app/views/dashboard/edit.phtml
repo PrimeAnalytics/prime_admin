@@ -26,19 +26,11 @@
                 </li>
 
                 <?php
-              $directory = '../app/widgets/'.$theme.'/';
-              //get all files in specified directory
-              $files = glob($directory . "*", GLOB_BRACE);
-              //print each file name
-              foreach($files as $file)
-              {
-              //check to see if the file is a folder/directory
-              if(is_dir($file))
-              {
-              echo '<li class="width-16p"><a href="#'.basename($file).'" data-toggle="tab"><span class="text-center">'.ucwords (basename($file)).'</span></a></li>';
+                foreach($widgetList as $key=>$value)
+                {
+              echo '<li class="width-16p"><a href="#'.$key.'" data-toggle="tab"><span class="text-center">'.$key.'</span></a></li>';
               }
-              }
-                ?>
+?>
             </ul>
             <div class="tab-content clearfix" style="overflow:visible">
                 <div class="tab-pane fade in active" id="info">
@@ -84,6 +76,8 @@
                                     <div class="input">
 
                                         <select class="form-control" name="style">
+
+
 
                                             <?php
                         echo $theme;
@@ -195,6 +189,19 @@
                         <p><strong>New Canvas</strong></p>
                     </div>
                 </div>
+                                                <?php
+                foreach($widgetList as $key=>$subfiles)
+                {
+                  echo '<div class="tab-pane fade" id="'.$key.'">';
+                foreach($subfiles as $subfile)
+                {
+                     $type= "w_".strtolower($key)."/".strtolower(str_replace(" ","_",$subfile)) ;
+                echo '<div data-type="'.$type.'" class="layout ui-draggable">'.$subfile.'</div>';
+                }
+                echo '</div>';
+                }
+?>
+
 
                 <?php
               //path to directory to scan

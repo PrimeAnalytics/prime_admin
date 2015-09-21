@@ -1,8 +1,8 @@
 <?php
-namespace PRIME\Themes\Make\Widgets\Charts;
-use PRIME\Themes\WidgetBase as WidgetBase;
+namespace PRIME\Themes\Make\Dashboard;
+use PRIME\Themes\DashboardBase as DashboardBase;
 
-class AreaChartController extends WidgetBase
+class DefaultController extends DashboardBase
 {
     
     public function initialize()

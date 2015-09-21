@@ -1,8 +1,8 @@
 <?php
-namespace PRIME\Themes\Make\Widgets\Charts;
-use PRIME\Themes\WidgetBase as WidgetBase;
+namespace PRIME\Themes\Make\Canvas;
+use PRIME\Themes\CanvasBase as CanvasBase;
 
-class AreaChartController extends WidgetBase
+class StrippedController extends CanvasBase
 {
     
     public function initialize()

@@ -1,9 +1,8 @@
 <?php
 namespace PRIME\Controllers;
-use PRIME\Widgets\WidgetBase as WidgetBase;
 use PRIME\Models\Widget;
 
-class WidgetController extends WidgetBase
+class WidgetController extends ControllerBase
 {
     protected function initialize()
     {
@@ -276,5 +275,36 @@ class WidgetController extends WidgetBase
 ));
     }
     
-    
+    public static function getWidgets()
+    {
+        $theme = $_SESSION["auth"]['theme'];
+
+                $data=array();
+      
+              //path to directory to scan
+                $directory = '../app/themes/'.$theme.'/widgets/';
+                //get all files in specified directory
+                $files = glob($directory . "*", GLOB_BRACE);
+                //print each file name
+                foreach($files as $file)
+                {
+                //check to see if the file is a folder/directory
+                if(is_dir($file))
+                {
+                $subdirectory = '../app/themes/'.$theme.'/widgets/'.basename($file).'/';
+                //get all files in specified directory
+                $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);
+                    foreach($subfiles as $subfile)
+                {
+                $type = str_replace("Controller.php","",basename($subfile));
+                $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
+               
+                $data[ucwords(basename($file))][]=$name;
+
+                }
+                }
+                }
+
+        return $data;
+    }
 }

@@ -1,8 +1,8 @@
 <?php
-namespace PRIME\Themes\Make\Widgets\Charts;
-use PRIME\Themes\WidgetBase as WidgetBase;
+namespace PRIME\Themes\Make\Login;
+use PRIME\Themes\LayoutsBase as LoginBase;
 
-class AreaChartController extends WidgetBase
+class DefaultController extends LoginBase
 {
     
     public function initialize()
