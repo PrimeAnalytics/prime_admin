@@ -81,12 +81,23 @@ class DashboardController extends ControllerBase
                        var links = $dashboard->links ;
                        </script>";
 
-            $WidgetList=\PRIME\Controllers\WidgetController::getWidgets();
+
+
+            $WidgetList=\PRIME\Controllers\WidgetController::getWidgetList();
 
             $this->view->setVar("widgetList", $WidgetList); 
-            
+
+            $CanvasList=\PRIME\Controllers\CanvasController::getCanvasList();
+
+            $this->view->setVar("canvasList", $CanvasList); 
+
+            $DashboardList=\PRIME\Controllers\DashboardController::getDashboardList();
+
+            $this->view->setVar("dashboardList", $DashboardList); 
+
+
+
             $canvas = $dashboard->Canvas;
-            
             $this->view->setVar("canvas", $canvas); 
 
             $this->view->setVar("dashboard_id", $dashboard->id);  
@@ -184,11 +195,7 @@ class DashboardController extends ControllerBase
     
            if($type=="builder")
        {
-           $this->view->setVar('class', 'dropzone-row');
-               echo '<link rel="stylesheet" href="/assets/plugins/sinister/sinister.css"> 
-                    <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet"></link>
-                    ';
-           
+           $this->view->setVar('class', 'dropzone-row');           
                 foreach ($canvas as $canvasItem) {
                 echo '<script> 
               $("div").find("[data-rowNumber='.$canvasItem->row.']").before(\'<div class="placeholder-container"><div class="placeholder"><div class="placeholder-content ui-droppable"><div class="placeholder-content-area">\');
@@ -197,8 +204,6 @@ class DashboardController extends ControllerBase
                 parent.update_dropzone();
                 
                 }));
-                $("div").find("[data-rowNumber='.$canvasItem->row.']").after(\'</div></div></div><div class="placeholder-handle"><div class="handle-move" data-rel="tooltip" data-placement="right" data-original-title="Move"><i class="fa fa-bars"></i></div><div class="handle-remove" data-rel="tooltip" data-placement="right" data-original-title="Remove"><a href="/canvas/delete/'.$canvasItem->id.'"><i class="fa fa-times"></i></a></div></div></div>\');
-                
                 </script>';
             };
        }
@@ -411,6 +416,26 @@ class DashboardController extends ControllerBase
             "controller" => "dashboard",
             "action" => "index"
         ));
+    }
+
+    public static function getDashboardList()
+    {
+        $theme = $_SESSION["auth"]['theme'];
+
+        $data=array();
+
+        $subdirectory = '../app/themes/'.$theme.'/dashboard/';
+        //get all files in specified directory
+        $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);
+        foreach($subfiles as $subfile)
+        {
+            $type = str_replace("Controller.php","",basename($subfile));
+            $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
+            $data[]=$name;
+
+        }
+
+        return $data;
     }
 
 }

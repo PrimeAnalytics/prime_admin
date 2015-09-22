@@ -275,7 +275,7 @@ class WidgetController extends ControllerBase
 ));
     }
     
-    public static function getWidgets()
+    public static function getWidgetList()
     {
         $theme = $_SESSION["auth"]['theme'];
 

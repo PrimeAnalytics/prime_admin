@@ -249,35 +249,22 @@ class CanvasController extends \Phalcon\Mvc\Controller
  ));
     }
     
-    public static function getCanvasses()
+    public static function getCanvasList()
     {
         $theme = $_SESSION["auth"]['theme'];
 
         $data=array();
-        
-        //path to directory to scan
-        $directory = '../app/themes/'.$theme.'/canvas/';
-        //get all files in specified directory
-        $files = glob($directory . "*", GLOB_BRACE);
-        //print each file name
-        foreach($files as $file)
-        {
-            //check to see if the file is a folder/directory
-            if(is_dir($file))
-            {
-                $subdirectory = '../app/themes/'.$theme.'/widgets/'.basename($file).'/';
+
+                $subdirectory = '../app/themes/'.$theme.'/canvas/';
                 //get all files in specified directory
                 $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);
                 foreach($subfiles as $subfile)
                 {
                     $type = str_replace("Controller.php","",basename($subfile));
                     $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
-                    
-                    $data[ucwords(basename($file))][]=$name;
+                    $data[]=$name;
 
                 }
-            }
-        }
 
         return $data;
     }

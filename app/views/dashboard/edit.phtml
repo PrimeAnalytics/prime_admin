@@ -3,7 +3,7 @@
     <script>
     var links =<?php echo json_encode($links)?>;
     </script>
-    
+
       
 <div class="page-content page-builder">
     <div id="hidden-small-screen-message">
@@ -39,7 +39,6 @@
                         <div class="col-md-6">
                             <h4>Menu Settings</h4>
                             <div class="row">
-
                                 <div class="form-group col-md-7">
                                     <label class="form-label">Title</label>
                                     <span class="help">e.g. "Market Metrics"</span>
@@ -77,21 +76,13 @@
 
                                         <select class="form-control" name="style">
 
-
-
-                                            <?php
-                        echo $theme;
-                      //path to directory to scan
-                        $directory = "../app/themes/".$theme."/layouts/";
-                        //get all files in specified directory
-                        $files = glob($directory . "*.{phtml}", GLOB_BRACE);
-                        //print each file name
-                        foreach($files as $file)
+                        <?php
+                        foreach($dashboardList as $subfile)
                         {
-                        $type = str_replace(".phtml","",basename($file));
-                        echo '<option value="'.$type.'" >'.ucwords($type).'</option>';
+                        $type= strtolower(str_replace(" ","_",$subfile)) ;
+                        echo '<option value="'.$type.'" >'.$subfile.'</option>';
                         }
-                                            ?>
+                        ?>
                                         </select>
                                     </div>
                                 </div>
@@ -177,7 +168,6 @@
                         </div>
                     </div>
 
-
                     <p class="pull-right">
                         <?php echo $this->tag->submitButton(array("Save", "class" => "btn btn-success btn-cons")) ?>
                         <button type="button" class="btn btn-white btn-cons">Cancel</button>
@@ -185,11 +175,15 @@
                     </form>
                 </div>
                 <div class="tab-pane fade" id="layout">
-                    <div data-type="canvas" class="layout ui-draggable">
-                        <p><strong>New Canvas</strong></p>
-                    </div>
+                    <?php
+                    foreach($canvasList as $subfile)
+                    {
+                    $type= "c_".strtolower(str_replace(" ","_",$subfile)) ;
+                    echo '<div data-type="'.$type.'" class="layout ui-draggable">'.$subfile.'</div>';
+                    }
+                   ?>
                 </div>
-                                                <?php
+                <?php
                 foreach($widgetList as $key=>$subfiles)
                 {
                   echo '<div class="tab-pane fade" id="'.$key.'">';
@@ -200,35 +194,7 @@
                 }
                 echo '</div>';
                 }
-?>
-
-
-                <?php
-              //path to directory to scan
-                $directory = '../app/widgets/'.$theme.'/';
-                //get all files in specified directory
-                $files = glob($directory . "*", GLOB_BRACE);
-                //print each file name
-                foreach($files as $file)
-                {
-                //check to see if the file is a folder/directory
-                if(is_dir($file))
-                {
-                echo '<div class="tab-pane fade" id="'.basename($file).'">';
-                $subdirectory = '../app/widgets/'.$theme.'/'.basename($file).'/';
-                //get all files in specified directory
-                $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);
-                    foreach($subfiles as $subfile)
-                {
-                $type = str_replace("Controller.php","",basename($subfile));
-                $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
-                $type= "w_".basename($file)."/".strtolower(str_replace(" ","_",$name)) ;
-                echo '<div data-type="'.$type.'" class="layout ui-draggable">'.$name.'</div>';
-              }
-              echo '</div>';
-                }
-                }
-?>
+                ?>
 
                 <script>
 
@@ -306,7 +272,7 @@
         </div>
     </div>
 
-    <iframe width="100%" src="/dashboard/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe" height="2000px" frameborder="0"></iframe>
+    <iframe width="100%" src="/dashboard/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe" height="200px" frameborder="0"></iframe>
 
 </div>
 
@@ -330,83 +296,6 @@
         placeholder: "Select a Linking Column"
         });
         });
-
-        var data= <?php echo $links ?>;
-
-        $('#links-input').tagsinput({
-        itemValue: 'value',
-        itemText: 'value',
-        });
-
-        function update_link_tags(){
-        $('#links-input').tagsinput('removeAll');
-        if(data!=null){
-        $.each(data, function(i, item) {
-        $('#links-input').tagsinput('add', { "value": data[i].name , "text": data[i].name});
-        });
-        };
-
-        $("input[name='links']").val(JSON.stringify(data));
-
-        };
-
-        function add_link(name, table, column, type, default_value){
-        var jsonObj =
-        {
-        "name":name,
-        "table": table,
-        "column": column,
-        "type": type,
-        "default_value": default_value
-        }
-
-        data.push(jsonObj);
-
-        update_link_tags();
-
-        $("#link_name").val("");
-        $("#link_default_value").val("");
-        };
-
-        function remove_link(value)
-        {
-        $.each(data, function(index, result) {
-        if(result.name == value) {
-        data.splice(index, 1);
-        }
-        });
-
-        update_link_tags();
-        };
-
-        $(".add_field_button").click(function(e){ //on add input button click
-        e.preventDefault();
-
-        var name =  $("#link_name").val();
-
-        var type =  $("#link_type").val();
-
-        var opt = $('#link_table_column').val();
-
-        opt= JSON.parse(opt);
-
-        var table = opt['table'];
-        var column = opt['column'];
-
-        var default_value = $("#link_default_value").val();
-
-        add_link(name,table,column,type,default_value);
-
-        });
-
-        $('#links-input').on('itemRemoved', function(event) {
-        var name =event.item['value'];
-        remove_link(name)
-        });
-
-        update_link_tags();
-
-        $('.icp-auto').iconpicker();
 
         $("#dashboard_iframe").load(function () {
         var $this = $(this);
@@ -444,9 +333,15 @@
           iframeFix: true,
           appendTo: 'body',
           zIndex: 100,
-          helper: "clone"
+            helper: function() {
+            currentElement = $(this).html();
+            return $('<div style="padding:20px;height: 100px; border:1px solid #E6E6E6;border-radius:3px;width: 300px; background: #fff; box-shadow: 3px 3px 2px rgba(0,0,0,0.1); text-align: center; line-height: 30px; font-size: 16px; color: #121212">' + currentElement + '</div>');
+            }
           });
-          });
+
+
+
+    });
 
 
 </script>
