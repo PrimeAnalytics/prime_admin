@@ -8,6 +8,7 @@ use PRIME\Models\Process;
 use PRIME\Models\VirtualMachine;
 use PRIME\Models\OrgDatabase;
 use PRIME\Models\DataConnector;
+use PRIME\Models\Links;
 
 class OrganisationController extends ControllerBase
 {
@@ -77,6 +78,10 @@ class OrganisationController extends ControllerBase
             $data = Process::find("organisation_id= ".$organisation->id);
             
             $this->view->setVar("processes", $data);  
+
+            $data = Links::find("organisation_id= ".$organisation->id);
+            
+            $this->view->setVar("links", $data);  
 
             $data = VirtualMachine::find("organisation_id= ".$organisation->id);
             

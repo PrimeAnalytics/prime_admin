@@ -1,10 +1,10 @@
 <?php
 namespace PRIME\Controllers;
-use PRIME\Models\Process;
+use PRIME\Models\Links;
 use PRIME\Models\Organisation;
 use PRIME\Models\OrgDatabase;
 
-class ProcessController extends ControllerBase
+class LinksController extends ControllerBase
 {
     public $organisation_id ="";
     protected function initialize()
@@ -58,22 +58,27 @@ class ProcessController extends ControllerBase
      */
     public function createAction()
     {
-        $process = new Process();
+        $links = new Links();
 
-        $process->name = $this->request->getPost("name");
-        $process->organisation_id = $this->request->getPost("organisation_id");
+        $links->name = $this->request->getPost("name");
+        $links->table = $this->request->getPost("table");
+        $links->column = $this->request->getPost("column");
+        $links->default_value = $this->request->getPost("default_value");
+        $links->operator = $this->request->getPost("operator");
 
-        if (!$process->save()) {
-            foreach ($process->getMessages() as $message) {
+        $links->organisation_id = $this->request->getPost("organisation_id");
+
+        if (!$links->save()) {
+            foreach ($links->getMessages() as $message) {
                 $this->flash->error($message);
             }
 
             $this->response->redirect("organisation/index/");
         }
 
-        $this->flash->success("Process was created successfully");
+        $this->flash->success("Link was created successfully");
 
-        $this->response->redirect("process/edit/".$process->id);
+        $this->response->redirect("organisation/index/".$links->organisation_id);
 
     }
     

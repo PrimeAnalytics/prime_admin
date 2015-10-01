@@ -230,10 +230,82 @@
                         <td>
                             <button class="btn btn-primary btn-xs btn-small" onClick="editXml('<?php echo $process->id ?>')">Edit XML</button>
                         </td>
-                       
+
                         <td>
                             <?php echo $this->tag->linkTo(array("process/viewxml/" . $process->id, "View XML",'class'=>"btn btn-success btn-xs btn-small")); ?>
 
+                            <?php echo $this->tag->linkTo(array("process/edit/" . $process->id, "Edit",'class'=>"btn btn-success btn-xs btn-small")); ?>
+
+                            <?php echo $this->tag->linkTo(array("users/delete/" . $process->id, "Delete",'class'=>"btn btn-danger btn-xs btn-small")); ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 portlets">
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fa fa-table"></i> <strong>Data</strong> Links</h3>
+            <div class="control-btn">
+                <a href="#" class="panel-reload hidden"><i class="icon-reload"></i></a>
+                <a class="hidden" id="dropdownMenu1" data-toggle="dropdown">
+                    <i class="icon-settings"></i>
+                </a>
+
+                <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+                    <li>
+                        <a href="#">Action</a>
+                    </li>
+                    <li>
+                        <a href="#">Another action</a>
+                    </li>
+                    <li>
+                        <a href="#">Something else here</a>
+                    </li>
+                </ul>
+                <a href="#" class="panel-popout hidden tt" title="Pop Out/In"><i class="icons-office-58"></i></a>
+                <a href="#" class="panel-maximize hidden"><i class="icon-size-fullscreen"></i></a>
+                <a href="#" class="panel-toggle"><i class="fa fa-angle-down"></i></a>
+                <a href="#" class="panel-close"><i class="icon-trash"></i></a>
+                <button class="btn btn-primary btn-xs btn-small" onClick="create_new('links')">Add Link</button>
+            </div>
+        </div>
+        <div class="panel-content">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Name</th>
+                        <th>Table</th>
+                        <th>Column</th>
+                        <th>Operator</th>
+                        <th style="width:15%">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($links as $link) { ?>
+                    <tr>
+                        <td>
+                            <?php echo $link->id ?>
+                        </td>
+                        <td>
+                            <?php echo $link->name ?>
+                        </td>
+                        <td>
+                            <?php echo $link->table ?>
+                        </td>
+                        <td>
+                            <?php echo $link->column ?>
+                        </td>
+                        <td>
+                            <?php echo $link->operator ?>
+                        </td>
+
+                        <td>
                             <?php echo $this->tag->linkTo(array("process/edit/" . $process->id, "Edit",'class'=>"btn btn-success btn-xs btn-small")); ?>
 
                             <?php echo $this->tag->linkTo(array("users/delete/" . $process->id, "Delete",'class'=>"btn btn-danger btn-xs btn-small")); ?>
@@ -391,13 +463,10 @@
                         <span class="text-center">Connectors</span>
                     </a>
                 </li>
-                <?php
-
+   <?php
                 $directory = '../app/data_connectors/';
-
                 //get all files in specified directory
                 $files = glob($directory . "*", GLOB_BRACE);
-
                 //print each file name
                 foreach($files as $file)
                 {
@@ -408,7 +477,6 @@
                 <li class="width-16p"><a href="#'.basename($file).'" data-toggle="tab"><span class="text-center">'.ucwords (basename($file)).'</span></a></li>';
                 }
                 }
-
                 ?>
             </ul>
             <div class="tab-content">
@@ -452,14 +520,11 @@
 
                     </table>
                 </div>
-                <?php
+   <?php
                 //path to directory to scan
                 $directory = '../app/data_connectors/';
-
                 //get all files in specified directory
                 $files = glob($directory . "*", GLOB_BRACE);
-
-
                 //print each file name
                 foreach($files as $file)
                 {
@@ -476,15 +541,12 @@
                     $type = str_replace("Controller.php","",basename($subfile));
                     $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
                     $type= "data_connectors/".basename($file)."/".strtolower(str_replace(" ","_",$name)) ;
-
                     echo '<div class="alert bg-primary">
                         <div data-type="'.$type.'" class="Data_Connector heading" onClick="create_new(\''.$type.'\')">'.$name.'</div>
                     </div>';
-
                     }
                     echo '
                 </div>';
-
                 }
                 }
                 ?>
@@ -501,9 +563,9 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-        <!-- /.modal -->
+<!-- /.modal -->
 
-        <script>
+<script>
 
             function create_new(datatype)
             {
@@ -528,9 +590,9 @@
             }
 
 
-             
 
-        </script>
+
+</script>
 
 <script>
 
