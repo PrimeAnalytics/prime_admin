@@ -35,11 +35,9 @@
             <div class="tab-content clearfix" style="overflow:visible">
                 <div class="tab-pane fade in active" id="info">
                     <?php echo $this->tag->form("dashboard/save") ?>
-                    <div class="row column-seperation">
-                        <div class="col-md-6">
-                            <h4>Menu Settings</h4>
-                            <div class="row">
-                                <div class="form-group col-md-7">
+                        <div class="col-md-12">
+
+                                <div class="form-group col-md-3">
                                     <label class="form-label">Title</label>
                                     <span class="help">e.g. "Market Metrics"</span>
                                     <div class="input-with-icon  right">
@@ -48,7 +46,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-md-5">
+                                <div class="form-group col-md-3">
                                     <label class="form-label">Menu Weight</label>
                                     <span class="help">e.g. "Please Select"</span>
                                     <div class="input-with-icon  right">
@@ -57,10 +55,8 @@
                                     </div>
                                 </div>
 
-                            </div>
 
-                            <div class="row">
-                                <div class="form-group col-md-7">
+                                <div class="form-group col-md-3">
                                     <label class="form-label">Icon</label>
                                     <span class="help">e.g. "Please Select"</span>
                                     <div class="input-group">
@@ -69,7 +65,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-md-5">
+                                <div class="form-group col-md-3">
                                     <label class="form-label">Style</label>
                                     <span class="help">e.g. "Please Select"</span>
                                     <div class="input">
@@ -86,88 +82,9 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
                             <?php echo $this->tag->hiddenField("organisation_id") ?>
                             <?php echo $this->tag->hiddenField("id") ?>
                         </div>
-
-                        <div class="col-md-6">
-                            <h4>Dashboard Links</h4>
-                            <div class="row">
-
-                                <div class="form-group col-md-6">
-                                    <label class="form-label">Name</label>
-                                    <span class="help">e.g. "Please Select"</span>
-                                    <div style="width:100%">
-                                        <input type="text" id="link_name" style="width:100%"></input>
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label class="form-label">Database Column</label>
-                                    <span class="help">e.g. "Please Select"</span>
-                                    <div style="width:100%">
-                                        <input type="text" id="link_table_column" style="width:100%"></input>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="form-group col-md-6">
-                                    <label class="form-label">Database Column</label>
-                                    <span class="help">e.g. "Please Select"</span>
-                                    <div style="width:100%">
-                                        <select style="width:100%" id="link_type">
-                                            <option value="=">=</option>
-                                            <option value="!=">&ne;</option>
-                                            <option value=">">></option>
-                                            <option value=">=">&ge;</option>
-                                            <option value="<"><</option>
-                                            <option value="<=">&le;</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-md-4">
-                                    <label class="form-label">Defaul Value</label>
-                                    <span class="help">e.g. "Please Select"</span>
-                                    <div style="width:100%">
-                                        <input type="text" id="link_default_value" style="width:100%"></input>
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-md-2 ">
-                                    <label class="form-label">
-                                        </br>
-                                    </label>
-                                    <span class="help">
-                                        </br>
-                                    </span>
-                                    <div class="pull-right">
-                                        <button class="add_field_button btn btn-default ">
-                                            <i class="fa fa-plus"></i>&nbsp;&nbsp;<span>Add Link</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="form-group col-md-12">
-                                    <label class="form-label">Links</label>
-                                    <span class="help">e.g. "Please Select"</span>
-                                    <div style="width:100%">
-                                        <input id="links-input" class="bootstrap-tagsinput" type="text" />
-                                    </div>
-                                </div>
-
-                                <?php echo $this->tag->hiddenField("links") ?>
-
-                            </div>
-                        </div>
-                    </div>
-
                     <p class="pull-right">
                         <?php echo $this->tag->submitButton(array("Save", "class" => "btn btn-success btn-cons")) ?>
                         <button type="button" class="btn btn-white btn-cons">Cancel</button>

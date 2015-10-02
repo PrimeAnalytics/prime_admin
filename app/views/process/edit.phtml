@@ -80,7 +80,7 @@
 { id: 'min', text: 'Min' }
     ];
 
-    $.getJSON("/process/getDBTables", function (data) {
+    $.getJSON("/get/DBTables", function (data) {
         $("#dbTable").select2({
             data: data
         });
@@ -94,7 +94,7 @@
     $("#dbTable").on('change', function (event) {
         table = $("#dbTable").select2('val');
 
-        $.getJSON("/process/getDBColumns/" + table, function (data) {
+        $.getJSON("/get/DBColumns/" + table, function (data) {
             columnData = data;
 
             $(".tableColumn").select2({
@@ -130,7 +130,7 @@
     $('#save').click(function () {
         var data = { columns: [] };
         data['table'] = $("#dbTable").select2('val');
-        data['group'] = $("#groupBy").select2('val')
+        data['group'] = $("#groupBy").select2('val');
 
         $('#parameterTable tr').each(function () {
             data.columns.push({name: $(this).find(".columnName").val(), column: $(this).find(".tableColumn").select2('val'), aggregation: $(this).find(".columnAggregation").select2('val')});

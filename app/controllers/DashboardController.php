@@ -76,12 +76,6 @@ class DashboardController extends ControllerBase
             
             $organisation = Organisation::findFirstByid($dashboard->organisation_id);
             $this->view->setVar('theme',$organisation->theme);
-            
-            echo " <script>
-                       var links = $dashboard->links ;
-                       </script>";
-
-
 
             $WidgetList=\PRIME\Controllers\WidgetController::getWidgetList();
 
@@ -94,7 +88,6 @@ class DashboardController extends ControllerBase
             $DashboardList=\PRIME\Controllers\DashboardController::getDashboardList();
 
             $this->view->setVar("dashboardList", $DashboardList); 
-
 
 
             $canvas = $dashboard->Canvas;
@@ -181,8 +174,6 @@ class DashboardController extends ControllerBase
           ';
         }
         
-        
-            
             $canvas = Canvas::find(array(
         'dashboard_id ='.$dashboard->id,
         "order" => "column"
@@ -273,8 +264,6 @@ class DashboardController extends ControllerBase
             
             echo '
             }  
-            
-            
 
             </script>';
 

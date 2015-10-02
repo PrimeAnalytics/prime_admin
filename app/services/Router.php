@@ -10,10 +10,11 @@ use \Phalcon\DI as DI;
  */
 class Router extends PhRouter
 {
+    private $theme;
+
     public function __construct()
     {
 		
-        
         parent::__construct();
         
         $session = \Phalcon\DI::getDefault()->getSession();
@@ -25,135 +26,157 @@ class Router extends PhRouter
         //Our custom routes will not use slashes at the of the URIs
         $this->removeExtraSlashes(true);
 
-        //Register routes for all controllers that have ONE extra namespace level
-        //e.g '/foo' will route to something like 'MyApp\Controllers\Foo\IndexController::indexAction()'
-        //path to directory to scan
-
         if ($session->has("auth")) {
             //Retrieve its value
             $auth = $session->get("auth");
-            $directory ='../app/widgets/'.$auth['theme'].'/';
-            
+
+            $this->theme=$auth['theme'];
+
+            $directory ='../app/themes/'.$this->theme.'/widgets/';  
             //get all files in specified directory
-            $files = glob($directory . "*", GLOB_BRACE);
-            
+            $files = glob($directory . "*", GLOB_ONLYDIR);    
             $files = array_map('basename', $files);
-                        
-            $this->widgetSetupNamespacedRoutes($files);
+            $this->themeLevel2SetupNamespacedRoutes("widgets",$files);
+
+
+
             
+            $directory ='../app/authenticators/';            
+            //get all files in specified directory
+            $files = glob($directory . "*", GLOB_ONLYDIR);    
+            $files = array_map('basename', $files);    
+            $this->level2SetupNamespacedRoutes("authenticators",$files);
+
+            $directory ='../app/form_element/';            
+            //get all files in specified directory
+            $files = glob($directory . "*", GLOB_ONLYDIR);    
+            $files = array_map('basename', $files);     
+            $this->level2SetupNamespacedRoutes("form_element",$files);
+
+            $directory ='../app/data_connectors/';            
+            //get all files in specified directory
+            $files = glob($directory . "*", GLOB_ONLYDIR);    
+            $files = array_map('basename', $files);   
+            $this->level2SetupNamespacedRoutes("data_connectors",$files);
+
+            
+            $directory ='../app/themes/'.$this->theme.'/canvas/';
+
+            $this->level1SetupNamespacedRoutes("canvas");
+
+
+            $directory ='../app/themes/'.$this->theme.'/dashboard/';
+            
+            $this->level1SetupNamespacedRoutes("dashboard");
+
+
+            $directory ='../app/themes/'.$this->theme.'/login/';
+
+            $this->level1SetupNamespacedRoutes("login");
+
         }
 
-            $directory ='../app/data_connectors/';
-            
-            //get all files in specified directory
-            $files = glob($directory . "*", GLOB_BRACE);
-            
-            $files = array_map('basename', $files);
-            
-            $this->dataConnectorSetupNamespacedRoutes($files);
-
-            $this->SetupNamespacedRoutes("Authenticators");
     }
 
-    /**
-     * From the request URI receive and convert the namespace to the full namespace path.
-     * @param string $namespace Namespace name in underscore format.
-     * @return string Full namespace path camelized.
-     */
-    public function widgetConvertNamespace($namespace)
-    {
-        $session = \Phalcon\DI::getDefault()->getSession();
-            $auth = $session->get("auth");
 
-            return 'PRIME\Widgets\\'.ucwords ($auth['theme']).'\\'. PhText::camelize($namespace); 
-    }
-    /**
-     * Automatically create routes for namespaced controllers.
-     * @param array $controllersNamespaces array with all namespaces in underscore format.
-     */
-    private function widgetSetupNamespacedRoutes(array $controllersSubNamespaces)
+    public function level2ConvertNamespace($namespace,$prefix)
     {
+        
+        return 'PRIME\\'.ucwords (PhText::camelize($prefix)).'\\'. PhText::camelize($namespace); 
+    }
+
+
+    private function level2SetupNamespacedRoutes($prefix,array $controllersSubNamespaces)
+    {
+
         $namespacesPattern = join('|', $controllersSubNamespaces);
         
         //Add route for the main controller of a namespace (IndexController)
         $this
-            ->add("/widgets/($namespacesPattern)", ['namespace' => 1, 'controller' => 'index', 'action' => 'index'])
-            ->convert('namespace', [$this, 'widgetConvertNamespace']);
-            
+            ->add("/".$prefix."/($namespacesPattern)", ['namespace' => 1, 'controller' => 'index', 'action' => 'index'])
+            ->convert('namespace',function ($namespace) use ($prefix){
+            return $this->level2ConvertNamespace($namespace,$prefix);
+    });
+        
         //Add route for namespaced controllers with the index action
         $this
-            ->add("/widgets/($namespacesPattern)/:controller", ['namespace' => 1, 'controller' => 2, 'action' => 'index'])
-            ->convert('namespace', [$this, 'widgetConvertNamespace']);
+            ->add("/".$prefix."/($namespacesPattern)/:controller", ['namespace' => 1, 'controller' => 2, 'action' => 'index'])
+            ->convert('namespace',function ($namespace) use ($prefix) {
+            return $this->level2ConvertNamespace($namespace,$prefix);
+    });
 
         //Add route for namespaced controllers with a explicited action
         $this
-            ->add("/widgets/($namespacesPattern)/:controller/:action", ['namespace' => 1, 'controller' => 2, 'action' => 3])
-            ->convert('namespace', [$this, 'widgetConvertNamespace']);
+            ->add("/".$prefix."/($namespacesPattern)/:controller/:action", ['namespace' => 1, 'controller' => 2, 'action' => 3])
+            ->convert('namespace',function ($namespace) use ($prefix){
+            return $this->level2ConvertNamespace($namespace,$prefix);
+    });
 
         //Add route for namespaced controllers with a explicited action and params
         $this
-            ->add("/widgets/($namespacesPattern)/:controller/:action/:params", ['namespace' => 1, 'controller' => 2, 'action' => 3, 'params' => 4])
-            ->convert('namespace', [$this, 'widgetConvertNamespace']);
+            ->add("/".$prefix."/($namespacesPattern)/:controller/:action/:params", ['namespace' => 1, 'controller' => 2, 'action' => 3, 'params' => 4])
+            ->convert('namespace',function ($namespace) use ($prefix){
+            return $this->level2ConvertNamespace($namespace,$prefix);
+    });
     }
 
 
-    /**
-     * From the request URI receive and convert the namespace to the full namespace path.
-     * @param string $namespace Namespace name in underscore format.
-     * @return string Full namespace path camelized.
-     */
-    public function dataConnectorConvertNamespace($namespace)
+    public function themeLevel2ConvertNamespace($namespace,$prefix)
     {
-        return 'PRIME\DataConnectors\\'. PhText::camelize($namespace); 
+        
+        return 'PRIME\Themes\\'.ucwords ($this->theme).'\\'.ucwords ($prefix).'\\'. PhText::camelize($namespace); 
     }
-    /**
-     * Automatically create routes for namespaced controllers.
-     * @param array $controllersNamespaces array with all namespaces in underscore format.
-     */
 
-    private function dataConnectorSetupNamespacedRoutes(array $controllersSubNamespaces)
+
+    private function themeLevel2SetupNamespacedRoutes($prefix,array $controllersSubNamespaces)
     {
+
         $namespacesPattern = join('|', $controllersSubNamespaces);
         
         //Add route for the main controller of a namespace (IndexController)
         $this
-            ->add("/data_connectors/($namespacesPattern)", ['namespace' => 1, 'controller' => 'index', 'action' => 'index'])
-            ->convert('namespace', [$this, 'dataConnectorConvertNamespace']);
+            ->add("/".$prefix."/($namespacesPattern)", ['namespace' => 1, 'controller' => 'index', 'action' => 'index'])
+            ->convert('namespace',function ($namespace) use ($prefix){
+            return $this->themeLevel2ConvertNamespace($namespace,$prefix);
+    });
         
         //Add route for namespaced controllers with the index action
         $this
-            ->add("/data_connectors/($namespacesPattern)/:controller", ['namespace' => 1, 'controller' => 2, 'action' => 'index'])
-            ->convert('namespace', [$this, 'dataConnectorConvertNamespace']);
+            ->add("/".$prefix."/($namespacesPattern)/:controller", ['namespace' => 1, 'controller' => 2, 'action' => 'index'])
+            ->convert('namespace',function ($namespace) use ($prefix) {
+            return $this->themeLevel2ConvertNamespace($namespace,$prefix);
+    });
 
         //Add route for namespaced controllers with a explicited action
         $this
-            ->add("/data_connectors/($namespacesPattern)/:controller/:action", ['namespace' => 1, 'controller' => 2, 'action' => 3])
-            ->convert('namespace', [$this, 'dataConnectorConvertNamespace']);
+            ->add("/".$prefix."/($namespacesPattern)/:controller/:action", ['namespace' => 1, 'controller' => 2, 'action' => 3])
+            ->convert('namespace',function ($namespace) use ($prefix){
+            return $this->themeLevel2ConvertNamespace($namespace,$prefix);
+    });
 
         //Add route for namespaced controllers with a explicited action and params
         $this
-            ->add("/data_connectors/($namespacesPattern)/:controller/:action/:params", ['namespace' => 1, 'controller' => 2, 'action' => 3, 'params' => 4])
-            ->convert('namespace', [$this, 'dataConnectorConvertNamespace']);
+            ->add("/".$prefix."/($namespacesPattern)/:controller/:action/:params", ['namespace' => 1, 'controller' => 2, 'action' => 3, 'params' => 4])
+            ->convert('namespace',function ($namespace) use ($prefix){
+            return $this->themeLevel2ConvertNamespace($namespace,$prefix);
+    });
     }
 
-
-
-    private function SetupNamespacedRoutes($namespace)
+    private function level1SetupNamespacedRoutes($namespace)
     {
         $controllersNamespace ="/".$namespace;
         
         //Add route for namespaced controllers with the index action
         $this
-            ->add($controllersNamespace."/:controller", ['namespace' => 'PRIME\\'.$namespace, 'controller' => 1, 'action' => 'authenticate']);
+            ->add($controllersNamespace."/:controller", ['namespace' => 'PRIME\Themes\\'.ucwords ($this->theme).'\\'.ucwords($namespace), 'controller' => 1, 'action' => 'authenticate']);
 
         //Add route for namespaced controllers with a explicited action
         $this
-            ->add($controllersNamespace."/:controller/:action", ['namespace' => 'PRIME\\'.$namespace, 'controller' => 1, 'action' => 2]);
-
+            ->add($controllersNamespace."/:controller/:action", ['namespace' => 'PRIME\\'.ucwords($namespace), 'controller' => 1, 'action' => 2]);
 
         //Add route for namespaced controllers with a explicited action and params
         $this
-            ->add($controllersNamespace."/:controller/:action/:params", ['namespace' => 'PRIME\\'.$namespace, 'controller' => 1, 'action' => 2, 'params' => 3]);
+            ->add($controllersNamespace."/:controller/:action/:params", ['namespace' => 'PRIME\\'.ucwords($namespace), 'controller' => 1, 'action' => 2, 'params' => 3]);
     }
 
 }

@@ -1,8 +1,8 @@
 <?php
-namespace PRIME\DataConnectors\Google\Youtube;
+namespace PRIME\DataConnectors\Facebook;
 use PRIME\DataConnectors\DataConnectorBase as ConnectorBase;
 
-class YoutubeController extends ConnectorBase
+class AnalyticsController extends ConnectorBase
 {
     
     public function initialize()

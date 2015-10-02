@@ -1,5 +1,5 @@
 <?php
-namespace PRIME\Widgets;
+namespace PRIME\Themes;
 use \Phalcon\Db\Adapter\Pdo;
 use Phalcon\Mvc\Controller as Controller;
 use PRIME\Models\Widget;

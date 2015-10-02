@@ -1,6 +1,6 @@
 <?php
 namespace PRIME\Authenticators;
-use PRIME\Authenticators\Oauth2AuthenticatorBase as Oauth2AuthenticatorBase;
+use PRIME\Authenticators\Oauth2Base as Oauth2AuthenticatorBase;
 use PRIME\Models\DataConnector;
 
 class GoogleController extends Oauth2AuthenticatorBase

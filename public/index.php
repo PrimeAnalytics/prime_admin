@@ -16,17 +16,19 @@ try {
     array(
         __DIR__.$config->application->pluginsDir,
         __DIR__.$config->application->libraryDir
+
     )
 );
     $loader->register();
       
     $loader->registerNamespaces(array(
-    'PRIME\Authenticators' =>    __DIR__.$config->application->authenticatorsDir,
-    'PRIME\DataConnectors' =>    __DIR__.$config->application->dataConnectorsDir,
-    'PRIME\Widgets' =>    __DIR__.$config->application->widgetsDir,
+        'PRIME\Authenticators' =>    __DIR__.$config->application->authenticatorsDir,
+        'PRIME\DataConnectors' =>    __DIR__.$config->application->dataConnectorsDir,
+        'PRIME\FormElement' =>    __DIR__.$config->application->formElementDir,
+        'PRIME\Themes' =>    __DIR__.$config->application->themesDir,
 	'PRIME\Controllers' =>    __DIR__.$config->application->controllersDir,
     'PRIME\Services' =>       __DIR__.$config->application->servicesDir,
-    'PRIME\Models' =>     __DIR__.$config->application->modelsDir,
+    'PRIME\Models' =>     __DIR__.$config->application->modelsDir
 ))->register();
     
     require __DIR__ . '/../vendor/autoload.php';

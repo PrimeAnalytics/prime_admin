@@ -5,7 +5,7 @@ use \Phalcon\Mvc\Controller as Controller;
 use PRIME\Models\Organisation;;
 use PRIME\Models\DataConnector;
 
-class Oauth2AuthenticatorBase extends Controller
+class Oauth2Base extends Controller
 {    
     public $authenticator_name = "";
     public $form_struct='';
