@@ -142,7 +142,6 @@ class WidgetController extends ControllerBase
         echo json_encode($json);
     }
     
-    
     public function getProcedureParametersAction($procedure)
     {
         $this->view->disable();

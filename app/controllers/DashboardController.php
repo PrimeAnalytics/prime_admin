@@ -31,7 +31,6 @@ class DashboardController extends ControllerBase
             //Retrieve its value
             $auth = $this->session->get("auth");
 
-    
         $organisation = Organisation::findFirstByid($auth['organisation_id']);   
         $dashboards = $organisation->Dashboard;
         
@@ -47,7 +46,6 @@ class DashboardController extends ControllerBase
         echo json_encode($json);
         
         }
-        
     }
 
     /**

@@ -73,8 +73,17 @@ try {
 	$di->set('view', function() use ($config) {
 		$view = new \Phalcon\Mvc\View();
 		$view->setViewsDir(__DIR__.$config->application->viewsDir);
+
+            $view->registerEngines(
+    array(
+        ".phtml" => 'Phalcon\Mvc\View\Engine\Volt'
+    )
+);
+
 		return $view;
 	});
+
+
     
 	/**
 	 * Database connection is created based in the parameters defined in the configuration file

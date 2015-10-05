@@ -47,11 +47,11 @@ class Router extends PhRouter
             $files = array_map('basename', $files);    
             $this->level2SetupNamespacedRoutes("authenticators",$files);
 
-            $directory ='../app/form_element/';            
+            $directory ='../app/form_elements/';            
             //get all files in specified directory
             $files = glob($directory . "*", GLOB_ONLYDIR);    
             $files = array_map('basename', $files);     
-            $this->level2SetupNamespacedRoutes("form_element",$files);
+            $this->level2SetupNamespacedRoutes("form_elements",$files);
 
             $directory ='../app/data_connectors/';            
             //get all files in specified directory
@@ -60,19 +60,19 @@ class Router extends PhRouter
             $this->level2SetupNamespacedRoutes("data_connectors",$files);
 
             
-            $directory ='../app/themes/'.$this->theme.'/canvas/';
+            $directory ='../app/themes/'.$this->theme.'/portlets/';
 
-            $this->level1SetupNamespacedRoutes("canvas");
+            $this->level1SetupNamespacedRoutes("portlets");
 
 
-            $directory ='../app/themes/'.$this->theme.'/dashboard/';
+            $directory ='../app/themes/'.$this->theme.'/dashboards/';
             
-            $this->level1SetupNamespacedRoutes("dashboard");
+            $this->level1SetupNamespacedRoutes("dashboards");
 
 
-            $directory ='../app/themes/'.$this->theme.'/login/';
+            $directory ='../app/themes/'.$this->theme.'/logins/';
 
-            $this->level1SetupNamespacedRoutes("login");
+            $this->level1SetupNamespacedRoutes("logins");
 
         }
 

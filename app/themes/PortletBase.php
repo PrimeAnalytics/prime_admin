@@ -7,9 +7,8 @@ use PRIME\Models\OrgDatabase;
 use PRIME\Models\Organisation;
 use PRIME\Models\Canvas;
 
-class LoginBase extends Controller
+class PortletBase extends Controller
 {    
-    public $icon = "fa-cogs";
     public $widget_name = "";
     public $organisation_id ="";
     private $view_dir;
@@ -33,262 +32,12 @@ class LoginBase extends Controller
         
         $this->view->setLayoutsDir('/');
         
-        $this->view_dir = str_replace('PRIME\Widgets\\'.ucwords($organisation->theme).'\\', '', $this->router->getNamespaceName());
+        $this->view_dir = str_replace('PRIME\\'.$organisation->theme.'\Canvas', '', $this->router->getNamespaceName());
         
-    }
-
-
-    function getCSVAction($widget_id,$links=null,$table_append="") 
-    {
-    
-        $widget = Widget::findFirstByid($widget_id);
-        
-        $data=(array)json_decode($widget->parameters,true);
-        
-        $widget_links= array();
-        
-        if($links!=null && $data['link']['widget_update_links']!="")
-        {
-            
-            $links=json_decode(base64_decode($links), true);
-            
-            foreach($links as $link)
-            {
-                if(in_array ( $link["name"] ,  $data['link']['widget_update_links'], true))
-                {
-                    if($link['default_value']=="")
-                    {
-                        $this->view->disable();
-                        return null;
-                    }
-                    
-                    $widget_links[]=$link;
-                    
-                }
-            }
-        }
-        
-        
-        $this->view->disable();
-        
-        $this->view->setVar("widget", $widget);
-        
-        $data_out = $this->getData($data,$widget_links,$table_append,$this->getUserDB());
-        
-        // var_dump($data_out);
-        
-        if(array_key_exists ( 'db' , $data_out))
-        {
-            
-            echo json_encode($data_out['db']);
-            
-        }
-        
-        
-    }  
-    
-    
-    public function getUserDB()
-    {
-            $database = OrgDatabase::findFirstByorganisation_id($this->organisation_id);
-            
-            $host= $database->db_host; 
-            $mySqlUser= $database->db_username;          
-            $mySqlPassword=$database->db_password;      
-            $mySqlDatabase=$database->db_name;
-            
-            try{
-                $db= new \PDO("mysql:dbname=$mySqlDatabase;host=$host;",$mySqlUser,$mySqlPassword,array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));    
-            }
-            catch(PDOException $ex){
-                
-                die(json_encode(array('outcome' => false, 'message' => 'Database connection failed')));   
-            }
-        
-        return $db;
     }
      
-    
-    public static function getData($data,$widget_links,$table_append,$db)
-    {     
-        
-        $row_limit=200;
-        $data_out=array();
-
-        if(array_key_exists ( 'db' , $data))
-        {           
-            
-            $db_tables=$data['db'];
-            
-            $data_out=$data;
-            
-            foreach($db_tables as $key=>$db_table)
-            {
-                $db_table_name =$db_table['table'].$table_append;
-                unset($db_table['table']);
-                $db_query_type=$db_table['type'];
-                unset($db_table['type']);
-                
-                if($db_query_type=="procedure")
-                {
-                
-                $parameters = array();
-                            if(is_array($link))
-                            {
-                                $dbTables = $db->prepare("SELECT PARAMETER_NAME AS NAME FROM information_schema.parameters WHERE SPECIFIC_NAME = '".$db_table_name."' AND SPECIFIC_SCHEMA= database()");
-                                $dbTables->execute();
-                                
-                           while($row = $dbTables->fetch(\PDO::FETCH_ASSOC))
-                            {		
-                                foreach($row as $key=>$value) {
-                                    foreach($widget_links as $link) 
-                                    { 
-                                    if($link['name']==$value)
-                                    {
-                                    $parameters[] = $link['default_value'];
-                                    }
-                                    }
-                                }
-                            }  
-                                
-                            }
-                            
-                            if(0 != count($parameters))
-                            {
-
-                         $db_table_name=$db_table_name."('".implode("','",$parameters)."')";  
-
-                         }
-
-                         else 
-                         {
-                         $db_table_name = $db_table_name."()";
-                         }
-                }
-                              
-                $select_string = "";
-                
-                if(array_key_exists( 'widget_link_column' , $db_table ))
-                {
-                    if($db_table['widget_link_column']==null)
-                    {
-                        unset($db_table['widget_link_column']);
-                    }
-                }
-                
-                    foreach($db_table as $column=>$value)
-                    {
-                        if(is_array($value)){
-                            foreach($value as $column_sub=>$value_sub)
-                            {
-                                if(is_array($value_sub)){          
-                                }
-                                else
-                                {
-                                    if($value_sub!=null){
-                                        $select_string = $select_string." , `".$value_sub."` AS `".$value_sub."`";
-                                    }
-                                    else
-                                    {
-                                        $select_string = $select_string." , '0' AS `0`";
-                                    }
-                                }
-                                
-                            }     
-                            
-                        }
-                        else
-                        {
-                            
-                            if($value!=null){
-                                $select_string = $select_string." , `".$value."` AS `".$column."`";
-                            }
-                            else
-                            {
-                                $select_string = $select_string." , '0' AS  `".$column."`";
-                            }
-                            
-                        }
-                        
-                        
-                    }     
-                    $select_string = substr($select_string, 2);
-
-                    if($select_string !="") 
-                    {
-                        $filter_string="";
-                        
-                        foreach($widget_links as $link) 
-                        {
-                            if(is_array($link))
-                            {
-                                $dbTables = $db->prepare("SHOW COLUMNS FROM `$db_table_name`");
-                                $dbTables->execute();
-                                $filter=false;
-                                
-                                while($row = $dbTables->fetch(\PDO::FETCH_ASSOC))
-                                {		
-                                    if($link['column'] == $row['Field'])
-                                    {
-                                        $filter=true;
-                                    }
-                                }                        
-                                
-                                if ($filter==true )
-                                {
-                                    
-                                    $filter_string = $filter_string." AND `".$link['column']."`".(array_key_exists("type", $link) ? $link['type'] : "=")."'".$link['default_value']."'";
-                                    
-                                }
-                            }
-                            
-                        }
-                        
-                        if($filter_string !="") 
-                        {
-                            $filter_string = "WHERE ".substr($filter_string, 4);
-                        }
-                        
-                        $statement=$db->prepare("SELECT $select_string FROM `$db_table_name` $filter_string Limit $row_limit");
-                        
-                        if($statement->execute())
-                        {
-                        
-                            $data_out['db'][$key]=array();
-
-                            
-                            foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $row)
-                            {
-                                foreach($row as $sub_key=>$sub_value)
-                                {
-                                    $floatVal = floatval($sub_value);
-                                    
-                                    if($sub_value=="")
-                                    {
-                                        $row[$sub_key]="0";
-                                    }
-                                    else if(ctype_digit($sub_value))
-                                    {
-                                        $row[$sub_key] = round($sub_value, 2, PHP_ROUND_HALF_DOWN);
-                                    }
-                                }
-                                $data_out['db'][$key][]= $row;
-                            }
-                        }
-                    }
-            }
-        }
-        
-        if(array_key_exists('parm', $data))
-        {
-            $data_out['parm']=$data['parm'];
-        }
-
-        return $data_out;
-    }
-    
        
-    public function update_defaultAction($widget_id,$links=null,$table_append="")
+    public function update_defaultAction($canvas_id,$links=null,$table_append="")
     {     
         $widget = Widget::findFirstByid($widget_id);
         
@@ -337,10 +86,9 @@ class LoginBase extends Controller
         }
         
     }
-            
-    
+
     /**
-     * Creates a new widget
+     * Creates a new canvas
      */
     public function createAction()
     {
@@ -384,7 +132,7 @@ class LoginBase extends Controller
     /**
      * Displays the creation form
      */    
-    public function newAction($canvas_id,$row,$column)
+    public function newAction($row,$column)
     {
         $this->view->disable();
         $echo_array= array();
@@ -1005,8 +753,7 @@ class LoginBase extends Controller
         
        
     }
-      
-    
+
     public function builderAction($id)
     {  
         $this->view->disable();
@@ -1188,8 +935,7 @@ class LoginBase extends Controller
         echo '</script>';
         
     }
-    
-
+ 
     public function editAction($id)
     {
         $this->view->pick(strtolower($this->view_dir."/".$this->router->getControllerName()).'/edit');

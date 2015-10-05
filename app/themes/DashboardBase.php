@@ -1,5 +1,5 @@
 <?php
-namespace PRIME\Widgets;
+namespace PRIME\Themes;
 use \Phalcon\Db\Adapter\Pdo;
 use Phalcon\Mvc\Controller as Controller;
 
@@ -12,9 +12,7 @@ class DashboardBase extends Controller
     
     function onConstruct()
     {
-        $dashboard_type = $this->router->getControllerName();
-        $dashboard_type = str_replace('_', ' ', $dashboard_type);
-        $this->dashboard_type = ucwords($dashboard_type);
+        $this->dashboard_type = __CLASS__;
         
         if ($this->session->has("auth")) {
             //Retrieve its value
@@ -22,15 +20,146 @@ class DashboardBase extends Controller
             $this->organisation_id= $auth['organisation_id'];
         }
         
-        $organisation = Organisation::findFirstById($this->organisation_id);
         
-        $this->view->setViewsDir('../app/themes/'.$organisation->theme.'/');
-        
-        $this->view->setLayoutsDir('/');
-        
-        $this->view_dir = str_replace('PRIME\Dashboards\\'.ucwords($organisation->theme).'\\', '', __NAMESPACE__);
         
     }
+
+    public function getDashboardsAction()
+    {
+        $this->view->disable();
+        
+        if ($this->session->has("auth")) {
+            //Retrieve its value
+            $auth = $this->session->get("auth");
+
+            
+            $organisation = Organisation::findFirstByid($auth['organisation_id']);   
+            $dashboards = $organisation->Dashboard;
+            
+            $json = array();
+            foreach($dashboards as $dashboard)
+            {
+                $json[] = array(
+                        'id' => $dashboard->id,
+                                   'text' => $dashboard->title
+                                 );
+            }
+            
+            echo json_encode($json);
+            
+        }
+        
+    }
+
+
+    public function builderAction($id)
+    {  
+        $this->view->disable();
+        
+        $widget = Widget::findfirst('id ='.$id);
+        
+        $parameters= json_decode($widget->parameters,true);
+        
+        echo '<div class="widget_drag ImageWrapper '.$widget->width.'" data-type="u_'.$widget->type.'" data-widget_id="l_'.$widget->id.'" >
+                <div data-type="u_'.$widget->type.'" data-widget_id="'.$widget->id.'" ></div>
+
+                <div class="ImageOverlayH" ></div><div class="Buttons StyleH" >
+                  <span class="WhiteRounded draghandle">
+                    <a>
+                      <i class="fa fa-arrows"></i>
+                    </a>
+                  </span>
+                  <span class="WhiteRounded">
+                    <a href="javascript:void(0);" onclick="parent.widget_edit( '."'".$widget->type."'".' , '."'".$widget->id."'".' )" ><i class="fa fa-cogs"></i>
+                    </a>
+                  </span>
+                  <span class="RedRounded">
+                    <a href="javascript:void(0);" onclick="parent.widget_delete( '."'".$widget->id."'".' )"><i class="fa fa-trash-o"></i>
+                    </a>
+                  </span>
+                </div>
+                </div>';
+        
+        echo '<script>
+
+
+          var update_'.$widget->id.' = function(link){
+                      
+          
+          var w_links ='.(array_key_exists ( 'widget_update_links' , (array_key_exists ( 'link' , $parameters )? $parameters['link'] : []) )? json_encode($parameters['link']['widget_update_links']) : "[]").';
+          
+          
+          var widget_id ='.$widget->id.';
+          var widget_type ="'.$widget->type.'";
+           
+            var update=false;
+            
+            if( link == 0 )
+            {
+            update=true;
+            }
+            else
+            {
+            
+            
+            $.each(w_links, function(index, key ) {
+                      if( w_links[index]==link)
+                      {
+                      update=true;
+                      
+          
+                      return false;
+                      }
+                      });
+            }
+
+            if(update == true)
+            {
+
+              var encoded= encodeURIComponent(JSON.stringify(links)).replace(/[!\'()*]/g, function(c) {
+                return \'%\' + c.charCodeAt(0).toString(16);
+              });
+           
+            $("div[data-widget_id='.$widget->id.']").load("/widgets/'.$widget->type.'/update_default/'.$widget->id.'/"+encoded+"/"+table_append);
+            }
+            
+            
+          };';
+        
+        echo 'update_'.$widget->id.'(0);';
+
+        echo '</script>';
+        
+    }
+    
+    public function dashboardAction($id)
+    {  
+        $this->view->disable();
+        
+        $widget = Widget::findfirst('id ='.$id);
+        
+        $parameters= json_decode($widget->parameters,true);
+        
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function renderAction($id,$type,$links=null)
     {
