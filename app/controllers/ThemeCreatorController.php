@@ -1,6 +1,9 @@
 <?php
 namespace PRIME\Controllers;
 use PRIME\Models\ThemeLayout;
+use PRIME\Models\ThemeDashboard;
+use PRIME\Models\ThemePortlet;
+use PRIME\Models\ThemeWidget;
 
 class ThemeCreatorController extends ControllerBase
 {
@@ -221,11 +224,19 @@ class ThemeCreatorController extends ControllerBase
         echo '</body>';
     }
 
-
-    public function layout_editorAction($theme)
+    public function dashboard_newAction($theme_id)
     {
+        $this->tag->setDefault("theme_id", $theme_id);
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->persistent->parameters = null;
+        
+    }
 
-
+    public function dashboard_editAction($id)
+    {
+        $dashboard=ThemeDashboard::findById($id);
+        $theme= ThemeLayout::findById($dashboard->theme_layout_id);
+        $theme=$theme->name;
 
         $FormElementList=\PRIME\Controllers\FormController::getFormElementList();
 
@@ -235,6 +246,129 @@ class ThemeCreatorController extends ControllerBase
         
         
     }
+
+    public function dashboard_createAction()
+    {
+        $dashboard = new ThemeDashboard();
+
+        $dashboard->name = $this->request->getPost("name");
+        $dashboard->theme_layout_id = $this->request->getPost("theme_id");
+        
+
+        if (!$dashboard->save()) {
+            foreach ($dashboard->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            $this->response->redirect("/theme_creator/index");
+        }
+
+        $this->flash->success("Dashboard was created successfully");
+
+        $this->response->redirect("/theme_creator/dashboard_edit/".$dashboard->id);
+
+        
+        
+    }
+
+    public function portlet_newAction($theme_id)
+    {
+        $this->tag->setDefault("theme_id", $theme_id);
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->persistent->parameters = null;
+        
+    }
+
+
+    public function portlet_editAction($id)
+    {
+        $portlet=ThemePortlet::findById($id);
+        $theme= ThemeLayout::findById($portlet->theme_layout_id);
+        $theme=$theme->name;
+
+        $FormElementList=\PRIME\Controllers\FormController::getFormElementList();
+
+        $this->view->setVar("formElementList", $FormElementList); 
+
+        $this->view->setVar("theme_name", $theme); 
+        
+        
+    }
+
+    public function portlet_createAction()
+    {
+        $portlet = new ThemePortlet();
+        $portlet->theme_layout_id = $this->request->getPost("theme_id");
+        $portlet->name = $this->request->getPost("name");
+
+        if (!$portlet->save()) {
+            foreach ($portlet->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            $this->response->redirect("/theme_creator/index");
+        }
+
+        $this->flash->success("Portlet was created successfully");
+
+        $this->response->redirect("/theme_creator/portlet_edit/".$portlet->id);
+
+        
+        
+    }
+
+    public function widget_newAction($theme_id)
+    {
+        $this->tag->setDefault("theme_id", $theme_id);
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->persistent->parameters = null;
+        
+    }
+
+    public function widget_editAction($id)
+    {
+        $widget=ThemeWidget::findById($id);
+        $theme= ThemeLayout::findById($widget->theme_layout_id);
+        $theme=$theme->name;
+
+        $FormElementList=\PRIME\Controllers\FormController::getFormElementList();
+
+        $this->view->setVar("formElementList", $FormElementList); 
+
+        $this->view->setVar("theme_name", $theme); 
+        
+        
+    }
+
+    public function widget_createAction()
+    {
+        $widget = new ThemeWidget();
+
+        $widget->theme_layout_id = $this->request->getPost("theme_id");
+        $widget->name = $this->request->getPost("name");
+        $widget->category = $this->request->getPost("category");
+
+        if (!$widget->save()) {
+            foreach ($widget->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            $this->response->redirect("/theme_creator/index");
+        }
+
+        $this->flash->success("widget was created successfully");
+
+        $this->response->redirect("/theme_creator/widget_edit/".$widget->id);
+
+        
+        
+    }
+
+
+
+
+
+
     public function explorerAction()
     {
         
@@ -255,6 +389,8 @@ class ThemeCreatorController extends ControllerBase
 
         $this->tag->setDefault("id", $theme->id);
         $this->tag->setDefault("name", $theme->name);
+
+        $this->view->setVar("theme_id", $theme->id);
        
         $portlets=$theme->ThemePortlet;
         $dashboards=$theme->ThemeDashboard;
@@ -290,21 +426,7 @@ class ThemeCreatorController extends ControllerBase
         
     }
 
-    public function newDashboardAction()
-    {
-        
-    }
 
-    public function newCanvasAction()
-    {
-        
-    }
-
-    public function newWidgetAction()
-    {
-
-     
-    }
 
     public function upload_assetsAction($theme)
     {

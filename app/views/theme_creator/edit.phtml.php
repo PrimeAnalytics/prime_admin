@@ -274,5 +274,26 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="modal">
+        <div id="modal_content"></div>
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 
+<script>
+
+            function create_new(datatype)
+            {
+                $("#modal_content").load("/theme_creator/"+datatype+"_new/<?php echo $theme_id ?>", function () {
+                    $("#myModal").modal("show");
+                });
+            }
+
+
+
+
+</script>
