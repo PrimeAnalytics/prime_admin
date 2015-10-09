@@ -39,13 +39,7 @@ class Dashboard extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $style;
-
-    /**
-     *
-     * @var string
-     */
-    public $links;
+    public $type;
 
     /**
      *
@@ -58,7 +52,7 @@ class Dashboard extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'PRIME\Models\Canvas', 'dashboard_id', array('alias' => 'Canvas'));
+        $this->hasMany('id', 'PRIME\Models\Portlet', 'dashboard_id', array('alias' => 'Portlet'));
         $this->hasMany('id', 'PRIME\Models\DashboardHasUsers', 'dashboard_id', array('alias' => 'DashboardHasUsers'));
         $this->hasMany('id', 'PRIME\Models\Widget', 'dashboard_id', array('alias' => 'Widget'));
         $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));

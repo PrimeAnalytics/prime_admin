@@ -1,6 +1,6 @@
 <?php
-namespace PRIME\FormElement\Database;
-use PRIME\FormElement\FormElementBase as FormElementBase;
+namespace PRIME\FormElements\Database;
+use PRIME\FormElements\FormElementBase as FormElementBase;
 
 class DashboardSelectController extends FormElementBase
 {
@@ -60,5 +60,12 @@ class DashboardSelectController extends FormElementBase
 
 
         return $output;
+    }
+
+
+    public function getFormAction()
+    {
+        $data=array();
+        echo json_encode($data);
     }
 }

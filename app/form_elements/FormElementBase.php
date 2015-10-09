@@ -1,5 +1,7 @@
 <?php
-namespace PRIME\FormElement;
+namespace PRIME\FormElements;
+use Phalcon\Mvc\Controller as Controller;
+
 
 class FormElementBase extends Controller
 { 

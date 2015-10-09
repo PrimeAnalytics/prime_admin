@@ -39,7 +39,7 @@ class Widget extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $canvas_id;
+    public $portlet_id;
 
     /**
      *
@@ -64,7 +64,7 @@ class Widget extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('canvas_id', 'PRIME\Models\Canvas', 'id', array('alias' => 'Canvas'));
+        $this->belongsTo('portlet_id', 'PRIME\Models\Portlet', 'id', array('alias' => 'Portlet'));
         $this->belongsTo('dashboard_id', 'PRIME\Models\Dashboard', 'id', array('alias' => 'Dashboard'));
     }
 

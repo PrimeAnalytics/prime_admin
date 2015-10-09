@@ -20,6 +20,30 @@ class ThemeCreatorController extends ControllerBase
         
     } 
 
+    public function createAction()
+    {
+        $theme = new ThemeLayout();
+
+        $theme->name = $this->request->getPost("name");
+
+        
+
+        if (!$theme->save()) {
+            foreach ($theme->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            $this->response->redirect("/theme_creator/index");
+        }
+
+        $this->flash->success("theme was created successfully");
+
+        $this->response->redirect("/theme_creator/edit/".$theme->name);
+
+    
+    
+    }
+
     public function inteli_formatAction($theme,$type)
     {  
         $this->view->disable();
@@ -198,9 +222,16 @@ class ThemeCreatorController extends ControllerBase
     }
 
 
-    public function layout_editorAction()
+    public function layout_editorAction($theme)
     {
 
+
+
+        $FormElementList=\PRIME\Controllers\FormController::getFormElementList();
+
+        $this->view->setVar("formElementList", $FormElementList); 
+
+        $this->view->setVar("theme_name", $theme); 
         
         
     }
@@ -209,8 +240,36 @@ class ThemeCreatorController extends ControllerBase
         
     }
 
-    public function editAction()
+    public function editAction($id)
     {
+        $theme = ThemeLayout::findFirstById($id);
+        if (!$theme) {
+            $this->flash->error("Theme was not found");
+
+            return $this->dispatcher->forward(array(
+                "controller" => "ThemeCreator",
+                "action" => "index"
+            ));
+        }
+
+
+        $this->tag->setDefault("id", $theme->id);
+        $this->tag->setDefault("name", $theme->name);
+       
+        $portlets=$theme->ThemePortlet;
+        $dashboards=$theme->ThemeDashboard;
+        $widgets=$theme->ThemeWidget;
+        $logins=$theme->ThemeLogin;
+        
+        $this->view->setVar("portlets", $portlets);  
+ 
+        $this->view->setVar("dashboards", $dashboards);  
+
+        $this->view->setVar("widgets", $widgets);  
+
+        $this->view->setVar("logins", $logins); 
+
+
         
     }
     
@@ -226,6 +285,8 @@ class ThemeCreatorController extends ControllerBase
 
     public function newAction()
     {
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->persistent->parameters = null;
         
     }
 
@@ -241,7 +302,133 @@ class ThemeCreatorController extends ControllerBase
 
     public function newWidgetAction()
     {
+
+     
+    }
+
+    public function upload_assetsAction($theme)
+    {
+
+
+
+        function rmdir_recursive($dir) {
+            foreach(scandir($dir) as $file) {
+                if ('.' === $file || '..' === $file) continue;
+                if (is_dir("$dir/$file")) rmdir_recursive("$dir/$file");
+                else unlink("$dir/$file");
+            }
+            rmdir($dir);
+        }
+
+        if($_FILES['zip_file']['name']) {
+            $filename = $_FILES["zip_file"]["name"];
+            $source = $_FILES["zip_file"]["tmp_name"];
+            $type = $_FILES["zip_file"]["type"];
+            $name = explode(".", $filename);
+            $accepted_types = array('application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed');
+            foreach($accepted_types as $mime_type) {
+                if($mime_type == $type) {
+                    $okay = true;
+                    break;
+                }
+            }
+            $continue = strtolower($name[1]) == 'zip' ? true : false;
+            if(!$continue) {
+                $message = "The file you are trying to upload is not a .zip file. Please try again.";
+            }
+            /* PHP current path */
+            $path = $_SERVER['DOCUMENT_ROOT'].'/themes/'.$theme.'/';  // absolute path to the directory where zipper.php is in
+            $filenoext = basename ($filename, '.zip');  // absolute path to the directory where zipper.php is in (lowercase)
+            $filenoext = basename ($filenoext, '.ZIP');  // absolute path to the directory where zipper.php is in (when uppercase)
+            $targetdir = $path . $filenoext; // target directory
+            $targetzip = $path . $filename; // target zip file
+            /* create directory if not exists', otherwise overwrite */
+            /* target directory is same as filename without extension */
+            if (is_dir($path))  rmdir_recursive ( $path);
+
+            if (is_dir($targetdir))  rmdir_recursive ( $targetdir);
+            mkdir($targetdir, 0777,true);
+            /* here it is really happening */
+            if(move_uploaded_file($source, $targetzip)) {
+                $zip = new \ZipArchive();
+                $x = $zip->open($targetzip);  // open the zip file to extract
+                if ($x === true) {
+                    $zip->extractTo($path); // place in the directory with same name
+                    $zip->close();
+                    unlink($targetzip);
+                    rename ($targetdir, $path."assets");
+                }
+                $message = "Your .zip file was uploaded and unpacked.";
+            } else {
+                $message = "There was a problem with the upload. Please try again.";
+            }
+        }
+
+        $this->response->redirect("/theme_creator/layout_editor/".$theme);
         
+    
+    }
+
+    public function save_dashboardAction($theme,$type)
+    {
+        $this->view->disable();
+
+        $controller='<?php
+namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Dashboards;
+use PRIME\Themes\DashboardBase as DashboardBase;
+
+class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
+{
+    
+    public function initialize()
+    {
+        $this->form_struct =\'{"parm":
+        [
+        {"name":"title","label":"Title","type":"input" },
+        {"name":"color_scheme","label":"Color Scheme","type":"color"}
+        ],
+        "db":
+        {"mc_table1":
+        [
+        {"type":"single", "label":"X-Axis", "name":"x_axis"},
+        {"type":"multiple", "label":"Series", "name":"y_series"}
+        ]
+        }
+        }\';
+    }
+}';
+       
+        $parms=$_POST['parms'];
+
+        $root=str_replace("public","app",$_SERVER['DOCUMENT_ROOT']);
+        
+        $path = $root.'/themes/'.$theme.'/dashboards/';
+
+        chmod($path, 0777);
+
+        $content = $controller;
+        $fp = fopen($path.\Phalcon\Text::camelize($type)."Controller.php","w");
+        fwrite($fp,$content);
+        fclose($fp);
+
+
+        $css=$this->request->getPost("css");
+        $style=$this->request->getPost("style");
+        $html=$this->request->getPost("html");
+        $js=$this->request->getPost("js");
+        $script=$this->request->getPost("script");
+
+
+        $view='<head>'.$css.$style.'</head><body>'.$html.$js.$script.'</body>';
+
+        $file_path=$path.strtolower($type)."/view.phtml";
+        if(!file_exists(dirname($file_path)))
+            mkdir(dirname($file_path), 0777, true);
+
+        $fp = fopen($file_path,"w");
+        fwrite($fp,$view);
+        fclose($fp);
+    
     }
     
     

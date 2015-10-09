@@ -23,11 +23,11 @@
 
                     <div class="col-md-4">
                         <label class="form-label">Theme Layout</label>
-                        <select class="form-control" name="style">
+                        <select class="form-control" name="type">
 
                             <?php
                             //path to directory to scan
-                            $directory = "../app/themes/".$theme."/layouts/";
+                            $directory = "../app/themes/".$theme."/dashboards/";
 
                             //get all files in specified directory
                             $files = glob($directory . "*.{phtml}", GLOB_BRACE);

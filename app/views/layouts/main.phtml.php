@@ -26,6 +26,11 @@
       <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
       <script src="/assets/global/plugins/jquery-cookies/jquery.cookies.min.js"></script> <!-- Jquery Cookies, for theme -->
       <script src="/assets/global/plugins/jquery-block-ui/jquery.blockUI.min.js"></script> <!-- simulate synchronous behavior when using AJAX -->
+      <link href="/assets/global/plugins/dropzone/dropzone.min.css" rel="stylesheet">
+
+      <script src="http://underscorejs.org/underscore-min.js"></script>
+
+      <script src="/assets/global/plugins/underscore/underscore.string.min.js"></script>
 
       <link href="/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen" />
       <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet"></link>
@@ -1001,6 +1006,7 @@
     <script src="/assets/global/plugins/maps-amcharts/ammap/themes/black.min.js"></script> <!-- Vector Map Black Theme -->
     <script src="/assets/global/plugins/skycons/skycons.min.js"></script> <!-- Animated Weather Icons -->
     <script src="/assets/global/plugins/simple-weather/jquery.simpleWeather.js"></script> <!-- Weather Plugin -->
+    <script src="../assets/global/plugins/dropzone/dropzone.min.js"></script>  <!-- Upload Image & File in dropzone -->
     <!-- END PAGE SCRIPT -->
     <script src="/assets/admin/layout1/js/layout.js"></script>
   </body>

@@ -168,7 +168,7 @@
                             <?php echo $dashboard->weight ?>
                         </td>
                         <td>
-                            <?php echo $this->tag->linkTo(array("dashboard/edit/" . $dashboard->id, "Edit",'class'=>"btn btn-success btn-xs btn-small")); ?>
+                            <?php echo $this->tag->linkTo(array("dashboards/".$dashboard->type."/edit/" . $dashboard->id, "Edit",'class'=>"btn btn-success btn-xs btn-small")); ?>
                             <?php echo $this->tag->linkTo(array("dashboard/delete/" . $dashboard->id, "Delete",'class'=>"btn btn-danger btn-xs btn-small")); ?>
                         </td>
                     </tr>

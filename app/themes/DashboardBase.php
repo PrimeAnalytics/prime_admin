@@ -2,6 +2,11 @@
 namespace PRIME\Themes;
 use \Phalcon\Db\Adapter\Pdo;
 use Phalcon\Mvc\Controller as Controller;
+use PRIME\Models\Dashboard;
+use PRIME\Models\Links;
+use PRIME\Models\Widget;
+use PRIME\Models\Portlet;
+use PRIME\Models\Organisation;
 
 class DashboardBase extends Controller
 {    
@@ -51,114 +56,51 @@ class DashboardBase extends Controller
         
     }
 
+    public function editAction($id)
+    {
+        $this->view->setViewsDir('../app/views/');
+        $this->view->pick('dashboard/edit');
 
-    public function builderAction($id)
-    {  
-        $this->view->disable();
-        
-        $widget = Widget::findfirst('id ='.$id);
-        
-        $parameters= json_decode($widget->parameters,true);
-        
-        echo '<div class="widget_drag ImageWrapper '.$widget->width.'" data-type="u_'.$widget->type.'" data-widget_id="l_'.$widget->id.'" >
-                <div data-type="u_'.$widget->type.'" data-widget_id="'.$widget->id.'" ></div>
+        $this->view->setTemplateAfter('main');
 
-                <div class="ImageOverlayH" ></div><div class="Buttons StyleH" >
-                  <span class="WhiteRounded draghandle">
-                    <a>
-                      <i class="fa fa-arrows"></i>
-                    </a>
-                  </span>
-                  <span class="WhiteRounded">
-                    <a href="javascript:void(0);" onclick="parent.widget_edit( '."'".$widget->type."'".' , '."'".$widget->id."'".' )" ><i class="fa fa-cogs"></i>
-                    </a>
-                  </span>
-                  <span class="RedRounded">
-                    <a href="javascript:void(0);" onclick="parent.widget_delete( '."'".$widget->id."'".' )"><i class="fa fa-trash-o"></i>
-                    </a>
-                  </span>
-                </div>
-                </div>';
-        
-        echo '<script>
-
-
-          var update_'.$widget->id.' = function(link){
-                      
-          
-          var w_links ='.(array_key_exists ( 'widget_update_links' , (array_key_exists ( 'link' , $parameters )? $parameters['link'] : []) )? json_encode($parameters['link']['widget_update_links']) : "[]").';
-          
-          
-          var widget_id ='.$widget->id.';
-          var widget_type ="'.$widget->type.'";
-           
-            var update=false;
+            $dashboard = Dashboard::findFirstByid($id);
             
-            if( link == 0 )
-            {
-            update=true;
-            }
-            else
-            {
-            
-            
-            $.each(w_links, function(index, key ) {
-                      if( w_links[index]==link)
-                      {
-                      update=true;
-                      
-          
-                      return false;
-                      }
-                      });
-            }
+            $organisation = Organisation::findFirstByid($dashboard->organisation_id);
+            $this->view->setVar('theme',$organisation->theme);
 
-            if(update == true)
-            {
+            $WidgetList=\PRIME\Controllers\WidgetController::getWidgetList();
 
-              var encoded= encodeURIComponent(JSON.stringify(links)).replace(/[!\'()*]/g, function(c) {
-                return \'%\' + c.charCodeAt(0).toString(16);
-              });
-           
-            $("div[data-widget_id='.$widget->id.']").load("/widgets/'.$widget->type.'/update_default/'.$widget->id.'/"+encoded+"/"+table_append);
-            }
-            
-            
-          };';
-        
-        echo 'update_'.$widget->id.'(0);';
+            $this->view->setVar("widgetList", $WidgetList); 
 
-        echo '</script>';
-        
-    }
-    
-    public function dashboardAction($id)
-    {  
-        $this->view->disable();
-        
-        $widget = Widget::findfirst('id ='.$id);
-        
-        $parameters= json_decode($widget->parameters,true);
+            $PortletList=\PRIME\Controllers\PortletController::getPortletList();
+
+            $this->view->setVar("portletList", $PortletList); 
+
+            $DashboardList=\PRIME\Controllers\DashboardController::getDashboardList();
+
+            $this->view->setVar("dashboardList", $DashboardList); 
+
+
+            $portlets = $dashboard->Portlet;
+            $this->view->setVar("portlets", $portlets); 
+
+            $this->view->setVar("dashboard_id", $dashboard->id);  
+            $this->view->setVar("dashboard_type", $dashboard->type);
+            $this->view->setVar("links", $organisation->links);
+            $this->view->setVar("organisation_id", $dashboard->organisation_id);
+            
+            $this->view->id = $dashboard->id;
+            
+            $this->tag->setDefault("type", $dashboard->type);
+            $this->tag->setDefault("id", $dashboard->id);
+            $this->tag->setDefault("title", $dashboard->title);
+            $this->tag->setDefault("icon", $dashboard->icon);
+            $this->tag->setDefault("weight", $dashboard->weight);
+            $this->tag->setDefault("organisation_id", $dashboard->organisation_id);
+            
         
         
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public function renderAction($id,$type,$links=null)
@@ -166,15 +108,15 @@ class DashboardBase extends Controller
         if ($this->session->has("auth")) {
             //Retrieve its value
             $auth = $this->session->get("auth");
-            $this->view->setViewsDir('../app/themes/'.$auth['theme'].'/');
+            $this->view->setViewsDir('../app/themes/'.$auth['theme'].'/dashboards/');
         }
         
         $dashboard = Dashboard::findFirstByid($id);    
         $organisation= Organisation::findFirstByid($dashboard->organisation_id);
         
-        $this->view->setTemplateAfter($dashboard->style);
-        $this->view->pick(strtolower("dashboard/".$dashboard->style));
-        
+        $this->view->pick(strtolower($dashboard->type."/view"));
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+       
         $links = $organisation->Links;
 
         $this->view->setVar("links", $links); 
@@ -223,7 +165,7 @@ class DashboardBase extends Controller
           ';
         }
         
-        $canvas = Canvas::find(array(
+        $portlets = Portlet::find(array(
     'dashboard_id ='.$dashboard->id,
     "order" => "column"
 ));
@@ -231,15 +173,15 @@ class DashboardBase extends Controller
         $this->view->setVar("dashboard", $dashboard); 
         $this->view->setVar("organisation", $organisation);
         
-        $this->view->setVar("links", json_decode($dashboard->links,true)); 
+        $this->view->setVar("links", $organisation->Links); 
         
         if($type=="builder")
         {
             $this->view->setVar('class', 'dropzone-row');           
-            foreach ($canvas as $canvasItem) {
+            foreach ($portlets as $portlet) {
                 echo '<script> 
-              $("div").find("[data-rowNumber='.$canvasItem->row.']").before(\'<div class="placeholder-container"><div class="placeholder"><div class="placeholder-content ui-droppable"><div class="placeholder-content-area">\');
-                $("div").find("[data-rowNumber='.$canvasItem->row.']").append( $("<div></div>").load("/Canvas/render/'.$canvasItem->id.'/builder", function(){
+              $("div").find("[data-rowNumber='.$portlet->row.']").before(\'<div class="placeholder-container"><div class="placeholder"><div class="placeholder-content ui-droppable"><div class="placeholder-content-area">\');
+                $("div").find("[data-rowNumber='.$portlet->row.']").append( $("<div></div>").load("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/builder", function(){
                 
                 parent.update_dropzone();
                 
@@ -263,32 +205,6 @@ class DashboardBase extends Controller
             
         }
         
-        if($links==null)
-        {
-            
-            echo " 
-                <script>
-                       var links = ".$dashboard->links.";
-                       var table_append = '".$table_append."';
-                       </script>";
-        }
-        else
-        {
-            echo '<script>
-                var table_append = "'.$table_append.'";
-                var links = '.$dashboard->links.';
-                var d_links = '.$links.';
-                $.each(links, function(index, key ) {
-                $.each(d_links, function(index_d, key_d ) {
-
-          if(links[index].name==d_links[index_d].name)
-          links[index].default_value= d_links[index_d].value;
-          });
-          });
-</script>
-';
-            
-        }
         
         echo '<script>
             

@@ -1,6 +1,6 @@
 <?php
-namespace PRIME\FormElement\Parameters;
-use PRIME\FormElement\FormElementBase as FormElementBase;
+namespace PRIME\FormElements\Parameters;
+use PRIME\FormElements\FormElementBase as FormElementBase;
 
 class InputController extends FormElementBase
 {
@@ -16,5 +16,12 @@ class InputController extends FormElementBase
 
         return $output;
 
+    }
+
+    public function getFormAction()
+    {
+        $data['name']="";
+        $data['label']="";
+        echo json_encode($data);
     }
 }

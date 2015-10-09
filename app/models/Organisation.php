@@ -29,6 +29,7 @@ class Organisation extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->hasMany('id', 'PRIME\Models\Dashboard', 'organisation_id', array('alias' => 'Dashboard'));
+        $this->hasMany('id', 'PRIME\Models\Links', 'organisation_id', array('alias' => 'Links'));
         $this->hasMany('id', 'PRIME\Models\DataConnector', 'organisation_id', array('alias' => 'DataConnector'));
         $this->hasMany('id', 'PRIME\Models\OrgDatabase', 'organisation_id', array('alias' => 'OrgDatabase'));
         $this->hasMany('id', 'PRIME\Models\Users', 'organisation_id', array('alias' => 'Users'));

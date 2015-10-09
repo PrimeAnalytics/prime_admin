@@ -23,7 +23,7 @@
                     <a href="#" class="panel-maximize hidden"><i class="icon-size-fullscreen"></i></a>
                     <a href="#" class="panel-toggle"><i class="fa fa-angle-down"></i></a>
                     <a href="#" class="panel-close"><i class="icon-trash"></i></a>
-                      <button class="btn btn-primary btn-xs btn-small" onClick="create_new('theme')">New Theme</button>
+                      <button class="btn btn-primary btn-xs btn-small" onClick="create_new('theme_creator')">New Theme</button>
                   </div>
                     
                 </div>
@@ -69,7 +69,7 @@
 
             function create_new(datatype)
             {
-                $("#modal_content").load("/"+datatype+"/new/<?php echo $organisation_id ?>", function () {
+                $("#modal_content").load("/"+datatype+"/new", function () {
                     $("#myModal").modal("show");
                 });
             }

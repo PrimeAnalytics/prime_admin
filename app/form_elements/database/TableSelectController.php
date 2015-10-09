@@ -1,6 +1,6 @@
 <?php
-namespace PRIME\FormElement\Database;
-use PRIME\FormElement\FormElementBase as FormElementBase;
+namespace PRIME\FormElements\Database;
+use PRIME\FormElements\FormElementBase as FormElementBase;
 
 class TableSelectController extends FormElementBase
 {
@@ -25,5 +25,11 @@ class TableSelectController extends FormElementBase
 
         return $output;
 
+    }
+
+    public function getFormAction()
+    {
+        $data="";
+        echo json_encode($data);
     }
 }

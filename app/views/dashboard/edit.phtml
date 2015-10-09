@@ -93,7 +93,7 @@
                 </div>
                 <div class="tab-pane fade" id="layout">
                     <?php
-                    foreach($canvasList as $subfile)
+                    foreach($portletList as $subfile)
                     {
                     $type= "c_".strtolower(str_replace(" ","_",$subfile)) ;
                     echo '<div data-type="'.$type.'" class="layout ui-draggable">'.$subfile.'</div>';
@@ -126,7 +126,7 @@
               helper: "clone"
               });
 
-              contents.find('.dropzone-canvas').droppable({
+              contents.find('.dropzone-portlet').droppable({
               iframeFix: true,
               activeClass: 'active',
               hoverClass: 'hover',
@@ -163,12 +163,12 @@
 
 
               function canvas_edit(id){
-              $("#modal_content").load("/canvas/edit/" + id, function () {
+              $("#modal_content").load("/portlet/edit/" + id, function () {
               $("#myModal").modal("show");
               })};
 
               function canvas_delete(id){
-              $("#modal_content").load("/canvas/delete/" + id, function () {
+              $("#modal_content").load("/portlet/delete/" + id, function () {
               $("#myModal").modal("show");
               })};
 
@@ -189,7 +189,7 @@
         </div>
     </div>
 
-    <iframe width="100%" src="/dashboard/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe" height="200px" frameborder="0"></iframe>
+    <iframe width="100%" src="/dashboards/<?php echo $dashboard_type ?>/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe" height="200px" frameborder="0"></iframe>
 
 </div>
 
@@ -235,7 +235,7 @@
 
         switch (datatype) {
         case "canvas":
-        $("#modal_content").load("/Canvas/new/<?php echo $dashboard_id ?>" + "/" + rowNumber + "/" + columnNumber, function () {
+        $("#modal_content").load("/portlet/new/<?php echo $dashboard_id ?>" + "/" + rowNumber + "/" + columnNumber, function () {
           $("#myModal").modal("show");
           });
           break;
@@ -259,6 +259,79 @@
 
 
     });
+
+
+        var menuContext =   '<div id="context-menu" class="context-menu dropdown clearfix">'+
+                          '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">'+
+                           '<li class="dropdown-title">Panel</li>'+
+                            '<li class="color-background"><a href="#" data-action="background"><i class="icon-pencil c-gray"></i> Change Background Color</a></li>'+
+                            '<li class="edit-icon"><a href="#" data-action="icon"><i class="icon-star c-gray"></i> Edit Icon</a></li>'+
+                            '<li class="remove-icon"><a href="#" data-action="remove-icon"><i class="icon-pencil c-gray"></i> Remove Icon</a></li>'+
+                            '<li class="remove"><a href="#" data-action="remove"><i class="icon-ban c-gray"></i> Remove</a></li>'+
+                          '</ul>'+
+                        '</div>';
+    $('.page-content').append(menuContext);
+    var $contextMenu = $("#context-menu");
+
+    /* Context Menu */
+    $('.builder-wrapper').on('mousedown', '.panel-header h3, .panel-footer h3, .panel-content:not(.widget-info), i', function(){
+          $('#context-menu .color-background, #context-menu .edit-icon, #context-menu .remove-icon').show();
+          if($(this).hasClass('panel-content')){
+            $('#context-menu .edit-icon').hide();
+            $('#context-menu .remove-icon').hide();
+          }
+          if(!$(this).find('i').length){
+              $('#context-menu .remove-icon').hide();
+          }
+          if($(this).is('i')){
+              if($(this).parent().hasClass('form-sortable-btn')){
+                  return;
+              }
+              $('#context-menu .edit-icon').show();
+          }
+          $(this).contextmenu({
+              target: '#context-menu',
+              onItem: function (context, e) {
+                  var action = $(e.target).data("action");
+                  context.addClass('current-context');
+                  if(action == 'background'){
+                      $('#modal-background').modal('show');
+                  }
+                  if(action == 'icon'){
+                      $('#modal-icons').modal('show');
+                  }
+                  if(action == 'remove-icon'){
+                      context.find('i').remove();
+                  }
+                  if(action == 'remove'){
+                      $element = context;
+                      if($element.hasClass('nav-parent')) $remove_txt = "Are you sure to remove this element?<br>";
+                      else if($element.parent().hasClass('panel')) $remove_txt = "Are you sure this panel?";
+                      else $remove_txt = "Are you sure to remove this element?";
+                      bootbox.confirm($remove_txt, function(result) {
+                          if(result === true){
+                            $element.addClass("animated bounceOutLeft");
+                            window.setTimeout(function () {
+                              if($element.parent().hasClass('panel')){
+                                  $element.parent().remove();
+                              }
+                              else{
+                                  $element.remove();
+                              }
+
+                            }, 300);
+                          }
+                      });
+                  }
+              }
+          });
+    });
+
+
+
+
+
+
 
 
 </script>

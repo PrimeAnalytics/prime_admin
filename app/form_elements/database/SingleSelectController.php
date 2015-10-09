@@ -1,11 +1,11 @@
 <?php
-namespace PRIME\FormElement\Database;
-use PRIME\FormElement\FormElementBase as FormElementBase;
+namespace PRIME\FormElements\Database;
+use PRIME\FormElements\FormElementBase as FormElementBase;
 
 class SingleSelectController extends FormElementBase
 {
     
-    public function Render($label,$name,$table_id)
+    public function Render($label,$name)
     {
 
         $output=array();
@@ -32,5 +32,12 @@ class SingleSelectController extends FormElementBase
 
         return $output;
 
+    }
+
+    public function getFormAction()
+    {
+        $data['name']="";
+        $data['label']="";
+        echo json_encode($data);
     }
 }

@@ -2,7 +2,7 @@
 namespace PRIME\Controllers;
 use PRIME\Models\Dashboard;
 use PRIME\Models\Widget;
-use PRIME\Models\Canvas;
+use PRIME\Models\Portlet;
 use PRIME\Models\Organisation;
 
 class DashboardController extends ControllerBase
@@ -79,17 +79,17 @@ class DashboardController extends ControllerBase
 
             $this->view->setVar("widgetList", $WidgetList); 
 
-            $CanvasList=\PRIME\Controllers\CanvasController::getCanvasList();
+            $PortletList=\PRIME\Controllers\PortletController::getPortletList();
 
-            $this->view->setVar("canvasList", $CanvasList); 
+            $this->view->setVar("portletList", $PortletList); 
 
             $DashboardList=\PRIME\Controllers\DashboardController::getDashboardList();
 
             $this->view->setVar("dashboardList", $DashboardList); 
 
 
-            $canvas = $dashboard->Canvas;
-            $this->view->setVar("canvas", $canvas); 
+            $portlets = $dashboard->Portlet;
+            $this->view->setVar("portlets", $portlets); 
 
             $this->view->setVar("dashboard_id", $dashboard->id);  
             $this->view->setVar("links", $dashboard->links);
@@ -105,167 +105,6 @@ class DashboardController extends ControllerBase
             $this->tag->setDefault("organisation_id", $dashboard->organisation_id);
             
     }
-    
-    
-    
-    public function renderAction($id,$type,$links=null,$table_append="")
-    {
-        if ($this->session->has("auth")) {
-            //Retrieve its value
-            $auth = $this->session->get("auth");
-            $this->view->setViewsDir('../app/themes/'.$auth['theme'].'/');
-        }
-        
-        $dashboard = Dashboard::findFirstByid($id);    
-        $organisation= Organisation::findFirstByid($dashboard->organisation_id);
-        
-        $this->view->setTemplateAfter($dashboard->style);
-        $this->view->pick(strtolower("dashboard/".$dashboard->style));
-        
-        $widgets = $dashboard->Widget;
-
-        
-        foreach ($widgets as $widget) {
-            $parameters =array();
-            $parameters= (array)json_decode($widget->parameters,true);
-            
-            echo '<script> var update_'.$widget->id.' = function(link){
-                      
-          
-          var w_links ='.(array_key_exists ( 'widget_update_links' , (array_key_exists ( 'link' , $parameters )? $parameters['link'] : []) )? json_encode($parameters['link']['widget_update_links']) : "[]").';
-          
-          
-          var widget_id ='.$widget->id.';
-          var widget_type ="'.$widget->type.'";
-           
-            var update=false;
-            
-            if( link == 0 )
-            {
-            update=true;
-            }
-            else
-            {
-            
-            
-            $.each(w_links, function(index, key ) {
-                      if( w_links[index]==link)
-                      {
-                      update=true;
-                      return false;
-                      }
-                      });
-            }
-
-            if(update == true)
-            {
-            
-            
-            var encoded = encodeURIComponent(btoa(JSON.stringify(links)));
-            $("div[data-widget_id='.$widget->id.']").load("/widgets/'.$widget->type.'/update_default/'.$widget->id.'/"+encoded+"/"+table_append);
-            
-          }
-          
-          }
-          
-          </script>
-          ';
-        }
-        
-            $canvas = Canvas::find(array(
-        'dashboard_id ='.$dashboard->id,
-        "order" => "column"
-    ));
-            
-            $this->view->setVar("dashboard", $dashboard); 
-            $this->view->setVar("organisation", $organisation);
-            
-            $this->view->setVar("links", json_decode($dashboard->links,true)); 
-    
-           if($type=="builder")
-       {
-           $this->view->setVar('class', 'dropzone-row');           
-                foreach ($canvas as $canvasItem) {
-                echo '<script> 
-              $("div").find("[data-rowNumber='.$canvasItem->row.']").before(\'<div class="placeholder-container"><div class="placeholder"><div class="placeholder-content ui-droppable"><div class="placeholder-content-area">\');
-                $("div").find("[data-rowNumber='.$canvasItem->row.']").append( $("<div></div>").load("/Canvas/render/'.$canvasItem->id.'/builder", function(){
-                
-                parent.update_dropzone();
-                
-                }));
-                </script>';
-            };
-       }
-       
-       else
-       {
-           $this->view->setVar('class', 'row');
-           
-           
-               foreach ($canvas as $canvasItem) {
-                echo '
-                <script> 
-              
-                $("div").find("[data-rowNumber='.$canvasItem->row.']").append( $("<div></div>").load("/Canvas/render/'.$canvasItem->id.'/dashboard"));
-                </script>';
-            };
-            
-       }
-            
-            if($links==null)
-            {
-                
-                echo " 
-                <script>
-                       var links = ".$dashboard->links.";
-                       var table_append = '".$table_append."';
-                       </script>";
-            }
-            else
-            {
-                echo '<script>
-                var table_append = "'.$table_append.'";
-                var links = '.$dashboard->links.';
-                var d_links = '.$links.';
-                $.each(links, function(index, key ) {
-                $.each(d_links, function(index_d, key_d ) {
-
-          if(links[index].name==d_links[index_d].name)
-          links[index].default_value= d_links[index_d].value;
-          });
-          });
-</script>
-';
-                
-            }
-            
-            echo '<script>
-            
-            function update_dashboard(link, value)
-            {  
-            
-      
-            $.each(links, function(index, key ) {
-            if( links[index].name==link)
-
-            links[index].default_value = value;
-
-            }); 
-            ';
-            
-            
-            foreach ($widgets as $widget) {
-            
-                echo "update_".$widget->id."(link);";
-                
-            }
-            
-            echo '
-            }  
-
-            </script>';
-
-    }
 
     /**
      * Creates a new dashboard
@@ -275,11 +114,10 @@ class DashboardController extends ControllerBase
         $dashboard = new Dashboard();
 
         $dashboard->title = $this->request->getPost("title");
-        $dashboard->style = $this->request->getPost("style");
+        $dashboard->type = $this->request->getPost("type");
         $dashboard->icon = $this->request->getPost("icon");
         $dashboard->weight = $this->request->getPost("weight");
         $dashboard->organisation_id = $this->request->getPost("organisation_id");
-        $dashboard->links = "[]";
         
 
         if (!$dashboard->save()) {
@@ -292,7 +130,7 @@ class DashboardController extends ControllerBase
 
         $this->flash->success("dashboard was created successfully");
 
-        $this->response->redirect("dashboard/edit/".$dashboard->id);
+        $this->response->redirect("dashboards/".$dashboard->type."/edit/".$dashboard->id);
 
     }
 

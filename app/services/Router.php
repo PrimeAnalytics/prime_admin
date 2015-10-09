@@ -38,9 +38,6 @@ class Router extends PhRouter
             $files = array_map('basename', $files);
             $this->themeLevel2SetupNamespacedRoutes("widgets",$files);
 
-
-
-            
             $directory ='../app/authenticators/';            
             //get all files in specified directory
             $files = glob($directory . "*", GLOB_ONLYDIR);    
@@ -62,17 +59,17 @@ class Router extends PhRouter
             
             $directory ='../app/themes/'.$this->theme.'/portlets/';
 
-            $this->level1SetupNamespacedRoutes("portlets");
+            $this->themeLevel1SetupNamespacedRoutes("portlets");
 
 
             $directory ='../app/themes/'.$this->theme.'/dashboards/';
             
-            $this->level1SetupNamespacedRoutes("dashboards");
+            $this->themeLevel1SetupNamespacedRoutes("dashboards");
 
 
             $directory ='../app/themes/'.$this->theme.'/logins/';
 
-            $this->level1SetupNamespacedRoutes("logins");
+            $this->themeLevel1SetupNamespacedRoutes("logins");
 
         }
 
@@ -162,7 +159,7 @@ class Router extends PhRouter
     });
     }
 
-    private function level1SetupNamespacedRoutes($namespace)
+    private function themeLevel1SetupNamespacedRoutes($namespace)
     {
         $controllersNamespace ="/".$namespace;
         
@@ -172,11 +169,11 @@ class Router extends PhRouter
 
         //Add route for namespaced controllers with a explicited action
         $this
-            ->add($controllersNamespace."/:controller/:action", ['namespace' => 'PRIME\\'.ucwords($namespace), 'controller' => 1, 'action' => 2]);
+            ->add($controllersNamespace."/:controller/:action", ['namespace' => 'PRIME\Themes\\'.ucwords ($this->theme).'\\'.ucwords($namespace), 'controller' => 1, 'action' => 2]);
 
         //Add route for namespaced controllers with a explicited action and params
         $this
-            ->add($controllersNamespace."/:controller/:action/:params", ['namespace' => 'PRIME\\'.ucwords($namespace), 'controller' => 1, 'action' => 2, 'params' => 3]);
+            ->add($controllersNamespace."/:controller/:action/:params", ['namespace' => 'PRIME\Themes\\'.ucwords ($this->theme).'\\'.ucwords($namespace), 'controller' => 1, 'action' => 2, 'params' => 3]);
     }
 
 }

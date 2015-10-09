@@ -7,6 +7,7 @@ try {
 	$config = new Phalcon\Config\Adapter\Ini(__DIR__.'/../app/config/config.ini');
     
 
+
 	$loader = new \Phalcon\Loader();
 
 	/**
@@ -24,7 +25,7 @@ try {
     $loader->registerNamespaces(array(
         'PRIME\Authenticators' =>    __DIR__.$config->application->authenticatorsDir,
         'PRIME\DataConnectors' =>    __DIR__.$config->application->dataConnectorsDir,
-        'PRIME\FormElement' =>    __DIR__.$config->application->formElementDir,
+        'PRIME\FormElements' =>    __DIR__.$config->application->formElementDir,
         'PRIME\Themes' =>    __DIR__.$config->application->themesDir,
 	'PRIME\Controllers' =>    __DIR__.$config->application->controllersDir,
     'PRIME\Services' =>       __DIR__.$config->application->servicesDir,
