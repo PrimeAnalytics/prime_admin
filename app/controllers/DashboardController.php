@@ -59,6 +59,10 @@ class DashboardController extends ControllerBase
         
         $this->tag->setDefault("weight", "0");
         $this->tag->setDefault("organisation_id", $organisation_id);
+
+        $DashboardList=\PRIME\Controllers\DashboardController::getDashboardList();
+
+        $this->view->setVar('dashboardList',$DashboardList);
         
         $this->view->setTemplateAfter('');
     }
@@ -86,7 +90,6 @@ class DashboardController extends ControllerBase
             $DashboardList=\PRIME\Controllers\DashboardController::getDashboardList();
 
             $this->view->setVar("dashboardList", $DashboardList); 
-
 
             $portlets = $dashboard->Portlet;
             $this->view->setVar("portlets", $portlets); 
@@ -249,7 +252,7 @@ class DashboardController extends ControllerBase
 
         $data=array();
 
-        $subdirectory = '../app/themes/'.$theme.'/dashboard/';
+        $subdirectory = '../app/themes/'.$theme.'/dashboards/';
         //get all files in specified directory
         $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);
         foreach($subfiles as $subfile)

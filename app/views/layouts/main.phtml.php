@@ -1008,7 +1008,7 @@
     <script src="/assets/global/plugins/simple-weather/jquery.simpleWeather.js"></script> <!-- Weather Plugin -->
     <script src="../assets/global/plugins/dropzone/dropzone.min.js"></script>  <!-- Upload Image & File in dropzone -->
     <!-- END PAGE SCRIPT -->
-    <script src="/assets/admin/layout1/js/layout.js"></script>
+   
   </body>
 </html>
 

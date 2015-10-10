@@ -29,21 +29,44 @@ class ThemeCreatorController extends ControllerBase
 
         $theme->name = $this->request->getPost("name");
 
-        
+        if(!ThemeLayout::findByName($theme->name))
+        {       
 
-        if (!$theme->save()) {
-            foreach ($theme->getMessages() as $message) {
-                $this->flash->error($message);
+            if (!$theme->save()) {
+                foreach ($theme->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+
+                $this->dispatcher->forward(array(
+    "controller" => "theme_creator",
+    "action"     => "index"
+)
+);
             }
 
-            $this->response->redirect("/theme_creator/index");
+            $this->flash->success("theme was created successfully");
+
+            $this->dispatcher->forward(array(
+                "controller" => "theme_creator",
+                "action"     => "index",
+                "params"=>array($theme->id)
+            )
+        );
+
         }
+        else
+        {
 
-        $this->flash->success("theme was created successfully");
+            $this->flash->error("Theme with the same name already exist");
 
-        $this->response->redirect("/theme_creator/edit/".$theme->name);
 
-    
+            $this->dispatcher->forward(array(
+                "controller" => "theme_creator",
+                "action"     => "index"
+            )
+        );
+
+        }
     
     }
 
@@ -115,7 +138,7 @@ class ThemeCreatorController extends ControllerBase
                     $js[]=$node->getAttribute('src');
                 }
             }
-
+            $base='';
             foreach($js as &$url)
             {
                 if (strpos($url,'//') !== false) {
@@ -224,6 +247,62 @@ class ThemeCreatorController extends ControllerBase
         echo '</body>';
     }
 
+    public function login_newAction($theme_id)
+    {
+        $this->tag->setDefault("theme_id", $theme_id);
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->persistent->parameters = null;
+        
+    }
+
+    public function login_editAction($id)
+    {
+        $login=ThemeLogin::findFirstById($id);
+        $theme= ThemeLayout::findFirstById($login->theme_layout_id);
+        $theme=$theme->name;
+
+        $FormElementList=\PRIME\Controllers\FormController::getFormElementList();
+
+        $this->view->setVar("formElementList", $FormElementList); 
+
+        $helpers=array();
+
+        $helpers["Username"]="{{username}}";
+        $helpers["Menu Items"]="{{menu}}";
+
+        $this->view->setVar("helpers",$helpers);
+
+        $this->view->setVar("theme_name", $theme); 
+        
+        
+    }
+
+    public function login_createAction()
+    {
+        $login = new ThemeLogin();
+
+        $login->name = $this->request->getPost("name");
+        $login->theme_layout_id = $this->request->getPost("theme_id");
+        
+
+        if (!$login->save()) {
+            foreach ($login->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            $this->response->redirect("/theme_creator/index");
+        }
+
+        $this->flash->success("Login was created successfully");
+
+        $this->response->redirect("/theme_creator/login_edit/".$login->id);
+
+        
+        
+    }
+
+
+
     public function dashboard_newAction($theme_id)
     {
         $this->tag->setDefault("theme_id", $theme_id);
@@ -234,17 +313,47 @@ class ThemeCreatorController extends ControllerBase
 
     public function dashboard_editAction($id)
     {
-        $dashboard=ThemeDashboard::findById($id);
-        $theme= ThemeLayout::findById($dashboard->theme_layout_id);
+        $dashboard=ThemeDashboard::findFirstById($id);
+        $theme= ThemeLayout::findFirstById($dashboard->theme_layout_id);
         $theme=$theme->name;
 
         $FormElementList=\PRIME\Controllers\FormController::getFormElementList();
 
         $this->view->setVar("formElementList", $FormElementList); 
 
+        $helpers=array();
+
+        $helpers["Drop Zone Region"]="{{region.name}}";
+
+        $helpers["Username"]="{{username}}";
+        $helpers["Log Out Link"]="{{logout}}";
+        $helpers["Menu Items"]="{{menu}}";
+
+        $helpers["Parameters by Name"]="{{parm.parameter_name}}";
+        $helpers["Database by Name"]="{{db.column_name}}";
+
+        $this->view->setVar("helpers",$helpers);
+
+        $this->view->setVar("dashboard_id", $id);
+
         $this->view->setVar("theme_name", $theme); 
-        
-        
+
+
+
+        $css=$dashboard->css;
+        $style=$dashboard->style;
+        $html=$dashboard->html;
+        $js=$dashboard->js;
+        $script=$dashboard->script;
+        $form=$dashboard->form;
+
+
+        $this->view->setVar("css", $css); 
+        $this->view->setVar("style", $style); 
+        $this->view->setVar("html", $html); 
+        $this->view->setVar("js", $js); 
+        $this->view->setVar("script", $script); 
+        $this->view->setVar("form", $form); 
     }
 
     public function dashboard_createAction()
@@ -266,10 +375,93 @@ class ThemeCreatorController extends ControllerBase
         $this->flash->success("Dashboard was created successfully");
 
         $this->response->redirect("/theme_creator/dashboard_edit/".$dashboard->id);
+    }
 
+    public function dashboard_saveAction($id)
+    {
+        $dashboard=ThemeDashboard::findFirstById($id);
+
+        $theme= ThemeLayout::findFirstById($dashboard->theme_layout_id);
+        $theme=$theme->name;
+
+        $css=$this->request->getPost("css");
+        $style=$this->request->getPost("style");
+        $html=$this->request->getPost("html");
+        $js=$this->request->getPost("js");
+        $script=$this->request->getPost("script");
+        $form=$this->request->getPost("form");
+
+         $dashboard->css=$css;
+         $dashboard->style=$style;
+         $dashboard->html=$html;
+         $dashboard->js=$js;
+         $dashboard->script=$script;
+         $dashboard->form=$form;
+
+         $type=$dashboard->name;
+        
+         if (!$dashboard->save()) {
+             foreach ($dashboard->getMessages() as $message) {
+                 $this->flash->error($message);
+             }
+
+         }
+
+         $this->flash->success("Dashboard was saved successfully");
+
+
+        $this->view->disable();
+
+        $controller='<?php
+namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Dashboards;
+use PRIME\Themes\DashboardBase as DashboardBase;
+
+class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
+{
+    
+    public function initialize()
+    {
+        $this->form_struct =\''.$form.'\';
+    }
+}';
+        
+        $parms=$_POST['parms'];
+
+        $root=str_replace("public","app",$_SERVER['DOCUMENT_ROOT']);
+        
+        $path = $root.'/themes/'.$theme.'/dashboards/';
+
+        chmod($path, 0777);
+
+        $content = $controller;
+        $fp = fopen($path.\Phalcon\Text::camelize($type)."Controller.php","w");
+        fwrite($fp,$content);
+        fclose($fp);
+
+
+
+
+
+        $view='<head>'.$css.$style.'</head><body>'.$html.$js.$script.'</body>';
+
+        $file_path=$path.strtolower($type)."/view.phtml";
+        if(!file_exists(dirname($file_path)))
+            mkdir(dirname($file_path), 0777, true);
+
+        $fp = fopen($file_path,"w");
+        fwrite($fp,$view);
+        fclose($fp);
+
+
+    
+    }
+
+    public function dashboard_previewAction()
+    {
         
         
     }
+
 
     public function portlet_newAction($theme_id)
     {
@@ -282,8 +474,8 @@ class ThemeCreatorController extends ControllerBase
 
     public function portlet_editAction($id)
     {
-        $portlet=ThemePortlet::findById($id);
-        $theme= ThemeLayout::findById($portlet->theme_layout_id);
+        $portlet=ThemePortlet::findFirstById($id);
+        $theme= ThemeLayout::findFirstById($portlet->theme_layout_id);
         $theme=$theme->name;
 
         $FormElementList=\PRIME\Controllers\FormController::getFormElementList();
@@ -327,8 +519,8 @@ class ThemeCreatorController extends ControllerBase
 
     public function widget_editAction($id)
     {
-        $widget=ThemeWidget::findById($id);
-        $theme= ThemeLayout::findById($widget->theme_layout_id);
+        $widget=ThemeWidget::findFirstById($id);
+        $theme= ThemeLayout::findFirstById($widget->theme_layout_id);
         $theme=$theme->name;
 
         $FormElementList=\PRIME\Controllers\FormController::getFormElementList();
@@ -430,9 +622,6 @@ class ThemeCreatorController extends ControllerBase
 
     public function upload_assetsAction($theme)
     {
-
-
-
         function rmdir_recursive($dir) {
             foreach(scandir($dir) as $file) {
                 if ('.' === $file || '..' === $file) continue;
@@ -491,67 +680,6 @@ class ThemeCreatorController extends ControllerBase
     
     }
 
-    public function save_dashboardAction($theme,$type)
-    {
-        $this->view->disable();
-
-        $controller='<?php
-namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Dashboards;
-use PRIME\Themes\DashboardBase as DashboardBase;
-
-class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
-{
-    
-    public function initialize()
-    {
-        $this->form_struct =\'{"parm":
-        [
-        {"name":"title","label":"Title","type":"input" },
-        {"name":"color_scheme","label":"Color Scheme","type":"color"}
-        ],
-        "db":
-        {"mc_table1":
-        [
-        {"type":"single", "label":"X-Axis", "name":"x_axis"},
-        {"type":"multiple", "label":"Series", "name":"y_series"}
-        ]
-        }
-        }\';
-    }
-}';
-       
-        $parms=$_POST['parms'];
-
-        $root=str_replace("public","app",$_SERVER['DOCUMENT_ROOT']);
-        
-        $path = $root.'/themes/'.$theme.'/dashboards/';
-
-        chmod($path, 0777);
-
-        $content = $controller;
-        $fp = fopen($path.\Phalcon\Text::camelize($type)."Controller.php","w");
-        fwrite($fp,$content);
-        fclose($fp);
-
-
-        $css=$this->request->getPost("css");
-        $style=$this->request->getPost("style");
-        $html=$this->request->getPost("html");
-        $js=$this->request->getPost("js");
-        $script=$this->request->getPost("script");
-
-
-        $view='<head>'.$css.$style.'</head><body>'.$html.$js.$script.'</body>';
-
-        $file_path=$path.strtolower($type)."/view.phtml";
-        if(!file_exists(dirname($file_path)))
-            mkdir(dirname($file_path), 0777, true);
-
-        $fp = fopen($file_path,"w");
-        fwrite($fp,$view);
-        fclose($fp);
-    
-    }
     
     
     

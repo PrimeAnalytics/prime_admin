@@ -23,22 +23,14 @@
 
                     <div class="col-md-4">
                         <label class="form-label">Theme Layout</label>
-                        <select class="form-control" name="style">
+                        <select class="form-control" name="type">
 
                             <?php
-                            //path to directory to scan
-                            $directory = "../app/themes/".$theme."/layouts/";
-
-                            //get all files in specified directory
-                            $files = glob($directory . "*.{phtml}", GLOB_BRACE);
-
-                            //print each file name
-                            foreach($files as $file)
-                            {
-                            $type = str_replace(".phtml","",basename($file));
-                            echo '<option value="'.$type.'">'.ucwords($type).'</option>';
-                            }
-
+                        foreach($dashboardList as $subfile)
+                        {
+                        $type= strtolower(str_replace(" ","_",$subfile)) ;
+                        echo '<option value="'.$type.'" >'.$subfile.'</option>';
+                        }
                             ?>
 
 
