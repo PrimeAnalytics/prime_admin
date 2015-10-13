@@ -65,8 +65,34 @@ class FormController extends ControllerBase
              }
            }  
         
-        
-    return $this->echo_func($output,'');
+        $data_out['style']=array();
+        $data_out['style'][]="<style>";
+
+        $data_out['html']=array();
+        $data_out['js']=array();
+        $data_out['js'][]="<script>";
+
+
+        foreach($output as $param)
+        {
+            if(array_key_exists ('style',$param))
+            {
+                $data_out['style']=array_merge($data_out['style'],$param['style']);
+            }
+            if(array_key_exists ('html',$param))
+            {
+                $data_out['html']=array_merge($data_out['html'],$param['html']);
+            }
+            if(array_key_exists ('js',$param))
+            {
+                $data_out['js']=array_merge($data_out['js'],$param['js']);
+            }
+        }
+
+        $data_out['style'][]="</style>";
+        $data_out['js'][]="</script>";
+
+        return $this->echo_func($data_out,'');
          
     } 
 

@@ -9,11 +9,11 @@ class ColorSelectController extends FormElementBase
     {
         $output=array();
 
-        $output['style'][]='<style>
+        $output['style'][]='
                             .cbox {
                                 height:20px
                             }
-                            </style>';
+                            ';
 
 
         $output['html'][]= '<div class="form-group">
