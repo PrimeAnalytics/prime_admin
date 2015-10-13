@@ -38,6 +38,29 @@ class OrganisationController extends ControllerBase
 
     }
 
+    public static function getThemeList()
+    {
+
+        $data=array();
+
+        $directory = '../app/themes/';
+        //get all files in specified directory
+        $files = glob($directory."*");
+
+        foreach($files as $file)
+        {
+            if(is_dir($file))
+            {
+                $type = basename($file);
+                $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
+                $data[]=$name;
+            }
+
+        }
+
+        return $data;
+    }
+
     /**
      * Edits a organisation
      *
@@ -95,6 +118,9 @@ class OrganisationController extends ControllerBase
             $data = DataConnector::find("organisation_id= ". $organisation->id);
             
             $this->view->setVar("data_connectors", $data);
+
+            $this->view->setVar("themeList", $this->getThemeList());
+            
 
     }
 

@@ -346,9 +346,9 @@
 
     $("#previewrun").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/preview",
+            url: "/theme_creator/dashboard_preview",
             type: "Post",
-            data: { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue() },
+            data: { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters() },
             dataType: "html",
             success: function (result) {
                 var previewDoc = window.frames[0].document;
@@ -363,7 +363,7 @@
 
     $("#csslinks").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/css",
+            url: "/theme_creator/inteli_format/{{theme_name}}/css",
             type: "Post",
             data: csslinks.getValue(),
             dataType: "html",
@@ -376,7 +376,7 @@
 
     $("#jslinks").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/js",
+            url: "/theme_creator/inteli_format/{{theme_name}}/js",
             type: "Post",
             data: jslinks.getValue(),
             dataType: "html",
@@ -389,7 +389,7 @@
 
     $("#htmlbody").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/body",
+            url: "/theme_creator/inteli_format/{{theme_name}}/body",
             type: "Post",
             data: htmleditor.getValue(),
             dataType: "html",
@@ -402,7 +402,7 @@
 
     $("#jsscript").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/script",
+            url: "/theme_creator/inteli_format/{{theme_name}}/script",
             type: "Post",
             data: jseditor.getValue(),
             dataType: "html",
@@ -415,7 +415,7 @@
 
     $("#cssstyle").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/style",
+            url: "/theme_creator/inteli_format/{{theme_name}}/style",
             type: "Post",
             data: csseditor.getValue(),
             dataType: "html",

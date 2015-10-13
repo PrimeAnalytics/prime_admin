@@ -22,15 +22,11 @@
       <script src="/assets/global/plugins/jquery/jquery-1.11.1.min.js"></script>
       <script src="/assets/global/plugins/jquery/jquery-migrate-1.2.1.min.js"></script>
       <script src="/assets/global/plugins/jquery-ui/jquery-ui-1.11.2.min.js"></script>
+      <script src="/assets/global/plugins/jquery-ui/jquery-ui-droppable-iframe-fix.js"></script>
       <script src="/assets/global/plugins/gsap/main-gsap.min.js"></script>
       <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
       <script src="/assets/global/plugins/jquery-cookies/jquery.cookies.min.js"></script> <!-- Jquery Cookies, for theme -->
       <script src="/assets/global/plugins/jquery-block-ui/jquery.blockUI.min.js"></script> <!-- simulate synchronous behavior when using AJAX -->
-      <link href="/assets/global/plugins/dropzone/dropzone.min.css" rel="stylesheet">
-
-      <script src="http://underscorejs.org/underscore-min.js"></script>
-
-      <script src="/assets/global/plugins/underscore/underscore.string.min.js"></script>
 
       <link href="/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen" />
       <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet"></link>
@@ -984,7 +980,6 @@
     <script src="/assets/global/plugins/icheck/icheck.min.js"></script> <!-- Checkbox & Radio Inputs -->
     <script src="/assets/global/plugins/backstretch/backstretch.min.js"></script> <!-- Background Image -->
     <script src="/assets/global/plugins/bootstrap-progressbar/bootstrap-progressbar.min.js"></script> <!-- Animated Progress Bar -->
-    <script src="/assets/global/js/builder.js"></script> <!-- Theme Builder -->
     <script src="/assets/global/js/sidebar_hover.js"></script> <!-- Sidebar on Hover -->
     <script src="/assets/global/js/application.js"></script> <!-- Main Application Script -->
     <script src="/assets/global/js/plugins.js"></script> <!-- Main Plugin Initialization Script -->
@@ -1006,7 +1001,6 @@
     <script src="/assets/global/plugins/maps-amcharts/ammap/themes/black.min.js"></script> <!-- Vector Map Black Theme -->
     <script src="/assets/global/plugins/skycons/skycons.min.js"></script> <!-- Animated Weather Icons -->
     <script src="/assets/global/plugins/simple-weather/jquery.simpleWeather.js"></script> <!-- Weather Plugin -->
-    <script src="../assets/global/plugins/dropzone/dropzone.min.js"></script>  <!-- Upload Image & File in dropzone -->
     <!-- END PAGE SCRIPT -->
    
   </body>

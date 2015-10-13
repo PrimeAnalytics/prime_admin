@@ -12,64 +12,66 @@ class FormController extends ControllerBase
     
     public function renderAction($layout)
     {      
-        
-        $tempController = new \PRIME\FormElement\Parameters\InputController();
-        $tempController->Render($parameter['label'],$parameter['name']);
-
         $layout=json_decode($layout);
-
-        foreach($layout as $key=>$value)
+        $output=array();
+        
+        foreach($layout as $value)
         {
 
-        if($key=="parameter")
+            $temp=explode("/" ,$value->type);
+            $type=array_values($temp)[1];
+            $category=array_values($temp)[0];
+            
+
+            if($category=="parameters")
         {
-            foreach($value as $parameter)
-            {
-            switch ($parameter['type']) {
-            case Input:
-                $tempController = new \PRIME\FormElement\Parameters\InputController();
-                $tempController->Render($parameter['label'],$parameter['name']);
+            
+            switch ($type) {
+            case 'input':
+                $tempController = new \PRIME\FormElements\Parameters\InputController();
+                $output[]=$tempController->Render($value->label,$value->name);
                 break;
-            case Select:
-                $tempController = new \PRIME\FormElement\Parameters\SelectController();
-                $tempController->Render($parameter['label'],$parameter['name'],$parameter['values']);
+            case 'select':
+                $tempController = new \PRIME\FormElements\Parameters\SelectController();
+                $output[]=$tempController->Render($value->label,$value->name,$value->values);
                 break;
-            case ColorSelect:
-                $tempController = new \PRIME\FormElement\Parameters\ColorSelectController();
-                $tempController->Render($parameter['label'],$parameter['name']);
+            case 'color_select':
+                $tempController = new \PRIME\FormElements\Parameters\ColorSelectController();
+                $output[]=$tempController->Render($value->label,$value->name);
                 break;
             }
-            }
+            
         }
-        elseif($key=="db")
+        elseif($category=="db")
         {
-        foreach($value as $parameter)
-            {
-            switch ($parameter['type']) {
-            case DashboardSelect:
-                $tempController = new \PRIME\FormElement\Database\DashboardSelectController();
-                $tempController->Render($parameter['label'],$parameter['name'],$parameter['values']);
+            switch ($type) {
+            case 'dashboard_select':
+                $tempController = new \PRIME\FormElements\Database\DashboardSelectController();
+                $output[]=$tempController->Render($value['label'],$value['name'],$value['values']);
                 break;
-            case LinkSelect:
-                $tempController = new \PRIME\FormElement\Database\LinkSelectController();
-                $tempController->Render($parameter['label'],$parameter['name'],$parameter['values']);
+            case 'link_select':
+                $tempController = new \PRIME\FormElements\Database\LinkSelectController();
+                $output[]= $tempController->Render($value['label'],$value['name'],$value['values']);
                 break;
-            case MultiSelect:
-                $tempController = new \PRIME\FormElement\Database\MultiSelectController();
-                $tempController->Render($parameter['label'],$parameter['name'],$parameter['values']);
+            case 'multi_select':
+                $tempController = new \PRIME\FormElements\Database\MultiSelectController();
+                $output[]=$tempController->Render($value['label'],$value['name'],$value['values']);
                 break;
-            case SingleSelect:
-                $tempController = new \PRIME\FormElement\Database\SingleSelectController();
-                $tempController->Render($parameter['label'],$parameter['name'],$parameter['values']);
+            case 'single_select':
+                $tempController = new \PRIME\FormElements\Database\SingleSelectController();
+                $output[]=$tempController->Render($value['label'],$value['name'],$value['values']);
                 break;
                 }
              }
            }  
-        }
+        
+        
+    return $this->echo_func($output,'');
+         
+    } 
 
 
-     
-        function echo_func($data)
+    private function echo_func($data,$output)
         {
 
             foreach($data as $result)
@@ -77,23 +79,20 @@ class FormController extends ControllerBase
                 if (is_array ($result))
                 {
                     
-                    echo_func($result);
+                    $output= $this->echo_func($result,$output);
                     
                 }
                 else
                 
                 {
-                    echo $result;
+                    $output= $output.$result;
                 }
                 
             }
+
+            return $output;
             
         }
-        
-        
-        echo_func($echo_array);
-         
-    } 
 
 
 

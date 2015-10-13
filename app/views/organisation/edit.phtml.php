@@ -100,10 +100,26 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label class="form-label">Organisation Theme</label>
+                                    <div class="">
+                                        <select class="form-control" name="theme">
+                                            <?php
+                        foreach($themeList as $subfile)
+                        {
+                        $type= strtolower(str_replace(" ","_",$subfile)) ;
+                        echo '<option value="'.$type.'" >'.$subfile.'</option>';
+                        }
+                                            ?>
 
-                                <?php echo $this->tag->hiddenField("organisation_id") ?>
-                                <?php echo $this->tag->hiddenField("db_id") ?>
-                            </div>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+
+                                    <?php echo $this->tag->hiddenField("organisation_id") ?>
+                                    <?php echo $this->tag->hiddenField("db_id") ?>
+</div>
                         </div>
                     </div>
 

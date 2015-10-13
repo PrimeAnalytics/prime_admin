@@ -79,6 +79,7 @@ class ThemeCreatorController extends ControllerBase
         \libxml_use_internal_errors(true);
         $dom->loadHTML($html);
         
+
         if($type=="css")
         {
             $nodes = $dom->getElementsByTagName('link');
@@ -88,6 +89,7 @@ class ThemeCreatorController extends ControllerBase
             }
 
             $base='';
+            
             foreach($css as &$url)
             {
                 if (strpos($url,'//') !== false) {
@@ -105,14 +107,17 @@ class ThemeCreatorController extends ControllerBase
                             $temp[]=$part;
                         }
                     }
-                    $file_name=implode( "/", $temp);
-
+                    $file_name=implode( "/", array_slice($temp, -2));
+                    
                     if($base=='')
                     {
                         $it = new \RecursiveDirectoryIterator($path);
                         foreach(new \RecursiveIteratorIterator($it) as $file)
                         {
+                            
+                            
                             $file=str_replace("\\","/",$file);
+
                             if (strpos($file,$file_name) !== false) {
                                 $file= str_replace ($_SERVER['DOCUMENT_ROOT'],"",$file);
                                 $base=  str_replace ($file_name,"",$file);
@@ -158,7 +163,7 @@ class ThemeCreatorController extends ControllerBase
                     }
                     
                     }
-                    $file_name=implode( "/", $temp);
+                    $file_name=implode( "/", array_slice($temp, -2));
 
                     if($base=='')
                     {
@@ -166,6 +171,7 @@ class ThemeCreatorController extends ControllerBase
                         foreach(new \RecursiveIteratorIterator($it) as $file)
                         {
                             $file=str_replace("\\","/",$file);
+                            
                             if (strpos($file,$file_name) !== false) {
                                 $file= str_replace ($_SERVER['DOCUMENT_ROOT'],"",$file);
                                 $base=  str_replace ($file_name,"",$file);
@@ -311,6 +317,15 @@ class ThemeCreatorController extends ControllerBase
         
     }
 
+
+    public function dashboard_deleteAction($id)
+    {
+        $dashboard=ThemeDashboard::findFirstById($id);
+
+        $dashboard->delete();
+        
+    }
+
     public function dashboard_editAction($id)
     {
         $dashboard=ThemeDashboard::findFirstById($id);
@@ -439,10 +454,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
         fclose($fp);
 
 
-
-
-
-        $view='<head>'.$css.$style.'</head><body>'.$html.$js.$script.'</body>';
+        $view='<head>'.$css.$style.'</head><body>'.$html.$js.$script.'{{ content() }}</body>';
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))
@@ -458,6 +470,16 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
 
     public function dashboard_previewAction()
     {
+
+        $this->view->disable();
+        echo '<head>';
+        echo $css=$this->request->getPost("css");
+        echo $style=$this->request->getPost("style");
+        echo '</head><body>';
+        echo $html=$this->request->getPost("html");
+        echo $js=$this->request->getPost("js");
+        echo $script=$this->request->getPost("script");
+        echo '</body>';
         
         
     }
@@ -468,6 +490,14 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
         $this->tag->setDefault("theme_id", $theme_id);
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         $this->persistent->parameters = null;
+        
+    }
+
+    public function portlet_deleteAction($id)
+    {
+        $portlet=ThemePortlet::findFirstById($id);
+
+        $portlet->delete();
         
     }
 
@@ -482,7 +512,36 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
 
         $this->view->setVar("formElementList", $FormElementList); 
 
+
+        $helpers=array();
+
+        $helpers["Drop Zone Region"]="{{region.name}}";
+
+        $helpers["Parameters by Name"]="{{parm.parameter_name}}";
+        $helpers["Database by Name"]="{{db.column_name}}";
+
+        $this->view->setVar("helpers",$helpers);
+
+        $this->view->setVar("portlet_id", $id);
+
         $this->view->setVar("theme_name", $theme); 
+
+
+
+        $css=$portlet->css;
+        $style=$portlet->style;
+        $html=$portlet->html;
+        $js=$portlet->js;
+        $script=$portlet->script;
+        $form=$portlet->form;
+
+
+        $this->view->setVar("css", $css); 
+        $this->view->setVar("style", $style); 
+        $this->view->setVar("html", $html); 
+        $this->view->setVar("js", $js); 
+        $this->view->setVar("script", $script); 
+        $this->view->setVar("form", $form); 
         
         
     }
@@ -509,11 +568,95 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
         
     }
 
+    public function portlet_saveAction($id)
+    {
+        $portlet=ThemePortlet::findFirstById($id);
+
+        $theme= ThemeLayout::findFirstById($portlet->theme_layout_id);
+        $theme=$theme->name;
+
+        $css=$this->request->getPost("css");
+        $style=$this->request->getPost("style");
+        $html=$this->request->getPost("html");
+        $js=$this->request->getPost("js");
+        $script=$this->request->getPost("script");
+        $form=$this->request->getPost("form");
+
+        $portlet->css=$css;
+        $portlet->style=$style;
+        $portlet->html=$html;
+        $portlet->js=$js;
+        $portlet->script=$script;
+        $portlet->form=$form;
+
+        $type=$portlet->name;
+        
+        if (!$portlet->save()) {
+            foreach ($portlet->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+        }
+
+        $this->flash->success("Portlet was saved successfully");
+
+
+        $this->view->disable();
+
+        $controller='<?php
+namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Portlets;
+use PRIME\Themes\PortletBase as PortletBase;
+
+class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
+{
+    
+    public function initialize()
+    {
+        $this->form_struct =\''.$form.'\';
+    }
+}';
+        
+        $parms=$_POST['parms'];
+
+        $root=str_replace("public","app",$_SERVER['DOCUMENT_ROOT']);
+        
+        $path = $root.'/themes/'.$theme.'/portlets/';
+
+        chmod($path, 0777);
+
+        $content = $controller;
+        $fp = fopen($path.\Phalcon\Text::camelize($type)."Controller.php","w");
+        fwrite($fp,$content);
+        fclose($fp);
+
+
+        $view=$html.$script;
+
+        $file_path=$path.strtolower($type)."/view.phtml";
+        if(!file_exists(dirname($file_path)))
+            mkdir(dirname($file_path), 0777, true);
+
+        $fp = fopen($file_path,"w");
+        fwrite($fp,$view);
+        fclose($fp);
+
+
+        
+    }
+
     public function widget_newAction($theme_id)
     {
         $this->tag->setDefault("theme_id", $theme_id);
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         $this->persistent->parameters = null;
+        
+    }
+
+    public function widget_deleteAction($id)
+    {
+        $widget=ThemeWidget::findFirstById($id);
+
+        $widget->delete();
         
     }
 
@@ -528,6 +671,36 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
         $this->view->setVar("formElementList", $FormElementList); 
 
         $this->view->setVar("theme_name", $theme); 
+
+        $helpers=array();
+
+        $helpers["Parameters by Name"]="{{parm.parameter_name}}";
+        $helpers["Database by Name"]="{{db.column_name}}";
+
+        $this->view->setVar("helpers",$helpers);
+
+        $this->view->setVar("widget_id", $id);
+
+        $this->view->setVar("theme_name", $theme); 
+
+
+
+        $css=$widget->css;
+        $style=$widget->style;
+        $html=$widget->html;
+        $js=$widget->js;
+        $script=$widget->script;
+        $form=$widget->form;
+
+
+        $this->view->setVar("css", $css); 
+        $this->view->setVar("style", $style); 
+        $this->view->setVar("html", $html); 
+        $this->view->setVar("js", $js); 
+        $this->view->setVar("script", $script); 
+        $this->view->setVar("form", $form); 
+
+
         
         
     }
@@ -556,7 +729,82 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
         
     }
 
+    public function widget_saveAction($id)
+    {
+        $widget=ThemeWidget::findFirstById($id);
 
+        $theme= ThemeLayout::findFirstById($widget->theme_layout_id);
+        $theme=$theme->name;
+
+        $css=$this->request->getPost("css");
+        $style=$this->request->getPost("style");
+        $html=$this->request->getPost("html");
+        $js=$this->request->getPost("js");
+        $script=$this->request->getPost("script");
+        $form=$this->request->getPost("form");
+
+        $widget->css=$css;
+        $widget->style=$style;
+        $widget->html=$html;
+        $widget->js=$js;
+        $widget->script=$script;
+        $widget->form=$form;
+
+        $type=$widget->name;
+        $category=$widget->category;
+        
+        if (!$widget->save()) {
+            foreach ($widget->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+        }
+
+        $this->flash->success("Widget was saved successfully");
+
+
+        $this->view->disable();
+
+        $controller='<?php
+namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Widgets\\'.\Phalcon\Text::camelize($category).';
+use PRIME\Themes\WidgetBase as WidgetBase;
+
+class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
+{
+    
+    public function initialize()
+    {
+        $this->form_struct =\''.$form.'\';
+    }
+}';
+        
+        $parms=$_POST['parms'];
+
+        $root=str_replace("public","app",$_SERVER['DOCUMENT_ROOT']);
+        
+        $path = $root.'/themes/'.$theme.'/widgets/'.strtolower($category).'/';
+
+        chmod($path, 0777);
+
+        $content = $controller;
+        $fp = fopen($path.\Phalcon\Text::camelize($type)."Controller.php","w");
+        fwrite($fp,$content);
+        fclose($fp);
+
+
+        $view=$html.$script;
+
+        $file_path=$path.strtolower($type)."/view.phtml";
+        if(!file_exists(dirname($file_path)))
+            mkdir(dirname($file_path), 0777, true);
+
+        $fp = fopen($file_path,"w");
+        fwrite($fp,$view);
+        fclose($fp);
+
+
+        
+    }
 
 
 
