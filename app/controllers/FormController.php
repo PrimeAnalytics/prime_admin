@@ -1,5 +1,6 @@
 <?php
 namespace PRIME\Controllers;
+use \Phalcon\Text as PhText;
 
 class FormController extends ControllerBase
 {
@@ -22,48 +23,21 @@ class FormController extends ControllerBase
             $type=array_values($temp)[1];
             $category=array_values($temp)[0];
             
+            $controller= "\PRIME\FormElements\\".ucwords($category)."\\".PhText::camelize($type).'Controller'; 
+            $tempController = new $controller();
 
-            if($category=="parameters")
-        {
-            
-            switch ($type) {
-            case 'input':
-                $tempController = new \PRIME\FormElements\Parameters\InputController();
-                $output[]=$tempController->Render($value->label,$value->name);
-                break;
-            case 'select':
-                $tempController = new \PRIME\FormElements\Parameters\SelectController();
-                $output[]=$tempController->Render($value->label,$value->name,$value->values);
-                break;
-            case 'color_select':
-                $tempController = new \PRIME\FormElements\Parameters\ColorSelectController();
-                $output[]=$tempController->Render($value->label,$value->name);
-                break;
-            }
-            
-        }
-        elseif($category=="db")
-        {
-            switch ($type) {
-            case 'dashboard_select':
-                $tempController = new \PRIME\FormElements\Database\DashboardSelectController();
-                $output[]=$tempController->Render($value['label'],$value['name'],$value['values']);
-                break;
-            case 'link_select':
-                $tempController = new \PRIME\FormElements\Database\LinkSelectController();
-                $output[]= $tempController->Render($value['label'],$value['name'],$value['values']);
-                break;
-            case 'multi_select':
-                $tempController = new \PRIME\FormElements\Database\MultiSelectController();
-                $output[]=$tempController->Render($value['label'],$value['name'],$value['values']);
-                break;
-            case 'single_select':
-                $tempController = new \PRIME\FormElements\Database\SingleSelectController();
-                $output[]=$tempController->Render($value['label'],$value['name'],$value['values']);
-                break;
+            $arg=array();
+            foreach ($value as $param_key => $param_val)
+            {
+                if($param_key!='type')
+                {
+                    $arg[]=$param_val;
                 }
-             }
-           }  
+                
+            }
+
+            $output[]=call_user_func_array(array($tempController,'Render'),$arg);
+        }
         
         $data_out['style']=array();
         $data_out['style'][]="<style>";

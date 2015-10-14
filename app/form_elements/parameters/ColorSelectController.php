@@ -5,7 +5,7 @@ use PRIME\FormElements\FormElementBase as FormElementBase;
 class ColorSelectController extends FormElementBase
 {
     
-    public function Render($label,$name)
+    public function Render($name,$label)
     {
         $output=array();
 
@@ -71,7 +71,7 @@ class ColorSelectController extends FormElementBase
         $colors['Scrollab']=array('#293E6A','#3B5998','#74AAF7','#77BA9B','#B6A754');
         $colors['Mohiuddin Parekh']=array('#B0A472','#F5DF65','#2B9464','#59C8DF','#D14D28');
         $colors['Boy-Coy']=array('#F15D58','#363635','#83BF17','#A68F58','#DCDDCD');
-        $colors['DrupalCon']=array('#BB0F00','#6','#6D2908','#1BA3E1','#02D0AC');
+        $colors['DrupalCon']=array('#BB0F00','#6E0000','#6D2908','#1BA3E1','#02D0AC');
         $colors['Windows of New York']=array('#753A48','#954F47','#C05949','#9AADBD','#CBBB58');
         $colors['Lorenzo Verzini']=array('#F0F1EE','#333332','#1352A2','#FFD464','#FB6964');
         $colors['Raspberry Theme']=array('#591E23','#D94E67','#F2D8A7','#A68572','#73503C');
@@ -82,7 +82,7 @@ class ColorSelectController extends FormElementBase
         $colors['FIG']=array('#493621','#82683B','#F76835','#D7D1CA','#B8BE1C');
         $colors['Viximo']=array('#57102C','#AA2159','#009D97','#7EC2AA','#BCC747');
         $colors['Osaki']=array('#FF9700','#CC6600','#999900','#333300','#660066');
-        $colors['Kashi']=array('#5DB89D','#7034','#8C8535','#FFCA00','#F26547');
+        $colors['Kashi']=array('#5DB89D','#007034','#8C8535','#FFCA00','#F26547');
         $colors['Bassenettes']=array('#FF5108','#FFFDF8','#FF2321','#000000','#F7FF3F');
         $colors['Adam Hartwig']=array('#E8A0B8','#FFC300','#BCCF3D','#02C9C9','#333333');
         $colors['Alexandra Kuban Web Design']=array('#FAC8BF','#94FFFC','#466675','#6A8D9D','#CCCCCC');
