@@ -29,7 +29,7 @@ class ThemeCreatorController extends ControllerBase
 
         $theme->name = $this->request->getPost("name");
 
-        if(!ThemeLayout::findByName($theme->name))
+        if(!ThemeLayout::findFirstByName($theme->name))
         {       
 
             if (!$theme->save()) {
@@ -109,8 +109,6 @@ class ThemeCreatorController extends ControllerBase
                     }
                     $file_name=implode( "/", array_slice($temp, -2));
                     
-                    if($base=='')
-                    {
                         $it = new \RecursiveDirectoryIterator($path);
                         foreach(new \RecursiveIteratorIterator($it) as $file)
                         {
@@ -120,13 +118,12 @@ class ThemeCreatorController extends ControllerBase
 
                             if (strpos($file,$file_name) !== false) {
                                 $file= str_replace ($_SERVER['DOCUMENT_ROOT'],"",$file);
-                                $base=  str_replace ($file_name,"",$file);
+                                $url='<link href="'.$file.'" rel="stylesheet">';
                                 break;
                             }
                         }
-                    }
 
-                    $url='<link href="'.$base.$file_name.'" rel="stylesheet">';
+                    
                 }
             }
             
@@ -165,8 +162,7 @@ class ThemeCreatorController extends ControllerBase
                     }
                     $file_name=implode( "/", array_slice($temp, -2));
 
-                    if($base=='')
-                    {
+
                         $it = new \RecursiveDirectoryIterator($path);
                         foreach(new \RecursiveIteratorIterator($it) as $file)
                         {
@@ -174,13 +170,12 @@ class ThemeCreatorController extends ControllerBase
                             
                             if (strpos($file,$file_name) !== false) {
                                 $file= str_replace ($_SERVER['DOCUMENT_ROOT'],"",$file);
-                                $base=  str_replace ($file_name,"",$file);
+                                $url='<script src="'.$file.'"></script>';
                                 break;
                             }
                         }
-                    }
 
-                    $url='<script src="'.$base.$file_name.'"></script>';
+                    
 
                     
                 }
@@ -630,7 +625,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
         fclose($fp);
 
 
-        $view=$html.$script;
+        $view=$html.$script.'{{ content() }}';
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))
@@ -792,7 +787,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         fclose($fp);
 
 
-        $view=$html.$script;
+        $view=$html.$script.'{{ content() }}';
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))
@@ -923,7 +918,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
             }
         }
 
-        $this->response->redirect("/theme_creator/layout_editor/".$theme);
+        $this->response->redirect("/theme_creator/dashboard_edit/".$theme);
         
     
     }

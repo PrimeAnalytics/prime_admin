@@ -5,7 +5,7 @@ use PRIME\FormElements\FormElementBase as FormElementBase;
 class DashboardSelectController extends FormElementBase
 {
     
-    public function Render($table_id)
+    public function Render()
     {
         $output=array();
 
@@ -14,7 +14,7 @@ class DashboardSelectController extends FormElementBase
                                                         <input id="dashboardList" style="width:100%" name="parameters[target_dashboard]">
                                                         </input>
                          </div>
-                        <div class="form-group">
+                        <div class="form-group db-item">
                                     <label class="form-label">Linking Column</label>
                                                 <input id="widget-link-column" name="parameters[db][link_column]" style="width:100%">
                                                 </input>
@@ -37,16 +37,16 @@ class DashboardSelectController extends FormElementBase
 
 
 
-        $output['js'][]=  '$.getJSON("/dashboard/getLinks", function(data){
+        $output['js'][]=  '$.getJSON("/links/getList", function(data){
                                                         $("#target-link").select2({
                                                         placeholder: "Select a Link",
                                                         data:data
                                                         })
                                                         });';
 
-        $output['js'][]='$(\'#'.$table_id.'\').on(\'change\', function() {
+        $output['js'][]='$(\'#dbTable\').on(\'change\', function() {
 
-                var table = $(\'#'.$table_id.'\').select2(\'val\');
+                var table = $(\'#dbTable\').select2(\'val\');
 
                 $.getJSON("/get/DBColumns/" + table, function (data) {
 

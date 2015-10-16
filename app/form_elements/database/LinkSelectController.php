@@ -5,7 +5,7 @@ use PRIME\FormElements\FormElementBase as FormElementBase;
 class LinkSelectController extends FormElementBase
 {
     
-    public function Render($table_id)
+    public function Render()
     {
         $output=array();
 
@@ -20,16 +20,16 @@ class LinkSelectController extends FormElementBase
                                                 </input>
                          </div>';
 
-        $output['js'][]=  '$.getJSON("/dashboard/getLinks", function(data){
+        $output['js'][]=  '$.getJSON("/links/getList", function(data){
                                                         $("#target-link").select2({
                                                         placeholder: "Select a Link",
                                                         data:data
                                                         })
                                                         });';
 
-        $output['js'][]='$(\'#'.$table_id.'\').on(\'change\', function() {
+        $output['js'][]='$(\'#dbTable\').on(\'change\', function() {
 
-                var table = $(\'#'.$table_id.'\').select2(\'val\');
+                var table = $(\'#dbTable\').select2(\'val\');
 
                 $.getJSON("/get/DBColumns/" + table, function (data) {
 

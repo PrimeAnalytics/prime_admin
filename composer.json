@@ -1,27 +1,5 @@
 {
     "require": {
-        "league/oauth2-client": "^0.12.1",
-        "league/oauth2-github": "^0.1.0",
-        "aego/oauth2-yandex": "^0.1.0",
-        "j4k/oauth2-vkontakte": "^1.0",
-        "wheniwork/oauth2-vend": "^0.1.0",
-        "stevenmaguire/oauth2-uber": "^0.1.1",
-        "wheniwork/oauth2-square": "^1.2",
-		"audeio/spotify-web-api": "0.*",
-        "deminoth/oauth2-naver": "^0.1.0",
-        "stevenmaguire/oauth2-microsoft": "^0.1.0",
-        "aego/oauth2-mailru": "^0.2.0",
-        "grumpydictator/nest-oauth2-provider": "^0.6.0",
-        "cloudmanaged/oauth2-freeagent": "^1.0",
-        "stevenmaguire/oauth2-eventbrite": "^0.1.0",
-        "dilab/envato-oauth2-provider": "^0.1.0",
-        "wheniwork/oauth2-clover": "^0.2.0",
-        "bookingsync/oauth2-bookingsync-php": "^0.1.1",
-        "depotwarehouse/oauth2-bnet": "^3.0",
-        "riskio/oauth2-auth0": "^0.1.0",
-        "mashape/unirest-php": "^2.6",
-      "phpoffice/phpexcel": "^1.8",
-      "danielstjules/stringy": "~2.0"
+        "crate/crate-pdo": "^0.3.0"
     }
-
 }

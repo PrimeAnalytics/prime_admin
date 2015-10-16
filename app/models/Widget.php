@@ -31,21 +31,9 @@ class Widget extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var string
-     */
-    public $width;
-
-    /**
-     *
      * @var integer
      */
     public $portlet_id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $dashboard_id;
 
     /**
      *
@@ -54,18 +42,11 @@ class Widget extends \Phalcon\Mvc\Model
     public $parameters;
 
     /**
-     *
-     * @var string
-     */
-    public $csv;
-
-    /**
      * Initialize method for model.
      */
     public function initialize()
     {
         $this->belongsTo('portlet_id', 'PRIME\Models\Portlet', 'id', array('alias' => 'Portlet'));
-        $this->belongsTo('dashboard_id', 'PRIME\Models\Dashboard', 'id', array('alias' => 'Dashboard'));
     }
 
     /**

@@ -10,19 +10,48 @@ class FormController extends ControllerBase
         $this->view->setViewsDir('../app/views/');
         $this->view->setLayoutsDir('/layouts/');
     }
+
+    function category_type(&$item, $key)
+    {
+        $temp=explode("/" ,$item['type']);
+        $type=array_values($temp)[1];
+        $category=array_values($temp)[0];
+
+        $item['category']=$category;
+        $item['type']=$type;
+
+        return $item;
+    }
     
     public function renderAction($layout)
     {      
-        $layout=json_decode($layout);
+        $layout=json_decode($layout,true);
         $output=array();
+
+
+        array_walk($layout, array($this, 'category_type'));
+        $table_set=false;
         
         foreach($layout as $value)
         {
 
-            $temp=explode("/" ,$value->type);
-            $type=array_values($temp)[1];
-            $category=array_values($temp)[0];
+            $type=$value['type'];
+            $category=$value['category'];
             
+            if($category=="database")
+            {
+                
+                if(!$table_set)
+                {
+                    $controller= "\PRIME\FormElements\\".ucwords($category)."\TableSelectController"; 
+                    $tempController = new $controller();
+                    $output[]=call_user_func(array($tempController,'Render'));
+                
+                }
+                $table_set=true;
+            
+            }
+
             $controller= "\PRIME\FormElements\\".ucwords($category)."\\".PhText::camelize($type).'Controller'; 
             $tempController = new $controller();
 

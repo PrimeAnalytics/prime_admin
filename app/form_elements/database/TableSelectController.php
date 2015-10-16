@@ -17,11 +17,23 @@ class TableSelectController extends FormElementBase
                                 </div>';
 
         $output['js'][]= '
+$(\'.db-item\').hide();
+
         $.getJSON("/get/DBTables", function (data) {
             $("#dbTable").select2({
                 data: data
             });
-        });';
+       
+        });
+
+$(\'#dbTable\').on(\'change\', function() {
+
+ $(\'.db-item\').show();
+
+});
+
+
+';
 
         return $output;
 

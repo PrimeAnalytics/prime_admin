@@ -140,7 +140,22 @@ class LinksController extends ControllerBase
         echo json_encode($json);
     }
 
+    public function getListAction()
+    {
+    $this->view->disable();
+    $links = Links::findByorganisation_id($this->organisation_id);
     
+    $json = array();
+    foreach($links as $link)
+    {
+        
+        $json[] = array(
+                'id' => $link->id,
+                           'text' => $link->name
+                         );
+    }
     
-    
+    echo json_encode($json);
+    }
+   
 }

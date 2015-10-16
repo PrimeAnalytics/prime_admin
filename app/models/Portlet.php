@@ -15,13 +15,7 @@ class Portlet extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $style;
-
-    /**
-     *
-     * @var string
-     */
-    public $width;
+    public $type;
 
     /**
      *

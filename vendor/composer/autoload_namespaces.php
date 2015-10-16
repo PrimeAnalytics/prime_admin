@@ -6,10 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Unirest' => array($vendorDir . '/mashape/unirest-php/src'),
-    'PHPExcel' => array($vendorDir . '/phpoffice/phpexcel/Classes'),
-    'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),
-    'Guzzle' => array($vendorDir . '/guzzle/guzzle/src'),
-    'Grumpydictator\\NestOauth2Provider' => array($vendorDir . '/grumpydictator/nest-oauth2-provider/src'),
-    'Doctrine\\Common\\Collections\\' => array($vendorDir . '/doctrine/collections/lib'),
+    'Crate\\' => array($vendorDir . '/crate/crate-pdo/src'),
 );

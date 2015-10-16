@@ -9,6 +9,9 @@
 <?php echo $form_body; ?>
     </div>
     <div class="modal-footer bg-blue">   
+        <?php echo $this->tag->hiddenField(array('column')); ?>
+        <?php echo $this->tag->hiddenField(array('row')); ?>
+        <?php echo $this->tag->hiddenField(array('dashboard_id')); ?>
         <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
         <?php echo $this->tag->submitButton(array("Save","class"=>"btn btn-dark")) ?>
     </div>

@@ -104,7 +104,7 @@ class Elements extends Phalcon\Mvc\User\Component
                 foreach ($this->_userMenu as $controller => $option) {
                     
                     $newMenuLink =  array (
-                    'link' => $controller.'/'.$option['action'],
+                    'link' => '/'.$controller.'/'.$option['action'],
                     'title' => $option['caption'],
                     'icon' => $option['icon'],
                     'selected' => 'false'
@@ -120,7 +120,7 @@ class Elements extends Phalcon\Mvc\User\Component
                 foreach ($this->_adminMenu as $controller => $option) {
                     
                     $newMenuLink =  array (
-                    'link' => $controller.'/'.$option['action'],
+                    'link' => '/'.$controller.'/'.$option['action'],
                     'title' => $option['caption'],
                     'icon' => $option['icon'],
                     'selected' => 'false'
@@ -135,7 +135,7 @@ class Elements extends Phalcon\Mvc\User\Component
                 foreach ($this->_supervisorMenu as $controller => $option) {
                     
                     $newMenuLink =  array (
-                    'link' => $controller.'/'.$option['action'],
+                    'link' => '/'.$controller.'/'.$option['action'],
                     'title' => $option['caption'],
                     'icon' => $option['icon'],
                     'selected' => 'false'

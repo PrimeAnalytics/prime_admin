@@ -5,6 +5,7 @@ use PRIME\Models\Widget;
 use PRIME\Models\Portlet;
 use PRIME\Models\Organisation;
 
+
 class DashboardController extends ControllerBase
 {
     public function initialize()
@@ -14,15 +15,20 @@ class DashboardController extends ControllerBase
         parent::initialize();
         
     }
-         
-    public function getLinksAction($id)
-    {
-        $this->view->disable();
-        $dashboard = Dashboard::findFirstByid($id);   
-        echo $dashboard->links;
-    }
-    
-    
+        
+public function testpdoAction()
+{
+
+
+  $dbh = new \Crate\PDO\PDO('crate:localhost:4200', null, null, []);
+  foreach($dbh->query('SELECT text FROM tweets') as $row) {
+      print_r($row);
+      }
+  $dbh = null;
+  }
+
+ 
+       
     public function getDashboardsAction()
     {
         $this->view->disable();
@@ -114,6 +120,17 @@ class DashboardController extends ControllerBase
      */
     public function createAction()
     {
+
+     // Check if the user has uploaded files
+        if ($this->request->hasFiles() == true) {
+            $baseLocation = '/files/';
+
+            // Print the real file names and sizes
+            foreach ($this->request->getUploadedFiles() as $file) {          
+                $file->moveTo($baseLocation . $file->getName());
+            }
+        }
+
         $dashboard = new Dashboard();
 
         $dashboard->title = $this->request->getPost("title");

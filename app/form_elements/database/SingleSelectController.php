@@ -10,15 +10,15 @@ class SingleSelectController extends FormElementBase
 
         $output=array();
 
-        $output['html'][]='<div class="form-group">
+        $output['html'][]='<div class="form-group db-item">
                                     <label>'.$label.'</label>
                                         <input id="'.$name.'" name="parameters[db]['.$name.']" class="form-control" data-placeholder="Choose a column...">
                                         </input>
                                 </div>';
 
-        $output['js'][]= '$(\'#'.$table_id.'\').on(\'change\', function() {
+        $output['js'][]= '$(\'#dbTable\').on(\'change\', function() {
 
-        var table = $(\'#'.$table_id.'\').select2(\'val\');
+        var table = $(\'#dbTable\').select2(\'val\');
 
         $.getJSON("/get/DBColumns/" + table, function (data) {
 
