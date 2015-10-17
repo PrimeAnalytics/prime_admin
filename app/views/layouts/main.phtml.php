@@ -33,6 +33,8 @@
 
       <script src="/assets/plugins/bootstrap-select2/select2.js" type="text/javascript"></script>
 
+      <script src="/assets/global/plugins/noty/jquery.noty.packaged.min.js"></script>  <!-- Notifications -->
+
   </head>
   <!-- LAYOUT: Apply "submenu-hover" class to body element to have sidebar submenu show on mouse hover -->
   <!-- LAYOUT: Apply "sidebar-collapsed" class to body element to have collapsed sidebar -->

@@ -35,9 +35,11 @@ class IndexController extends ControllerBase
 
     public function adminAction()
     {
+        $auth = $this->session->get("auth");
         return $this->dispatcher->forward(array(
             "controller" => "organisation",
-            "action" => "index"
+            "action" => "edit",
+            "params" => array($auth['organisation_id'])
         ));
     }
     

@@ -16,17 +16,6 @@ class DashboardController extends ControllerBase
         
     }
         
-public function testpdoAction()
-{
-
-
-  $dbh = new \Crate\PDO\PDO('crate:localhost:4200', null, null, []);
-  foreach($dbh->query('SELECT text FROM tweets') as $row) {
-      print_r($row);
-      }
-  $dbh = null;
-  }
-
  
        
     public function getDashboardsAction()

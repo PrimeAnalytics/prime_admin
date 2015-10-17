@@ -25,9 +25,9 @@ class GetController extends ControllerBase
         $mySqlUser= $database->db_username;          
         $mySqlPassword=$database->db_password;      
         $mySqlDatabase=$database->db_name;
-        
+
         try{
-            $db= new \PDO("mysql:dbname=$mySqlDatabase;host=$host;",$mySqlUser,$mySqlPassword,array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));    
+            $db= new \Crate\PDO\PDO('crate:localhost:4200', $host, null, []);    
         }
         catch(PDOException $ex){
             
@@ -41,18 +41,21 @@ class GetController extends ControllerBase
     {
         $this->view->disable();
         $db = $this->getUserDB();
-        $dbTables = $db->prepare("SHOW COLUMNS FROM `$db_table`");
-        $dbTables->execute();
+        $statement = $db->prepare("select column_name from information_schema.columns where schema_name = 'db_prime' and table_name ='$db_table'");
+        $statement->execute();
         
         $json = array();
         
-        while($row = $dbTables->fetch(\PDO::FETCH_ASSOC))
+        while($row = $statement->fetch(\PDO::FETCH_ASSOC))
         {		
-            $json[] = array(
-                'id' => $row['Field'],
-                           'text' => $row['Field']
-                         );
-        }                        
+            foreach($row as $key=>$value) {
+                
+                $json[] = array(
+                    'id'=> $value,
+              'text' => $value
+            );
+            }
+        }                                  
         
         echo json_encode($json);
     }
@@ -61,12 +64,13 @@ class GetController extends ControllerBase
     {
         $this->view->disable();
         $db = $this->getUserDB();
-        $dbTables = $db->prepare("SHOW TABLES");
-        $dbTables->execute();
+        $statement=$db->prepare("select table_name from information_schema.tables where schema_name='db_prime' limit 100");
+        
+        $statement->execute();
         
         $json = array();
         
-        while($row = $dbTables->fetch(\PDO::FETCH_ASSOC))
+        while($row = $statement->fetch(\PDO::FETCH_ASSOC))
         {		
             foreach($row as $key=>$value) {
                 

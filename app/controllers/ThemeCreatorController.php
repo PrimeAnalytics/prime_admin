@@ -585,6 +585,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
         $portlet->form=$form;
 
         $type=$portlet->name;
+        $type=str_replace(" ","_",strtolower($type));
         
         if (!$portlet->save()) {
             foreach ($portlet->getMessages() as $message) {

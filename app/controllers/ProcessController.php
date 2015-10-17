@@ -68,12 +68,164 @@ class ProcessController extends ControllerBase
 
     public function editAction($id)
     {
-        
+
+        $process = Process::findFirstById($id);
+
+        $this->view->setVar('process',$process);
 
 
     }
 
-
-       
+    public function saveAction($id)
     
+    {
+        $process = Process::findFirstById($id);
+
+        $process->name = $this->request->getPost("name");
+        $process->xml = $this->request->getPost("xml");
+        $process->parameters = $this->request->getPost("parameters");
+        $process->storage = $this->request->getPost("storage");
+
+        if (!$process->save()) {
+            foreach ($process->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            $this->response->redirect("organisation/index/");
+        }
+
+        $this->flash->success("Process was saved successfully");
+
+        $this->response->redirect("process/edit/".$process->id);
+
+
+    }
+
+    public function getUserDB()
+    {
+        $database = OrgDatabase::findFirstByorganisation_id($this->organisation_id);
+        
+        $host= $database->db_host; 
+        $mySqlUser= $database->db_username;          
+        $mySqlPassword=$database->db_password;      
+        $mySqlDatabase=$database->db_name;
+
+        try{
+            $db= new \Crate\PDO\PDO('crate:localhost:4200;', null, null, []);    
+        }
+        catch(PDOException $ex){
+            
+            die(json_encode(array('outcome' => false, 'message' => 'Database connection failed')));   
+        }
+        
+        return $db;
+    }
+
+
+    public function getResultsAction($id)
+    {
+        $process = Process::findFirstById($id);
+        $this->view->setVar('process',$process);
+
+       $parameters= json_decode($process->parameters,true);
+
+       $db=$this->getUserDB();
+
+       $this->view->disable();
+
+       $row_limit=200;
+       $data_out=array();
+
+       $selects=array();
+
+       foreach($parameters['columns'] as &$column)
+       {
+       
+           $selects[] = $column['aggregation']."(".$column['column'].") AS ".$column['name']."";
+       
+       }
+
+       $select_string= implode(" , ",$selects);
+
+       $group_string= ' GROUP BY '.implode(" , ",$parameters['group']);
+
+       $order_string= ' ORDER BY '.implode(" , ",$parameters['order']);
+
+       $db_table_name=$parameters['table'];
+
+      
+       $statement=$db->prepare("SELECT ".implode(" , ",$parameters['group']).", $select_string FROM db_prime.$db_table_name $group_string $order_string Limit $row_limit");
+            
+                   if($statement->execute())
+                   {
+                       
+                       foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $row)
+                       {
+                           foreach($row as $sub_key=>$sub_value)
+                           {
+                               $floatVal = floatval($sub_value);
+                               
+                               if($sub_value=="")
+                               {
+                                   $row[$sub_key]="0";
+                               }
+                               else if(ctype_digit($sub_value))
+                               {
+                                   $row[$sub_key] = round($sub_value, 2, PHP_ROUND_HALF_DOWN);
+                               }
+                           }
+                           $data_out[]= $row;
+                       }
+                   }
+
+
+              return $data_out;
+
+    }
+
+    public function resultTableAction($id){
+
+        $array=$this->getResultsAction($id);
+            // start table
+
+        $html = '<table class="table table-hover"><thead>';
+
+            // header row
+
+            $html .= '<tr>';
+
+            foreach($array[0] as $key=>$value){
+
+                    $html .= '<th>' . $key . '</th>';
+
+                }
+
+            $html .= '</tr></thead><tbody>';
+
+            // data rows
+
+            foreach( $array as $key=>$value){
+
+                $html .= '<tr>';
+
+                foreach($value as $key2=>$value2){
+
+                    $html .= '<td>' . $value2 . '</td>';
+
+                }
+
+                $html .= '</tr>';
+
+            }
+
+            // finish table and return it
+
+            $html .= '</tbody></table>';
+
+            echo $html;
+
+        }
+
 }
+
+

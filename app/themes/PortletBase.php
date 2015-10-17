@@ -107,7 +107,7 @@ class PortletBase extends Controller
         $this->view->setVar("form_body", $form_body);
         $this->view->setVar("type", $this->portlet_name);
 
-        $form_type='/portlets/'.$this->portlet_name.'/create';
+        $form_type='/portlets/'.str_replace(" ","_",strtolower($this->portlet_name)).'/create';
         $this->view->setVar("form_type", $form_type);
         
  
@@ -117,7 +117,7 @@ class PortletBase extends Controller
     {
         $portlet = new Portlet();
 
-        $portlet->type = $this->portlet_name;
+        $portlet->type =str_replace(" ","_",strtolower($this->portlet_name));
         $portlet->column = $this->request->getPost("column");
         $portlet->row = $this->request->getPost("row");
         $portlet->dashboard_id = $this->request->getPost("dashboard_id");
