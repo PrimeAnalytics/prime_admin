@@ -7,7 +7,7 @@ use PRIME\Models\OrgDatabase;
 class ProcessController extends ControllerBase
 {
     public $organisation_id ="";
-    protected function initialize()
+    protected function initialise()
     {
         \Phalcon\Tag::prependTitle('PRIME | ');
         $this->view->setViewsDir('../app/views/');
@@ -103,7 +103,9 @@ class ProcessController extends ControllerBase
 
     public function getUserDB()
     {
-        $database = OrgDatabase::findFirstByorganisation_id($this->organisation_id);
+        $auth = $this->session->get("auth");
+
+        $database = OrgDatabase::findFirstByorganisation_id($auth['organisation_id']);
         
         $host= $database->db_host; 
         $mySqlUser= $database->db_username;          
@@ -121,17 +123,58 @@ class ProcessController extends ControllerBase
         return $db;
     }
 
+    public function getHeadersAction($id)
+    {
+        $this->view->disable();
+        
+        $array=$this->getResults($id);
 
-    public function getResultsAction($id)
+        $headers=array();
+        foreach($array[0] as $key=>$value){
+            $temp=array();
+
+            $temp['id']= $key;
+            $temp['text']= $key;
+
+            $headers[]=$temp;
+
+        }
+
+        echo json_encode($headers);
+    }
+
+    public function getProcessesAction()
+    {
+        
+        if ($this->session->has("auth")) {
+            //Retrieve its value
+            $auth = $this->session->get("auth");
+
+            
+            $organisation = Organisation::findFirstByid($auth['organisation_id']);   
+            $processes = $organisation->Process;
+            
+            $json = array();
+            foreach($processes as $process)
+            {
+                $json[] = array(
+                        'id' => $process->id,
+                                   'text' => $process->name
+                                 );
+            }
+            
+            echo json_encode($json);
+            
+        }
+    }
+
+    public function getResults($id,$links=null)
     {
         $process = Process::findFirstById($id);
-        $this->view->setVar('process',$process);
 
        $parameters= json_decode($process->parameters,true);
 
        $db=$this->getUserDB();
-
-       $this->view->disable();
 
        $row_limit=200;
        $data_out=array();
@@ -185,7 +228,7 @@ class ProcessController extends ControllerBase
 
     public function resultTableAction($id){
 
-        $array=$this->getResultsAction($id);
+        $array=$this->getResults($id);
             // start table
 
         $html = '<table class="table table-hover"><thead>';

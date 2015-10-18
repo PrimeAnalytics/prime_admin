@@ -1,0 +1,18 @@
+<div id="w_{{widget.id}}"></div><script>
+$('#w_{{widget.id}}').highcharts({
+title: {
+    text: '{{parm['title']}}'
+},
+    xAxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+
+    series: [{
+        data: [{% for row in parm['db'] %}
+    {{ row['x_axis'] }} ,
+{% endfor  %}]
+    }]
+
+});
+</script>{{ content() }}

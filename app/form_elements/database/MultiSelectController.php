@@ -19,7 +19,7 @@ class MultiSelectController extends FormElementBase
 
         var table = $(\'#dbTable\').select2(\'val\');
 
-        $.getJSON("/get/DBColumns/" + table, function (data) {
+        $.getJSON("/process/getHeaders/" + table, function (data) {
 
             $("#'.$name.'").select2({
                 multiple: true,

@@ -116,6 +116,10 @@ class DashboardBase extends Controller
         
         $this->view->pick(strtolower($dashboard->type."/view"));
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+
+        $parameters= (array)json_decode($dashboard->parameters,true);
+
+        $this->view->setVar("parm", $parameters); 
        
         $menu= $this->elements->getMenu();
         $this->view->setVar("menu", $menu); 
@@ -181,7 +185,7 @@ class DashboardBase extends Controller
   float: left;
   margin-bottom: 5px;
   margin-top: 5px;
-  opacity: 0.5;
+  opacity: 0.9;
   padding: 0;
   position: relative;
   transition: opacity 200ms ease;
@@ -220,7 +224,7 @@ class DashboardBase extends Controller
   float: left;
   margin-bottom: 5px;
   margin-top: 5px;
-  opacity: 0.5;
+  opacity: 0.9;
   padding: 0;
   position: relative;
   transition: opacity 200ms ease;

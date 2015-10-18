@@ -41,22 +41,54 @@ class WidgetBase extends Controller
 
     public function renderAction($id,$type)
     {
-        $this->view->setViewsDir($this->view_dir);
-
+        
         $widget = Widget::findFirstByid($id);  
+        $parameters= (array)json_decode($widget->parameters,true);
+
+        if(array_key_exists("db",$parameters))
+        {
+            $parameters= $this->getData($parameters);
+
+        }
+
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+
+        $this->view->setViewsDir($this->view_dir);
 
         $type=explode("/",$widget->type);    
       
         $this->view->pick(strtolower(end($type)."/view"));
 
-        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
-
-        $parameters= (array)json_decode($widget->parameters,true);
-
         $this->view->setVar("parm", $parameters); 
 
         $this->view->setVar("widget", $widget); 
  
+    }
+
+    public function getData($parameters)
+    {
+        $processController = new \PRIME\Controllers\ProcessController();
+        $data=$processController->getResults($parameters["db"]['table']);
+
+        $dbTemp=$parameters["db"];
+        $parameters["db"]=array();
+
+        foreach($data as $key=>$row)
+        {
+            $temp=array();
+            foreach($dbTemp as $parmKey=>$parmValue)
+            {
+                if($parmKey!='table')
+                {
+                    $temp[$parmKey]=$row[$parmValue];    
+                }
+            }
+
+            $parameters["db"][]=$temp;
+        }
+
+        return $parameters;
+    
     }
 
     
@@ -78,7 +110,7 @@ class WidgetBase extends Controller
         $this->view->setVar("form_body", $form_body);
         $this->view->setVar("type", $this->widget_name);
 
-        $form_type='/widgets/'.$this->widget_name.'/create';
+        $form_type='/widgets/'.str_replace(" ","_",strtolower($this->widget_name)).'/create';
         $this->view->setVar("form_type", $form_type);
         
         
@@ -88,7 +120,7 @@ class WidgetBase extends Controller
     {
         $widget = new Widget();
 
-        $widget->type = $this->widget_name;
+        $widget->type = str_replace(" ","_",strtolower($this->widget_name));
         $widget->column = $this->request->getPost("column");
         $widget->row = $this->request->getPost("row");
         $widget->portlet_id = $this->request->getPost("portlet_id");

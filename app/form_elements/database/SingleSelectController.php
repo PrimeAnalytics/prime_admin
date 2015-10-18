@@ -5,7 +5,7 @@ use PRIME\FormElements\FormElementBase as FormElementBase;
 class SingleSelectController extends FormElementBase
 {
     
-    public function Render($label,$name)
+    public function Render($name,$label)
     {
 
         $output=array();
@@ -20,7 +20,7 @@ class SingleSelectController extends FormElementBase
 
         var table = $(\'#dbTable\').select2(\'val\');
 
-        $.getJSON("/get/DBColumns/" + table, function (data) {
+        $.getJSON("/process/getHeaders/" + table, function (data) {
 
             $("#'.$name.'").select2({
                 data: data

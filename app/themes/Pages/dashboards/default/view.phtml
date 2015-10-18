@@ -37,7 +37,7 @@
       <!-- END SIDEBAR MENU TOP TRAY CONTENT-->
       <!-- BEGIN SIDEBAR MENU HEADER-->
       <div class="sidebar-header">
-        <img src="assets/img/logo_white.png" alt="logo" class="brand" data-src="assets/img/logo_white.png" data-src-retina="assets/img/logo_white_2x.png" width="78" height="22"><div class="sidebar-header-controls">
+        <img src="{{parm['logo']}}" alt="logo" class="brand" data-src="{{parm['logo']}}" data-src-retina="assets/img/logo_white_2x.png" width="78" height="22"><div class="sidebar-header-controls">
           <button type="button" class="btn btn-xs sidebar-slide-toggle btn-link m-l-20" data-pages-toggle="#appMenu"><i class="fa fa-angle-down fs-16"></i>
           </button>
           <button type="button" class="btn btn-link visible-lg-inline" data-toggle-pin="sidebar"><i class="fa fs-12"></i>
@@ -92,7 +92,7 @@
         <div class=" pull-left sm-table">
           <div class="header-inner">
             <div class="brand inline">
-              <img src="assets/img/logo.png" alt="logo" data-src="assets/img/logo.png" data-src-retina="assets/img/logo_2x.png" width="78" height="22">
+              <img src="{{parm['logo']}}" alt="logo" data-src="{{parm['logo']}}" data-src-retina="{{parm['logo']}}" width="78" height="22">
 </div>
             <!-- START NOTIFICATION LIST -->
             <ul class="notification-list no-margin hidden-sm hidden-xs b-grey b-l b-r no-style p-l-30 p-r-20">
@@ -1541,7 +1541,8 @@
 <script src="/themes/Pages/assets/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 <script src="/themes/Pages/assets/pages/js/pages.min.js"></script>
 <script src="/themes/Pages/assets/assets/js/dashboard.js"></script>
-<script src="/themes/Pages/assets/assets/js/scripts.js"></script><script type="text/javascript">
+<script src="/themes/Pages/assets/assets/js/scripts.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script><script type="text/javascript">
     window.onload = function()
     {
       // fix for windows 8

@@ -4,104 +4,103 @@
     var links =<?php echo json_encode($links)?>;
     </script>
 
-      
-<div class="page-content page-builder">
-    <div id="hidden-small-screen-message">
-        <h2 class="m-t-40"><strong>Page Builder</strong> is not available on small screen</h2>
-        <p>Editor is not adapted to screen smaller than 1024px.</p>
-        <p>For that reason, page builder is only visible on screen bigger.</p>
-    </div>
-    <div id="page-builder" class="bg-primary">
-        <div class="tabs tabs-linetriangle">
-            <ul class="nav nav-tabs">
-                <li class="width-16p active">
-                    <a href="#info" data-toggle="tab">
-                        <span class="text-center">Basic Info</span>
-                    </a>
-                </li>
-                <li class="width-16p">
-                    <a href="#layout" data-toggle="tab">
-                        <span class="text-center">Layout</span>
-                    </a>
-                </li>
+    <div class="page-content page-builder">
+        <div id="hidden-small-screen-message">
+            <h2 class="m-t-40"><strong>Page Builder</strong> is not available on small screen</h2>
+            <p>Editor is not adapted to screen smaller than 1024px.</p>
+            <p>For that reason, page builder is only visible on screen bigger.</p>
+        </div>
+        <div id="page-builder" class="bg-primary">
+            <div class="tabs tabs-linetriangle">
+                <ul class="nav nav-tabs">
+                    <li class="width-16p active">
+                        <a href="#info" data-toggle="tab">
+                            <span class="text-center">Basic Info</span>
+                        </a>
+                    </li>
+                    <li class="width-16p">
+                        <a href="#layout" data-toggle="tab">
+                            <span class="text-center">Layout</span>
+                        </a>
+                    </li>
 
-                <?php
+                    <?php
                 foreach($widgetList as $key=>$value)
                 {
               echo '<li class="width-16p"><a href="#'.$key.'" data-toggle="tab"><span class="text-center">'.$key.'</span></a></li>';
               }
-?>
-            </ul>
-            <div class="tab-content clearfix" style="overflow:visible">
-                <div class="tab-pane fade in active" id="info">
-                    <?php echo $this->tag->form("dashboard/save") ?>
+                    ?>
+                </ul>
+                <div class="tab-content clearfix" style="overflow:visible">
+                    <div class="tab-pane fade in active" id="info">
+                        <?php echo $this->tag->form("dashboard/save") ?>
                         <div class="col-md-12">
 
-                                <div class="form-group col-md-3">
-                                    <label class="form-label">Title</label>
-                                    <span class="help">e.g. "Market Metrics"</span>
-                                    <div class="input-with-icon  right">
-                                        <i class=""></i>
-                                        <?php echo $this->tag->textField(array("title", "class" => "form-control")) ?>
-                                    </div>
+                            <div class="form-group col-md-3">
+                                <label class="form-label">Title</label>
+                                <span class="help">e.g. "Market Metrics"</span>
+                                <div class="input-with-icon  right">
+                                    <i class=""></i>
+                                    <?php echo $this->tag->textField(array("title", "class" => "form-control")) ?>
                                 </div>
+                            </div>
 
-                                <div class="form-group col-md-3">
-                                    <label class="form-label">Menu Weight</label>
-                                    <span class="help">e.g. "Please Select"</span>
-                                    <div class="input-with-icon  right">
-                                        <i class=""></i>
-                                        <?php echo $this->tag->textField(array("weight", "class" => "form-control")) ?>
-                                    </div>
+                            <div class="form-group col-md-3">
+                                <label class="form-label">Menu Weight</label>
+                                <span class="help">e.g. "Please Select"</span>
+                                <div class="input-with-icon  right">
+                                    <i class=""></i>
+                                    <?php echo $this->tag->textField(array("weight", "class" => "form-control")) ?>
                                 </div>
+                            </div>
 
 
-                                <div class="form-group col-md-3">
-                                    <label class="form-label">Icon</label>
-                                    <span class="help">e.g. "Please Select"</span>
-                                    <div class="input-group">
-                                        <?php echo $this->tag->textField(array("icon", "class"=>"form-control icp icp-auto","data-placement"=>"bottomRight")) ?>
-                                        <span class="input-group-addon"></span>
-                                    </div>
+                            <div class="form-group col-md-3">
+                                <label class="form-label">Icon</label>
+                                <span class="help">e.g. "Please Select"</span>
+                                <div class="input-group">
+                                    <?php echo $this->tag->textField(array("icon", "class"=>"form-control icp icp-auto","data-placement"=>"bottomRight")) ?>
+                                    <span class="input-group-addon"></span>
                                 </div>
+                            </div>
 
-                                <div class="form-group col-md-3">
-                                    <label class="form-label">Style</label>
-                                    <span class="help">e.g. "Please Select"</span>
-                                    <div class="input">
+                            <div class="form-group col-md-3">
+                                <label class="form-label">Style</label>
+                                <span class="help">e.g. "Please Select"</span>
+                                <div class="input">
 
-                                        <select class="form-control" name="style">
+                                    <select class="form-control" name="style">
 
-                        <?php
+                                        <?php
                         foreach($dashboardList as $subfile)
                         {
                         $type= strtolower(str_replace(" ","_",$subfile)) ;
                         echo '<option value="'.$type.'" >'.$subfile.'</option>';
                         }
-                        ?>
+                                        ?>
 
-                                        </select>
-                                    </div>
+                                    </select>
                                 </div>
+                            </div>
                             <?php echo $this->tag->hiddenField("organisation_id") ?>
                             <?php echo $this->tag->hiddenField("id") ?>
                         </div>
-                    <p class="pull-right">
-                        <?php echo $this->tag->submitButton(array("Save", "class" => "btn btn-success btn-cons")) ?>
-                        <button type="button" class="btn btn-white btn-cons">Cancel</button>
-                    </p>
-                    </form>
-                </div>
-                <div class="tab-pane fade" id="layout">
-                    <?php
+                        <p class="pull-right">
+                            <?php echo $this->tag->submitButton(array("Save", "class" => "btn btn-success btn-cons")) ?>
+                            <button type="button" class="btn btn-white btn-cons">Cancel</button>
+                        </p>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="layout">
+                        <?php
                     foreach($portletList as $subfile)
                     {
                     $type= "c_".strtolower(str_replace(" ","_",$subfile)) ;
                     echo '<div data-type="'.$type.'" class="layout ui-draggable">'.$subfile.'</div>';
                     }
-                   ?>
-                </div>
-                <?php
+                        ?>
+                    </div>
+                    <?php
                 foreach($widgetList as $key=>$subfiles)
                 {
                   echo '<div class="tab-pane fade" id="'.$key.'">';
@@ -112,9 +111,9 @@
                 }
                 echo '</div>';
                 }
-?>
+                    ?>
 
-                <script>
+                    <script>
 
               function update_dropzone(){
               contents = $("#dashboard_iframe").contents();
@@ -185,16 +184,15 @@
               })};
 
 
-                </script>
+                    </script>
 
+                </div>
             </div>
         </div>
-    </div>
 
-    <iframe width="100%" src="/dashboards/<?php echo $dashboard_type ?>/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe" height="2000px" frameborder="0"></iframe>
+        <iframe width="100%" src="/dashboards/<?php echo $dashboard_type ?>/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe" height="2000px" frameborder="0"></iframe>
 
-</div>
-
+    </div> 
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

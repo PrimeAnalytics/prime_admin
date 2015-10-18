@@ -747,7 +747,9 @@ class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
         $widget->form=$form;
 
         $type=$widget->name;
+        $type=str_replace(" ","_",strtolower($type));
         $category=$widget->category;
+        $category=str_replace(" ","_",strtolower($category));
         
         if (!$widget->save()) {
             foreach ($widget->getMessages() as $message) {

@@ -153,7 +153,7 @@
         </div>
       </div>
       <!-- END SIDEBAR -->
-      <div class="main-content" style="height:2000px">
+      <div class="main-content" >
         <!-- BEGIN TOPBAR -->
         <div class="topbar">
           <div class="header-left">
@@ -363,15 +363,13 @@
         </div>
         <!-- END TOPBAR -->
         <!-- BEGIN PAGE CONTENT -->
-        <div class="page-content page-thin">
-
-            <?php echo $this->getContent() ?>
-
+        <div class="page-content page-thin" style="height:3000px">
+                <?php echo $this->getContent() ?>
           <div class="footer">
             <div class="copyright">
               <p class="pull-left sm-pull-reset">
                 <span>Copyright 2015 </span>
-                <span>Prime Analytics LAB</span>.
+                <span>Prime Analytics</span>.
                 <span>All rights reserved. </span>
               </p>
               <p class="pull-right sm-pull-reset">

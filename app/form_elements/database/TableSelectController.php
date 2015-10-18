@@ -19,7 +19,7 @@ class TableSelectController extends FormElementBase
         $output['js'][]= '
 $(\'.db-item\').hide();
 
-        $.getJSON("/get/DBTables", function (data) {
+        $.getJSON("/Process/getProcesses", function (data) {
             $("#dbTable").select2({
                 data: data
             });
