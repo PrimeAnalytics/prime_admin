@@ -24,9 +24,7 @@ class DashboardBase extends Controller
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
         }
-        
-        
-        
+
     }
 
     public function getDashboardsAction()
@@ -113,7 +111,56 @@ class DashboardBase extends Controller
         
         $dashboard = Dashboard::findFirstByid($id);    
         $organisation= Organisation::findFirstByid($dashboard->organisation_id);
+
+
+        $portlets=$dashboard->Portlet;
         
+        echo ' <script>
+                       var links = '.json_encode($organisation->Links->toArray()).' ;
+                       </script>';
+
+
+        echo '<script>
+                var d_links = "'.$links.'";
+                $.each(links, function(index, key ) {
+                $.each(d_links, function(index_d, key_d ) {
+
+          if(links[index].name==d_links[index_d].name)
+          links[index].default_value= d_links[index_d].value;
+          });
+          });
+            </script>
+            ';
+                
+            
+            echo '<script>
+            
+            function update_dashboard(link_id, value)
+            {  
+      
+            $.each(links, function(index, key ) {
+            if( links[index].id==link_id)
+
+            links[index].default_value = value;
+
+            }); 
+            ';
+            
+            foreach($portlets as $portlet)
+            {
+                $widgets=$portlet->Widget;
+            foreach ($widgets as $widget) {
+            
+                echo "update_".$widget->id."(link_id);";
+                
+            }
+            }
+
+            echo '};
+            </script>';
+
+
+
         $this->view->pick(strtolower($dashboard->type."/view"));
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
 
@@ -164,11 +211,12 @@ class DashboardBase extends Controller
             
             foreach ($portlets as $portlet) {
                 echo '<script> 
-                $("div").find("#row_'.$portlet->row.'").append( $("<div></div>").load("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/builder", function(){
+                $("div").find("#row_'.$portlet->row.'").append( $("<div></div>").load("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(){';
 
-                parent.update_dropzone();
-                
-                }));
+                if($type=="builder"){
+                    echo 'parent.update_dropzone();';
+                  }
+                echo '}));
                 </script>';
             };
     

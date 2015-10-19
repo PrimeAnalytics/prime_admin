@@ -7,7 +7,7 @@ use PRIME\Models\OrgDatabase;
 class ProcessController extends ControllerBase
 {
     public $organisation_id ="";
-    protected function initialise()
+    protected function initialize()
     {
         \Phalcon\Tag::prependTitle('PRIME | ');
         $this->view->setViewsDir('../app/views/');
@@ -145,9 +145,8 @@ class ProcessController extends ControllerBase
 
     public function getProcessesAction()
     {
+        $this->view->disable();
         
-        if ($this->session->has("auth")) {
-            //Retrieve its value
             $auth = $this->session->get("auth");
 
             
@@ -165,23 +164,70 @@ class ProcessController extends ControllerBase
             
             echo json_encode($json);
             
-        }
     }
 
     public function getResults($id,$links=null)
     {
-        $process = Process::findFirstById($id);
+
+       $process = Process::findFirstById($id);
 
        $parameters= json_decode($process->parameters,true);
 
+       $db_table_name=$parameters['table'];
+
        $db=$this->getUserDB();
+
+       $filter=array();
+       $filter_string="";
+
+       if($links!=null)
+       {
+
+       $statement = $db->prepare("select column_name from information_schema.columns where schema_name = 'db_prime' and table_name ='$db_table_name'");
+       $statement->execute();
+
+       while($row = $statement->fetch(\PDO::FETCH_ASSOC))
+       {	
+          
+          foreach($links as $link)
+          {
+              
+             if($row['column_name']==$link['column'])
+             {
+            
+                 $filter['keys'][]=$row['column_name'];
+                 $filter['values'][]=explode(",",$link['default_value']);
+             
+             }
+          }
+       }
+
+
+
+       for($i=0;$i<count($filter['keys']);$i++)
+       {
+           if($i==0)
+           {
+               $filter_string=" WHERE ".$filter['keys'][$i]." in ('".implode("','",$filter['values'][$i])."') ";
+           }
+           else
+           {
+               
+               $filter_string=" AND ".$filter['keys'][$i]." in ('".implode("','",$filter['values'][$i])."') ";
+               
+           }
+       }
+       
+       }
+
+      
 
        $row_limit=200;
        $data_out=array();
 
        $selects=array();
 
-       foreach($parameters['columns'] as &$column)
+       foreach($parameters['columns'] as $column)
        {
        
            $selects[] = $column['aggregation']."(".$column['column'].") AS ".$column['name']."";
@@ -190,14 +236,44 @@ class ProcessController extends ControllerBase
 
        $select_string= implode(" , ",$selects);
 
+       if(!empty( $parameters['group'] ))
+       {
        $group_string= ' GROUP BY '.implode(" , ",$parameters['group']);
+       }
+       else{
+           $group_string="";
+       }
+       
+       if(!empty( $parameters['order'] ))
+       {
 
        $order_string= ' ORDER BY '.implode(" , ",$parameters['order']);
 
-       $db_table_name=$parameters['table'];
+       }
+       else{
+           $order_string="";
+       
+       }
 
-      
-       $statement=$db->prepare("SELECT ".implode(" , ",$parameters['group']).", $select_string FROM db_prime.$db_table_name $group_string $order_string Limit $row_limit");
+       
+
+
+      $additional_selects = array_unique(array_merge($parameters['group'],$parameters['order']));
+
+       if( empty( $additional_selects ) )
+       {
+           $additional_selects= "";
+
+       }
+       else
+       {
+           $additional_selects= implode(" , ",$additional_selects).",";
+       
+       }
+
+       $sql="SELECT ".$additional_selects." $select_string FROM db_prime.$db_table_name $filter_string $group_string $order_string Limit $row_limit";
+     
+       $statement=$db->prepare( $sql);
             
                    if($statement->execute())
                    {
@@ -227,6 +303,8 @@ class ProcessController extends ControllerBase
     }
 
     public function resultTableAction($id){
+
+        $this->view->Disable();
 
         $array=$this->getResults($id);
             // start table

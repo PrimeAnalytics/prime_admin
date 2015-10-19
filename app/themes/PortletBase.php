@@ -79,11 +79,11 @@ class PortletBase extends Controller
             
        foreach ($widgets as $widget) {
                 echo '<script> 
-                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<div></div>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/builder", function(){
-                
-                parent.update_dropzone();
-                
-                }));
+                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<div></div>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(){';
+           if($type=="builder"){
+               echo 'parent.update_dropzone();';
+           }
+           echo '}));
                 </script>';
             };
         }

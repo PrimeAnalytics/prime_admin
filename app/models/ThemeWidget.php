@@ -21,6 +21,12 @@ class ThemeWidget extends \Phalcon\Mvc\Model
      *
      * @var string
      */
+    public $data_format;
+
+    /**
+     *
+     * @var string
+     */
     public $category;
 
     /**

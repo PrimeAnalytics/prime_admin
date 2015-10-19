@@ -9,7 +9,7 @@ class LinkSelectController extends FormElementBase
     {
         $output=array();
 
-        $output['html'][]='<div class="form-group">
+        $output['html'][]='<div class="form-group db-item">
                                     <label class="form-label">Linking Column</label>
                                                 <input id="widget-link-column" name="parameters[db][link_column]" style="width:100%">
                                                 </input>
@@ -31,7 +31,7 @@ class LinkSelectController extends FormElementBase
 
                 var table = $(\'#dbTable\').select2(\'val\');
 
-                $.getJSON("/get/DBColumns/" + table, function (data) {
+                $.getJSON("/process/getHeaders/" + table, function (data) {
 
                     $("#widget-link-column").select2({
                         data: data
@@ -39,7 +39,7 @@ class LinkSelectController extends FormElementBase
 
                 });
 
-               })';
+               });';
 
 
         return $output;

@@ -1,0 +1,22 @@
+
+<h3>
+  {{parm['title']}}
+</h3>
+
+<select id="w_{{widget.id}}" style="width:100%">
+     {% for entry in parm['db'] %}
+      <option value="{{entry['link_column']}}">{{entry['values']}}</option>
+    {% endfor  %}
+      
+</select><script>
+
+        $("#w_{{widget.id}}").change(function() {
+        
+
+            update_dashboard("{{parm['target_link']}}", this.value);
+  
+        });
+
+        $("#w_{{widget.id}}" ).change();
+
+</script>{{ content() }}

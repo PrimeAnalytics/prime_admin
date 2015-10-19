@@ -6435,20 +6435,7 @@ div.dataTables_info {
 .div-td p {
   margin-bottom: 0;
 }
-.force-table-responsive {
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  -webkit-overflow-scrolling: touch;
-  border: 1px solid #E9E9E9;
-  border: none;
-  margin-bottom: 15px;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  padding: 10px 5px;
-  width: 100%;
-}
-.force-table-responsive .force-table-responsive {
-  overflow-x: hidden;
-}
+
 .no-collapse {
   border-collapse: separate;
 }

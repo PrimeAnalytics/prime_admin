@@ -28,7 +28,7 @@ class SingleSelectController extends FormElementBase
 
         });
 
-       })';
+       });';
 
         return $output;
 

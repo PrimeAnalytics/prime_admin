@@ -423,17 +423,17 @@ class ThemeCreatorController extends ControllerBase
         $this->view->disable();
 
         $controller='<?php
-namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Dashboards;
-use PRIME\Themes\DashboardBase as DashboardBase;
+                    namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Dashboards;
+                    use PRIME\Themes\DashboardBase as DashboardBase;
 
-class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
-{
+                    class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
+                    {
     
-    public function initialize()
-    {
-        $this->form_struct =\''.$form.'\';
-    }
-}';
+                        public function initialize()
+                        {
+                            $this->form_struct =\''.$form.'\';
+                        }
+                    }';
         
         $parms=$_POST['parms'];
 
@@ -599,18 +599,19 @@ class '.\Phalcon\Text::camelize($type).'Controller extends DashboardBase
 
         $this->view->disable();
 
-        $controller='<?php
-namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Portlets;
-use PRIME\Themes\PortletBase as PortletBase;
 
-class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
-{
+        $controller='<?php
+                    namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Portlets;
+                    use PRIME\Themes\PortletBase as PortletBase;
+
+                    class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
+                    {
     
-    public function initialize()
-    {
-        $this->form_struct =\''.$form.'\';
-    }
-}';
+                        public function initialize()
+                        {
+                            $this->form_struct =\''.$form.'\';
+                        }
+                    }';
         
         $parms=$_POST['parms'];
 
@@ -687,6 +688,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
         $js=$widget->js;
         $script=$widget->script;
         $form=$widget->form;
+        $data_format=$widget->data_format;
 
 
         $this->view->setVar("css", $css); 
@@ -695,6 +697,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
         $this->view->setVar("js", $js); 
         $this->view->setVar("script", $script); 
         $this->view->setVar("form", $form); 
+        $this->view->setVar("data_format", $data_format); 
 
 
         
@@ -738,6 +741,78 @@ class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
         $js=$this->request->getPost("js");
         $script=$this->request->getPost("script");
         $form=$this->request->getPost("form");
+        $data_format=$this->request->getPost("data_format");
+
+
+        function get_inner_html( $node ) {
+            $innerHTML= '';
+            $children = $node->childNodes;
+            foreach ($children as $child) {
+                $innerHTML .= $child->ownerDocument->saveHTML( $child );
+            }
+            return $innerHTML;
+        } 
+
+
+        $dom = new \DOMDocument();
+        $dom->preserveWhiteSpace = FALSE;
+        \libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+
+        $countainer="";
+
+        if (count($dom->getElementsByTagName('body')->item(0)->childNodes) == 1)
+        {
+            $break=false;
+            $attributes=array();
+            foreach ($dom->getElementsByTagName('body')->item(0)->childNodes as $node) {
+                if ($node->nodeType === XML_ELEMENT_NODE) {
+
+                    
+                    $type=$node->tagName;
+                    
+                    foreach($node->attributes as $attribute)
+                    {
+                        $temp=array();
+                        $temp['name']=$attribute->name;
+                        $temp['value']=$attribute->value;
+                        $attributes[]=$temp;
+
+                      if($temp['name']=='id')
+                      {
+                          $countainer='<div id="widget_{{widget.id}}"></div>';
+                          $html_save=$html;
+                          $break=true;
+                          break 2;
+                      }
+                    }
+
+                    $html_save=get_inner_html($node);
+                    
+                }
+            }
+            if(!$break)
+            {
+                $countainer="<".$type." id=\"widget_{{widget.id}}\" ";
+                foreach($attributes as $attribute)
+                {
+                    
+                    $countainer=$countainer.$attribute['name'].'="'.$attribute['value'].'" ';
+
+                }
+
+                $countainer=$countainer."></".$type.">";
+            }
+            
+        }
+
+        else
+        {
+            $html_save=$html;
+            $countainer='<div id="widget_{{widget.id}}"></div>';
+
+        }
+
 
         $widget->css=$css;
         $widget->style=$style;
@@ -745,6 +820,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends PortletBase
         $widget->js=$js;
         $widget->script=$script;
         $widget->form=$form;
+        $widget->data_format=$data_format;
 
         $type=$widget->name;
         $type=str_replace(" ","_",strtolower($type));
@@ -773,10 +849,13 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
     public function initialize()
     {
         $this->form_struct =\''.$form.'\';
+        $this->data_format=\''.$data_format.'\';
+        $this->container=\''.$countainer.'\';
+
+
     }
 }';
         
-        $parms=$_POST['parms'];
 
         $root=str_replace("public","app",$_SERVER['DOCUMENT_ROOT']);
         
@@ -790,7 +869,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         fclose($fp);
 
 
-        $view=$html.$script.'{{ content() }}';
+        $view=$html_save.$script.'{{ content() }}';
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))
@@ -804,12 +883,17 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         
     }
 
+    function DOMinnerHTML(DOMNode $element) 
+    { 
+        $innerHTML = ""; 
+        $children  = $element->childNodes;
 
+        foreach ($children as $child) 
+        { 
+            $innerHTML .= $element->ownerDocument->saveHTML($child);
+        }
 
-
-    public function explorerAction()
-    {
-        
+        return $innerHTML; 
     }
 
     public function editAction($id)

@@ -87,7 +87,7 @@ class Elements extends Phalcon\Mvc\User\Component
         foreach($user_dashboards as $dashboard)
         {    
             $newMenuLink =  array (
-            'link' => "dashboard/render/".$dashboard->id."/dashboard",
+            'link' => "dashboards/".$dashboard->type."/render/".$dashboard->id."/dashboard",
             'title' => $dashboard->title,
             'icon' => $dashboard->icon,
             'selected' => 'false'

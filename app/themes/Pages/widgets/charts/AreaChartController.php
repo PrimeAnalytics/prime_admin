@@ -8,5 +8,9 @@ class AreaChartController extends WidgetBase
     public function initialize()
     {
         $this->form_struct ='[{"type":"parameters/input","name":"title","label":"Title"},{"type":"database/single_select","name":"x_axis","label":"X-Axis"}]';
+        $this->data_format='ByRow';
+        $this->container='<div id="widget_{{widget.id}}"></div>';
+
+
     }
 }

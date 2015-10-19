@@ -79,6 +79,12 @@
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-6">
+                                <table style="width:100%"> <tr><td><h3>Data Format:</h3></td>
+                                    <td>
+                                    <input id="dataFormat" class="form-control" style="width:150px"></input>
+                                    </td>
+                                    </tr></table>
+                                
 
                                     <h3>Helpers</h3>
 
@@ -307,6 +313,18 @@
 </script>
 
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="modal">
+        <div id="modal_content"></div>
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
 <script src="/assets/global/plugins/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
@@ -430,27 +448,38 @@
 
 
     $("#saveWidget").click(function () {
-        $.post("/theme_creator/widget_save/<?php echo $widget_id; ?>", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters() });
+        $.post("/theme_creator/widget_save/<?php echo $widget_id; ?>", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters(), data_format: $("#dataFormat").select2('data').id }, function(data){
+            $("#modal_content").html(data);
+                    $("#myModal").modal("show");
+        });
     });
 
 
-    function onLoad()
-    {
+    jQuery(document).ready(function(){
+
         csslinks.setValue(<?php echo json_encode($css); ?>);
         jslinks.setValue(<?php echo json_encode($js); ?>);
         jseditor.setValue(<?php echo json_encode($script); ?>);
         csseditor.setValue(<?php echo json_encode($style); ?>);
         htmleditor.setValue(<?php echo json_encode($html); ?>);
-       
+
         var form=JSON.parse(<?php echo json_encode($form); ?>);
         var i=0;
         $.each(form, function(idx, obj) {
             FormElement(obj.type,obj);
         });
 
-    }
 
-    onLoad();
+        dataFormat=[{id: "ByRow",text: "By Row"},{id: "ByColumn",text: "By Column"}];
+
+        $("#dataFormat").select2({
+            data: dataFormat
+        });
+
+        $("#dataFormat").val('<?php echo $data_format; ?>').trigger("change");
+
+    });
+
 
 
 

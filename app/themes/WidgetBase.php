@@ -5,7 +5,9 @@ use Phalcon\Mvc\Controller as Controller;
 use PRIME\Models\Widget;
 use PRIME\Models\OrgDatabase;
 use PRIME\Models\Organisation;
-use PRIME\Models\Canvas;
+use PRIME\Models\Portlet;
+use PRIME\Models\Dashboard;
+
 
 class WidgetBase extends Controller
 {    
@@ -14,6 +16,8 @@ class WidgetBase extends Controller
     private $view_dir;
     public $form_struct='';
     public $theme='';
+    public $dataFormat="ByRow";
+    public $container="";
     
     function onConstruct()
     {
@@ -38,37 +42,117 @@ class WidgetBase extends Controller
         
     }
 
+    public function updateAction($id)
+    {
+       $links= $this->request->getPost("links");
+
+       $widget = Widget::findFirstByid($id);  
+       $parameters= (array)json_decode($widget->parameters,true);
+
+       if(array_key_exists("db",$parameters))
+       {
+
+           $widget_links= array();
+           
+           if($links!=null && $parameters['update_links']!="")
+           {
+               
+               foreach($links as $link)
+               {
+                   if(in_array ( $link["id"] ,  $parameters['update_links'], true))
+                   {
+                       if($link['default_value']=="")
+                       {
+                           return null;
+                       }
+                       
+                       $widget_links[]=$link;
+                       
+                   }
+               }
+           }
+
+
+
+
+
+           $parameters=call_user_func(array($this, 'getData'.$this->dataFormat), $parameters,$widget_links);
+
+       }
+
+       $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+
+       $this->view->setViewsDir($this->view_dir);
+
+       $type=explode("/",$widget->type);    
+       
+       $this->view->pick(strtolower(end($type)."/view"));
+
+       $this->view->setVar("parm", $parameters); 
+
+       $this->view->setVar("widget", $widget);
+
+    
+    
+    }
+
 
     public function renderAction($id,$type)
     {
         
         $widget = Widget::findFirstByid($id);  
         $parameters= (array)json_decode($widget->parameters,true);
+        $this->view->Disable();
 
-        if(array_key_exists("db",$parameters))
-        {
-            $parameters= $this->getData($parameters);
+        echo str_replace("{{widget.id}}", $id, $this->container);
 
-        }
+        echo '<script>
+          var update_'.$widget->id.' = function(link){
+                      
+          var w_links ='.(array_key_exists ( 'update_links' , $parameters )? (($parameters['update_links']=="")? "[]" : json_encode($parameters['update_links'],true)) : "[]").';
+          
+          
+          var widget_id ='.$widget->id.';
+          var widget_type ="'.$widget->type.'";
+           
+            var update=false;
+            
+            if( link === \'load\' )
+            {
+            update=true;
+            }
+            else
+            {
+            
+            $.each(w_links, function(index, key ) {
+                      if( w_links[index]==link)
+                      {                      
+                      update=true;
+                      return false;
+                      }
+                      })
+            }
 
-        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+            if(update == true)
+            {
+           
+            $( "#widget_'.$id.'" ).load( "/widgets/'.$widget->type.'/update/'.$id.'", { "links": links } );
+            }
+            
+            
+          };';
+        
+        echo 'update_'.$widget->id.'(\'load\');
 
-        $this->view->setViewsDir($this->view_dir);
+        </script>';
 
-        $type=explode("/",$widget->type);    
-      
-        $this->view->pick(strtolower(end($type)."/view"));
-
-        $this->view->setVar("parm", $parameters); 
-
-        $this->view->setVar("widget", $widget); 
  
     }
 
-    public function getData($parameters)
+    public function getDataByRow($parameters,$links=null)
     {
         $processController = new \PRIME\Controllers\ProcessController();
-        $data=$processController->getResults($parameters["db"]['table']);
+        $data=$processController->getResults($parameters["db"]['table'],$links);
 
         $dbTemp=$parameters["db"];
         $parameters["db"]=array();
@@ -89,6 +173,32 @@ class WidgetBase extends Controller
 
         return $parameters;
     
+    }
+
+    public function getDataByColumn($parameters,$links=null)
+    {
+        $processController = new \PRIME\Controllers\ProcessController();
+        $data=$processController->getResults($parameters["db"]['table'],$links);
+
+        $dbTemp=$parameters["db"];
+        $parameters["db"]=array();
+
+        foreach($data as $key=>$row)
+        {
+            foreach($dbTemp as $parmKey=>$parmValue)
+            {
+                if($parmKey!='table')
+                {
+                    $parameters["db"][$parmKey][]=$row[$parmValue];   
+                }
+            }
+
+        }
+
+
+
+        return $parameters;
+        
     }
 
     
@@ -136,12 +246,11 @@ class WidgetBase extends Controller
         {
             $this->flash->success("Widget was created successfully");
 
-            return $this->dispatcher->forward(array(
-            "namespace" => "PRIME\Controllers",
-            "controller" => "dashboard",
-            "action"     => "edit",
-            "params"     => array('id' => $widget->portlet_id)
-            ));
+            $portlet = Portlet::findFirstById($widget->portlet_id);
+            
+            $dashboard=Dashboard::findFirstById($portlet->dashboard_id);
+
+           return $this->response->redirect("/dashboards/".$dashboard->type."/edit/".$dashboard->id);
         }
     }
     
