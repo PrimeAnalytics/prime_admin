@@ -73,9 +73,6 @@ class WidgetBase extends Controller
            }
 
 
-
-
-
            $parameters=call_user_func(array($this, 'getData'.$this->dataFormat), $parameters,$widget_links);
 
        }
@@ -173,6 +170,29 @@ class WidgetBase extends Controller
 
         return $parameters;
     
+    }
+
+    public function getDataChart($parameters,$links=null)
+    {
+        $processController = new \PRIME\Controllers\ProcessController();
+        $data=$processController->getResults($parameters["db"]['table'],$links);
+
+        $dbTemp=$parameters["db"];
+        $parameters["db"]=array();
+
+        $parameters["db"]['x_axis'];
+
+	    $out = array();
+        foreach ($data as $key => $subarr) {
+    	    foreach ($subarr as $subkey => $subvalue) {
+		    if($subkey!='x_axis'){
+			    $out[$subkey][$key] = array('x_axis'=>$subarr['x_axis'] ,'value'=>$subvalue) ;			
+			    }
+    	    }
+        }
+
+        $parameters["db"]=$out;
+        
     }
 
     public function getDataByColumn($parameters,$links=null)

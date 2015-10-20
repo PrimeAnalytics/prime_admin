@@ -48,7 +48,6 @@
                     <li class="active"><a href="#tab2_1" data-toggle="tab"><i class="icon-home"></i> Html</a></li>
                     <li><a href="#tab2_4" data-toggle="tab"><i class="icon-cloud-download"></i> Include</a></li>
                     <li><a href="#tab2_5" data-toggle="tab"><i class="icon-cloud-download"></i> Parameters</a></li>
-                    <li><a href="#tab2_6" data-toggle="tab"><i class="icon-cloud-download"></i> Assets</a></li>
                     <li><a href="#tab2_7" data-toggle="tab"><i class="icon-cloud-download"></i> Live Preview</a></li>
                 </ul>
                 <div class="tab-content">
@@ -172,23 +171,12 @@
                         </div>
 
 
-
-                    <div class="tab-pane fade" id="tab2_6">
-                        <h3>UPLOAD ASSETS</h3>
-                        <form action="/theme_creator/upload_assets/<?php echo $theme_name?>" enctype="multipart/form-data" method="post" class="dropzone">
-                            <div class="fallback">
-                                <input type="file" name="zip_file" />
-                                <input type="submit" name="submit" value="Upload" />
-                            </div>
-                        </form>
-                    </div>
-
                     <div class="tab-pane fade" id="tab2_7">
 
                         <h3>Live  <strong>Preview</strong></h3>
                         <div class="pull-right">
                             <button id="previewrun" class="btn btn-success">Run</button>
-                            <button id="saveDashboard" class="btn btn-primary">Save</button>
+                            <button id="saveLogin" class="btn btn-primary">Save</button>
                         </div>
 
                         <iframe src="/theme_creator/preview" id="previewframe" width="100%" height="700"></iframe>
@@ -198,7 +186,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 
 
@@ -346,7 +333,7 @@
 
     $("#previewrun").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/dashboard_preview",
+            url: "/theme_creator/login_preview",
             type: "Post",
             data: { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters() },
             dataType: "html",
@@ -363,7 +350,7 @@
 
     $("#csslinks").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/css",
+            url: "/theme_creator/inteli_format/{{theme_name}}/css",
             type: "Post",
             data: csslinks.getValue(),
             dataType: "html",
@@ -376,7 +363,7 @@
 
     $("#jslinks").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/js",
+            url: "/theme_creator/inteli_format/{{theme_name}}/js",
             type: "Post",
             data: jslinks.getValue(),
             dataType: "html",
@@ -389,7 +376,7 @@
 
     $("#htmlbody").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/body",
+            url: "/theme_creator/inteli_format/{{theme_name}}/body",
             type: "Post",
             data: htmleditor.getValue(),
             dataType: "html",
@@ -402,7 +389,7 @@
 
     $("#jsscript").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/script",
+            url: "/theme_creator/inteli_format/{{theme_name}}/script",
             type: "Post",
             data: jseditor.getValue(),
             dataType: "html",
@@ -415,7 +402,7 @@
 
     $("#cssstyle").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/style",
+            url: "/theme_creator/inteli_format/{{theme_name}}/style",
             type: "Post",
             data: csseditor.getValue(),
             dataType: "html",
@@ -442,8 +429,8 @@
     };
 
 
-    $("#saveDashboard").click(function () {
-        $.post("/theme_creator/dashboard_save/{{dashboard_id}}", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters() });
+    $("#saveLogin").click(function () {
+        $.post("/theme_creator/login_save/{{login_id}}", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters() });
     });
 
 

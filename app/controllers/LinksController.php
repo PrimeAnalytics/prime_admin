@@ -19,16 +19,16 @@ class LinksController extends ControllerBase
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
         }
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
     }
 
     /**
      * Displays the creation form
      */
-    public function newAction($organisation_id)
+    public function newAction()
     {
-        $organisation = Organisation::findFirstByid($organisation_id);   
 
-        $this->tag->setDefault("organisation_id", $organisation_id);
+        $this->tag->setDefault("organisation_id", $this->organisation_id);
         
         $this->view->setTemplateAfter('');
     }
@@ -82,19 +82,78 @@ class LinksController extends ControllerBase
 
     }
     
-    public function indexAction()
-    {   
-
-        $processes = Process::find();
-        $this->view->setVar("processes", $processes);  
-        
-    } 
 
     public function editAction($id)
     {
+        $link = Links::findFirstByid($id);  
         
+        $this->tag->setDefault("name", $link->name);
+        $this->tag->setDefault("id", $link->id);
+        $this->tag->setDefault("table", $link->table);
+        $this->tag->setDefault("column", $link->column);
+        $this->tag->setDefault("operator", $link->operator);
+        $this->tag->setDefault("default_value", $link->default_value);
+        $this->tag->setDefault("organisation_id", $link->organisation_id);
 
 
+    }
+
+
+    public function saveAction()
+    {
+        $links = Links::findFirstByid($this->request->getPost("id")); 
+
+        $links->name = $this->request->getPost("name");
+        $links->table = $this->request->getPost("table");
+        $links->column = $this->request->getPost("column");
+        $links->default_value = $this->request->getPost("default_value");
+        $links->operator = $this->request->getPost("operator");
+
+        $links->organisation_id = $this->request->getPost("organisation_id");
+
+        if (!$links->save()) {
+            foreach ($links->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            return $this->dispatcher->forward(array(
+    "controller" => "dashboard",
+    "action" => "index"
+));
+        }
+
+        $this->flash->success("Link was created successfully");
+
+        return $this->dispatcher->forward(array(
+    "controller" => "dashboard",
+    "action" => "index"
+));
+
+    }
+    
+
+    
+    
+    public function deleteAction()
+    {
+        $id = $this->request->getPost("id");
+        $links = Links::findFirstByid($id);
+
+        if (!$links->delete()) {
+
+            foreach ($links->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+        }
+        else
+        {
+            $this->flash->success("Link was deleted successfully");
+        }
+
+        return $this->dispatcher->forward(array(
+     "controller" => "dashboard",
+     "action" => "index"
+ ));
     }
 
     public function getDBColumnsAction($db_table)

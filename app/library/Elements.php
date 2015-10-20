@@ -12,7 +12,27 @@ class Elements extends Phalcon\Mvc\User\Component
 
     private $_adminMenu = array(
             'index' => array(
-                'caption' => 'Admin',
+                'caption' => 'Settings',
+                'action' => 'index',
+                'icon' =>'icon-custom-home'
+            ),
+            'login' => array(
+                'caption' => 'Logins',
+                'action' => 'index',
+                'icon' =>'icon-custom-home'
+            ),
+            'dashboard' => array(
+                'caption' => 'Dashboards',
+                'action' => 'index',
+                'icon' =>'icon-custom-home'
+            ),
+            'process' => array(
+                'caption' => 'Processes',
+                'action' => 'index',
+                'icon' =>'icon-custom-home'
+            ),
+             'users' => array(
+                'caption' => 'Users',
                 'action' => 'index',
                 'icon' =>'icon-custom-home'
             ),

@@ -17,13 +17,15 @@ class DashboardBase extends Controller
     
     function onConstruct()
     {
-        $this->dashboard_type = __CLASS__;
+        $this->dashboard_type = $this->router->getControllerName();
         
         if ($this->session->has("auth")) {
             //Retrieve its value
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
         }
+
+        
 
     }
 
@@ -311,26 +313,29 @@ class DashboardBase extends Controller
     }
 
 
-        public function newAction($dashboard_id,$row,$column)
+        public function newAction()
     {
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         $this->persistent->parameters = null;
 
         $this->view->setViewsDir('../app/views/');
-        $this->view->pick('portlets/new');
+        $this->view->pick('dashboards/new');
 
         $formController = new \PRIME\Controllers\FormController();
         $form_body= $formController->renderAction($this->form_struct);
 
-        $this->tag->setDefault("row", $row);
-        $this->tag->setDefault("column", $column);
-        $this->tag->setDefault("dashboard_id", $dashboard_id);
-
         $this->view->setVar("form_body", $form_body);
-        $this->view->setVar("type", $this->portlet_name);
+        $this->view->setVar("type", $this->dashboard_type);
 
-        $form_type='/portlets/'.$this->portlet_name.'/create';
+        $form_type='/dashboards/'.$this->dashboard_type.'/create';
         $this->view->setVar("form_type", $form_type);
+        
+        
+        $this->tag->setDefault("weight","0");
+
+        $this->tag->setDefault("organisation_id",$this->organisation_id);
+
+
         
  
     }
@@ -339,11 +344,13 @@ class DashboardBase extends Controller
     {
         $dashboard = new Dashboard();
 
-        $dashboard->type = $this->dashboard_name;
-        $dashboard->title = $this->request->getPost("column");
+        $dashboard->type = $this->dashboard_type;
+        $dashboard->title = $this->request->getPost("title");
         $dashboard->icon = $this->request->getPost("icon");
         $dashboard->weight = $this->request->getPost("weight");
         $dashboard->organisation_id = $this->request->getPost("organisation_id");
+
+        var_dump($this->request->getPost("weight"));
 
         $dashboard->parameters = json_encode($this->request->getPost("parameters"));
 

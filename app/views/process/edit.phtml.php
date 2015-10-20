@@ -125,40 +125,6 @@
 
 <script>
 
-    var n = $('#notification').noty({
-        text        : "hello",
-        dismissQueue: true,
-        layout      : top,
-        closeWith   : ['click'],
-        theme       : 'made',
-        maxVisible  : 10
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     var aggregationData = [
@@ -209,7 +175,9 @@
 
 
     $('#getResult').on('click', function(){
-        $("#result").load( "/process/resultTable/<?php echo $process->id; ?>" );
+        $("#result").load( "/process/resultTable/<?php echo $process->id; ?>", function(){
+            generateNoty("The Process was Succesfully Executed","success");
+        });
     
     });
         
@@ -251,7 +219,13 @@
             dataType: "json",
             success: function (result) {
 
-                alert(JSON.stringify(JSON.stringify(data)));
+                generateNoty("The Process Was Saved Succesfully","success");
+
+            },
+            error:function (result) {
+                alert(JSON.stringify(result));
+                generateNoty("Oh No Something Went Wrong","danger");
+
             }
         });
 
@@ -259,6 +233,7 @@
 
 
     jQuery(document).ready(function(){
+
 
         var parameters= <?php echo $process->parameters; ?>;
 

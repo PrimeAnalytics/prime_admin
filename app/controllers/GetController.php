@@ -17,6 +17,47 @@ class GetController extends ControllerBase
     }
 
 
+    public static function getDashboardList()
+    {
+        $theme = $_SESSION["auth"]['theme'];
+
+        $data=array();
+
+        $subdirectory = '../app/themes/'.$theme.'/dashboards/';
+        //get all files in specified directory
+        $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);
+        foreach($subfiles as $subfile)
+        {
+            $type = str_replace("Controller.php","",basename($subfile));
+            $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
+            $data[]=$name;
+
+        }
+
+        return $data;
+    }
+
+    public static function getLoginList()
+    {
+        $theme = $_SESSION["auth"]['theme'];
+
+        $data=array();
+
+        $subdirectory = '../app/themes/'.$theme.'/logins/';
+        //get all files in specified directory
+        $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);
+        foreach($subfiles as $subfile)
+        {
+            $type = str_replace("Controller.php","",basename($subfile));
+            $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
+            $data[]=$name;
+
+        }
+
+        return $data;
+    }
+
+
     public function getUserDB()
     {
         $database = OrgDatabase::findFirstByorganisation_id($this->organisation_id);

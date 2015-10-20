@@ -3,6 +3,7 @@ namespace PRIME\Controllers;
 use PRIME\Models\Dashboard;
 use PRIME\Models\Widget;
 use PRIME\Models\Portlet;
+use PRIME\Models\Links;
 use PRIME\Models\Organisation;
 
 
@@ -15,9 +16,24 @@ class DashboardController extends ControllerBase
         parent::initialize();
         
     }
+
+
+    public function indexAction()
+    {
+        $auth = $this->session->get("auth");
+        $DashboardList=\PRIME\Controllers\GetController::getDashboardList();
+
+        $this->view->setVar('dashboardList',$DashboardList);
+
+        $data = Dashboard::find("organisation_id= ".$auth['organisation_id']);
         
- 
-       
+        $this->view->setVar("dashboards", $data);  
+
+        $data = Links::find("organisation_id= ".$auth['organisation_id']);
+        
+        $this->view->setVar("links", $data); 
+    }
+        
     public function getDashboardsAction()
     {
         $this->view->disable();
@@ -193,33 +209,28 @@ class DashboardController extends ControllerBase
 
     }
     
-    public function deleteAction($id)
-    {
-        $this->tag->setDefault('id', $id);
-        
-    }
 
     /**
      * Deletes a dashboard
      *
      * @param string $id
      */
-    public function deleteDashboardAction()
+    public function deleteAction()
     {
         $id = $this->request->getPost("id");
         $dashboard = Dashboard::findFirstByid($id);
-        $canvas=$dashboard->Canvas();
+        $portlets=$dashboard->Portlet;
         
-        foreach($canvas as $canva)
+        foreach($portlets as $portlet)
         {
-            $widgets= $canva->Widget();
+            $widgets= $portlet->Widget;
             foreach($widgets as $widget)
             {
             
                 $widget->delete();
                 
             }
-            $canva->delete();
+            $portlet->delete();
             
         }
         
@@ -240,11 +251,11 @@ class DashboardController extends ControllerBase
 
             return $this->dispatcher->forward(array(
                 "controller" => "dashboard",
-                "action" => "search"
+                "action" => "index"
             ));
         }
 
-        $this->flash->success("dashboard was deleted successfully");
+        $this->flash->success("Dashboard was deleted successfully");
 
         return $this->dispatcher->forward(array(
             "controller" => "dashboard",

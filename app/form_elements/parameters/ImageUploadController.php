@@ -5,7 +5,7 @@ use PRIME\FormElements\FormElementBase as FormElementBase;
 class ImageUploadController extends FormElementBase
 {
     
-    public function Render($label,$name)
+    public function Render($name,$label)
     {
         $output=array();
         $output['html'][]='<div class="form-group">

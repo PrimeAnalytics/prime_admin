@@ -1,15 +1,15 @@
 ﻿
 <div class="modal-content">
     <?php echo $this->getContent(); ?>
-    <?php echo $this->tag->form("theme_creator/dashboard_create") ?>
+    <?php echo $this->tag->form("theme_creator/login_create") ?>
     <div class="modal-header">
-        <h4 id="myModalLabel" class="semi-bold">Create New Dashboard.</h4>
+        <h4 id="myModalLabel" class="semi-bold">Create New Login.</h4>
         <p class="no-margin">Please provide all the required information. </p>
     </div>
     <div class="modal-body">
         <div class="row form-row">
             <div class="col-md-6">
-                <label class="form-label">Dashboard Name</label>
+                <label class="form-label">Login Name</label>
                 <?php echo $this->tag->textField(array("name", "class" => "form-control")) ?>
             </div>
         </div>

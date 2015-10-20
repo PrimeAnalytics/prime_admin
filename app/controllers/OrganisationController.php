@@ -2,6 +2,7 @@
 namespace PRIME\Controllers;
 use PRIME\Models\Organisation;
 use PRIME\Models\Users;
+use PRIME\Models\Login;
 use PRIME\Models\Dashboard;
 use PRIME\Models\Widget;
 use PRIME\Models\Process;
@@ -79,6 +80,15 @@ class OrganisationController extends ControllerBase
                 ));
             }
 
+
+            $LoginList=\PRIME\Controllers\GetController::getLoginList();
+
+            $this->view->setVar('loginList',$LoginList);
+
+
+
+
+
             $this->view->id = $organisation->id;
 
             $this->tag->setDefault("id", $organisation->id);
@@ -93,6 +103,10 @@ class OrganisationController extends ControllerBase
             $this->tag->setDefault("db_name", $database->db_name);
             
             $this->view->setVar("organisation_id", $organisation->id);  
+
+            $data = Login::find("organisation_id= ".$organisation->id);
+            
+            $this->view->setVar("logins", $data);  
             
             $data = Dashboard::find("organisation_id= ".$organisation->id);
             

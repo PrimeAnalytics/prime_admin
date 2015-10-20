@@ -1,6 +1,7 @@
 <?php
 namespace PRIME\Controllers;
 use PRIME\Models\ThemeLayout;
+use PRIME\Models\ThemeLogin;
 use PRIME\Models\ThemeDashboard;
 use PRIME\Models\ThemePortlet;
 use PRIME\Models\ThemeWidget;
@@ -275,6 +276,23 @@ class ThemeCreatorController extends ControllerBase
 
         $this->view->setVar("theme_name", $theme); 
         
+
+        $this->view->setVar("login_id", $id);
+
+        $css=$login->css;
+        $style=$login->style;
+        $html=$login->html;
+        $js=$login->js;
+        $script=$login->script;
+        $form=$login->form;
+
+        $this->view->setVar("css", $css); 
+        $this->view->setVar("style", $style); 
+        $this->view->setVar("html", $html); 
+        $this->view->setVar("js", $js); 
+        $this->view->setVar("script", $script); 
+        $this->view->setVar("form", $form); 
+
         
     }
 
@@ -299,6 +317,88 @@ class ThemeCreatorController extends ControllerBase
         $this->response->redirect("/theme_creator/login_edit/".$login->id);
 
         
+        
+    }
+
+    public function login_deleteAction($id)
+    {
+        $login=ThemeLogin::findFirstById($id);
+
+        $login->delete();
+        
+    }
+
+    public function login_saveAction($id)
+    {
+        $login=ThemeLogin::findFirstById($id);
+
+        $theme= ThemeLayout::findFirstById($login->theme_layout_id);
+        $theme=$theme->name;
+
+        $css=$this->request->getPost("css");
+        $style=$this->request->getPost("style");
+        $html=$this->request->getPost("html");
+        $js=$this->request->getPost("js");
+        $script=$this->request->getPost("script");
+        $form=$this->request->getPost("form");
+
+        $login->css=$css;
+        $login->style=$style;
+        $login->html=$html;
+        $login->js=$js;
+        $login->script=$script;
+        $login->form=$form;
+
+        $type=$login->name;
+        
+        if (!$login->save()) {
+            foreach ($login->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+        }
+
+        $this->flash->success("Login was saved successfully");
+
+
+        $this->view->disable();
+
+        $controller='<?php
+                    namespace PRIME\Themes\\'.\Phalcon\Text::camelize($theme).'\Logins;
+                    use PRIME\Themes\LoginBase as LoginBase;
+
+                    class '.\Phalcon\Text::camelize($type).'Controller extends LoginBase
+                    {
+    
+                        public function initialize()
+                        {
+                            $this->form_struct =\''.$form.'\';
+                        }
+                    }';
+        
+        $parms=$_POST['parms'];
+
+        $root=str_replace("public","app",$_SERVER['DOCUMENT_ROOT']);
+        
+        $path = $root.'/themes/'.$theme.'/logins/';
+
+        chmod($path, 0777);
+
+        $content = $controller;
+        $fp = fopen($path.\Phalcon\Text::camelize($type)."Controller.php","w");
+        fwrite($fp,$content);
+        fclose($fp);
+
+
+        $view='<head>'.$css.$style.'</head><body>'.$html.$js.$script.'{{ content() }}</body>';
+
+        $file_path=$path.strtolower($type)."/view.phtml";
+        if(!file_exists(dirname($file_path)))
+            mkdir(dirname($file_path), 0777, true);
+
+        $fp = fopen($file_path,"w");
+        fwrite($fp,$view);
+        fclose($fp);
         
     }
 
@@ -671,8 +771,19 @@ class ThemeCreatorController extends ControllerBase
 
         $helpers=array();
 
-        $helpers["Parameters by Name"]="{{parm.parameter_name}}";
-        $helpers["Database by Name"]="{{db.column_name}}";
+        $helpers["Parameters by Name"]="{{parm['parameter_name']}}";
+        $helpers["Widget ID"]="{{widget.id}}";
+        $helpers["Data Format 'by Row'"]="{% for row in parm['db'] %}</br>
+            {{ row['column_name'] }}</br>
+        {% endfor  %}";
+        $helpers["Data Format 'by Column'"]="{% for column in parm['db'] %}</br>
+            {{ column['column_index'] }}</br>
+        {% endfor  %}";
+        $helpers["Data Format 'Chart'"]="{% for series in parm['db'] %}</br>
+        {% for row in series %}</br>
+            {{ row['x_axis'] }}/{{ row['value'] }}</br>
+        {% endfor  %}</br>
+        {% endfor  %}";
 
         $this->view->setVar("helpers",$helpers);
 
@@ -883,6 +994,33 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         
     }
 
+    public function widget_previewAction($id)
+    {
+        $widget=ThemeWidget::findFirstById($id);
+        
+        $layout= $widget->ThemeLayout;
+
+        $dashboard=$layout->ThemeDashboard->getFirst();
+
+        $js=$dashboard->js;
+        $css=$dashboard->css;
+
+        $this->view->disable();
+        echo '<head>';
+        echo $css;
+        echo $css=$this->request->getPost("css");
+        echo $style=$this->request->getPost("style");
+        echo '</head><body>';
+        echo $html=$this->request->getPost("html");
+        echo $js;
+        echo $js=$this->request->getPost("js");
+        echo $script=$this->request->getPost("script");
+        echo '</body>';
+        
+        
+    }
+
+
     function DOMinnerHTML(DOMNode $element) 
     { 
         $innerHTML = ""; 
@@ -930,16 +1068,6 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
 
         
     }
-    
-    public function importAction()
-    {
-        
-    }
-
-    public function renderAction()
-    {
-        
-    }
 
     public function newAction()
     {
@@ -947,8 +1075,6 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         $this->persistent->parameters = null;
         
     }
-
-
 
     public function upload_assetsAction($theme)
     {

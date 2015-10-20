@@ -79,6 +79,7 @@ class ProcessController extends ControllerBase
     public function saveAction($id)
     
     {
+        $this->view->Disable();
         $process = Process::findFirstById($id);
 
         $process->name = $this->request->getPost("name");
@@ -90,13 +91,9 @@ class ProcessController extends ControllerBase
             foreach ($process->getMessages() as $message) {
                 $this->flash->error($message);
             }
-
-            $this->response->redirect("organisation/index/");
         }
 
-        $this->flash->success("Process was saved successfully");
 
-        $this->response->redirect("process/edit/".$process->id);
 
 
     }

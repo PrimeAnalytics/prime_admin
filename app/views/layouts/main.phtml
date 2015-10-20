@@ -27,6 +27,7 @@
       <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
       <script src="/assets/global/plugins/jquery-cookies/jquery.cookies.min.js"></script> <!-- Jquery Cookies, for theme -->
       <script src="/assets/global/plugins/jquery-block-ui/jquery.blockUI.min.js"></script> <!-- simulate synchronous behavior when using AJAX -->
+      <link href="/assets/global/plugins/hover-effects/hover-effects.min.css" rel="stylesheet">
 
       <link href="/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen" />
       <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet"></link>
@@ -34,6 +35,8 @@
       <script src="/assets/plugins/bootstrap-select2/select2.js" type="text/javascript"></script>
 
       <script src="/assets/global/plugins/noty/jquery.noty.packaged.min.js"></script>  <!-- Notifications -->
+      <link href="/assets/global/plugins/icon-picker/css/fontawesome-iconpicker.min.css" rel="stylesheet">
+      <script src="/assets/global/plugins/icon-picker/js/fontawesome-iconpicker.js"></script>
 
   </head>
   <!-- LAYOUT: Apply "submenu-hover" class to body element to have sidebar submenu show on mouse hover -->
@@ -1001,6 +1004,7 @@
     <script src="/assets/global/plugins/maps-amcharts/ammap/themes/black.min.js"></script> <!-- Vector Map Black Theme -->
     <script src="/assets/global/plugins/skycons/skycons.min.js"></script> <!-- Animated Weather Icons -->
     <script src="/assets/global/plugins/simple-weather/jquery.simpleWeather.js"></script> <!-- Weather Plugin -->
+    <script src="/assets/global/js/pages/notifications.js"></script>
     <!-- END PAGE SCRIPT -->
    
   </body>

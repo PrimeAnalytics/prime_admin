@@ -22,6 +22,13 @@ class FormController extends ControllerBase
 
         return $item;
     }
+
+    public function deleteAction($type,$id)
+    {
+        $this->view->setVar('type',$type);
+        $this->tag->setDefault('id',$id);
+    
+    }
     
     public function renderAction($layout)
     {      
