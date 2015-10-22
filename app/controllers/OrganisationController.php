@@ -6,7 +6,6 @@ use PRIME\Models\Login;
 use PRIME\Models\Dashboard;
 use PRIME\Models\Widget;
 use PRIME\Models\Process;
-use PRIME\Models\VirtualMachine;
 use PRIME\Models\OrgDatabase;
 use PRIME\Models\DataConnector;
 use PRIME\Models\Links;
@@ -108,27 +107,6 @@ class OrganisationController extends ControllerBase
             
             $this->view->setVar("logins", $data);  
             
-            $data = Dashboard::find("organisation_id= ".$organisation->id);
-            
-            $this->view->setVar("dashboards", $data);  
-
-            $data = Process::find("organisation_id= ".$organisation->id);
-            
-            $this->view->setVar("processes", $data);  
-
-            $data = Links::find("organisation_id= ".$organisation->id);
-            
-            $this->view->setVar("links", $data);  
-
-            $data = VirtualMachine::find("organisation_id= ".$organisation->id);
-            
-            $this->view->setVar("virtual_machines", $data); 
-            
-            $data = Users::find("organisation_id= ".$organisation->id);
-            
-            $this->view->setVar("users", $data);  
-
-
             $data = DataConnector::find("organisation_id= ". $organisation->id);
             
             $this->view->setVar("data_connectors", $data);

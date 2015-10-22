@@ -78,34 +78,37 @@ class GetController extends ControllerBase
         return $db;
     }
 
-    public function DBColumnsAction($db_table)
+    public function DBColumnsAction($db_table,$return=false)
     {
         $this->view->disable();
         $db = $this->getUserDB();
-        $statement = $db->prepare("select column_name from information_schema.columns where schema_name = 'db_prime' and table_name ='$db_table'");
+        $statement = $db->prepare("select column_name, data_type from information_schema.columns where schema_name = 'doc' and table_name ='$db_table'");
         $statement->execute();
         
         $json = array();
         
         while($row = $statement->fetch(\PDO::FETCH_ASSOC))
-        {		
-            foreach($row as $key=>$value) {
-                
+        {		                
                 $json[] = array(
-                    'id'=> $value,
-              'text' => $value
+                    'id'=> $row['column_name'],
+              'text' => $row['column_name'],
+              'type' => $row['data_type']
             );
-            }
+
         }                                  
-        
-        echo json_encode($json);
+        if ($return == true) {
+            echo json_encode($json);
+        }
+
+            return $json;
+      
     }
 
     public function DBTablesAction()
     {
         $this->view->disable();
         $db = $this->getUserDB();
-        $statement=$db->prepare("select table_name from information_schema.tables where schema_name='db_prime' limit 100");
+        $statement=$db->prepare("select table_name from information_schema.tables where schema_name='doc' limit 100");
         
         $statement->execute();
         
@@ -124,6 +127,102 @@ class GetController extends ControllerBase
         
         echo json_encode($json);
     }
+
+
+    public function autocompleteAction($for_input_type,$table)
+    {
+        $data=$this->DBColumnsAction($table);
+
+        $output=array();
+
+        foreach($data as $column)
+        {
+            $type=$column['type'];
+            $column=$column['text'];
+            if($type=='integer' ||  $type=='long'|| $type=='short'||$type=='double'||$type=='float'||$type=='byte')
+            {
+                $type='numeric';
+            }
+
+            if($type=='numeric' && $for_input_type =='columns')
+            {
+                $output['time_number'][]='sum('.$column.')';
+                $output['time_number'][]='avg('.$column.')';
+                $output['time_number'][]='geometric_mean('.$column.')';
+                $output['time_number'][]='variance('.$column.')';
+                $output['time_number'][]='stddev('.$column.')';
+            }
+            if($type=='numeric')
+            {
+                $output['number'][]='abs('.$column.')';
+                $output['number'][]='ceil('.$column.')';
+                $output['number'][]='floor('.$column.')';
+                $output['number'][]='ln('.$column.')';
+                $output['number'][]='log('.$column.')';
+                $output['number'][]='round('.$column.')';
+                $output['number'][]='sqrt('.$column.')';
+            }
+
+            if(($type=='numeric' || $type=='timestamp'|| $type=='string') && $for_input_type =='columns')
+            {
+
+                $output['time_number_string'][]='min('.$column.')';
+                $output['time_number_string'][]='max('.$column.')';
+
+            }
+
+            $output['column_name'][]=$column;
+
+            if($for_input_type =='columns')
+            {
+                $output['all'][]='count('.$column.')';
+                $output['all'][]='count(distinct '.$column.')';
+                $output['all'][]='arbitrary('.$column.')';
+            }
+        }
+
+        if($for_input_type =='columns')
+        {
+            $output['none'][]='count(*)';
+            $output['none'][]='random()';
+            $output['none'][]='CURRENT_TIMESTAMP';
+        }
+
+        $output['set'][]='concat()';
+        $output['set'][]='format()';
+        $output['set'][]='substr()';
+        $output['set'][]='regexp_matches()';
+        $output['set'][]='regexp_replace()';
+        $output['set'][]='date_trunc()';
+        $output['set'][]='extract()';
+        $output['set'][]='date_format()';
+        $output['set'][]='distance()';
+        $output['set'][]='within()';
+
+        function array_flatten($array) { 
+            if (!is_array($array)) { 
+                return FALSE; 
+            } 
+            $result = array(); 
+            foreach ($array as $key => $value) { 
+                if (is_array($value)) { 
+                    $result = array_merge($result, array_flatten($value)); 
+                } 
+                else { 
+                    $result[$key] = $value; 
+                } 
+            } 
+            return $result; 
+        } 
+
+        $output=array_flatten($output);
+
+        echo json_encode($output);
+    }
+
+
+
+
 
     
     

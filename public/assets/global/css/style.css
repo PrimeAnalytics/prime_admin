@@ -8237,7 +8237,6 @@ body:not(.rtl) .layout-options .img-sidebar-right {
 .app {
   border-spacing: 0;
   display: table;
-  height: 100%;
   table-layout: fixed;
   width: 100%;
 }
@@ -9118,7 +9117,6 @@ body:not(.rtl) .layout-options .img-sidebar-right {
   display: none;
 }
 .page-app.mailbox {
-  background: #f9f9f9;
   padding: 0;
 }
 .page-app.mailbox strong {

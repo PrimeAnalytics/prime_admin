@@ -326,19 +326,38 @@
 
 
 <script src="/assets/global/plugins/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/assets/global/plugins/ace/ext-language_tools.js"></script>
 
 <script>
+    ace.require("ace/ext/language_tools");
+
+
     var htmleditor = ace.edit("html-editor");
     htmleditor.setTheme("ace/theme/monokai");
     htmleditor.getSession().setMode("ace/mode/html");
+    htmleditor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
 
     var csseditor = ace.edit("css-editor");
     csseditor.setTheme("ace/theme/monokai");
     csseditor.getSession().setMode("ace/mode/css");
+    csseditor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
 
     var jseditor = ace.edit("js-editor");
     jseditor.setTheme("ace/theme/monokai");
     jseditor.getSession().setMode("ace/mode/javascript");
+    jseditor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
 
 
     var jslinks = ace.edit("js-links");

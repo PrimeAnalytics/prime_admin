@@ -1,0 +1,50 @@
+<div class="modal-content">
+    <?php echo $this->getContent(); ?>
+    <?php echo $this->tag->form("process_scheduled/create") ?>
+    <div class="modal-header">
+        <h4 id="myModalLabel" class="semi-bold">Create New Scheduled Process.</h4>
+        <p class="no-margin">Please provide all the required information. </p>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Process Name</label>
+                    <?php echo $this->tag->textField(array("name", "class" => "form-control")) ?>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12 ">           
+                    <label class="form-label">Schedule Every:</label>
+            </div>
+        </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Days</label>
+                        <?php echo $this->tag->textField(array('parameters[schedule][days]', 'class' => 'form-control')); ?>
+                    </div>
+                </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Hours</label>
+                            <?php echo $this->tag->textField(array('parameters[schedule][hours]', 'class' => 'form-control')); ?>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Minutes</label>
+                            <?php echo $this->tag->textField(array('parameters[schedule][minutes]', 'class' => 'form-control')); ?>
+                        </div>
+                    </div>
+            </div>
+    </div>
+    <div class="modal-footer bg-blue">
+        <?php echo $this->tag->hiddenField("organisation_id") ?>
+        <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+        <?php echo $this->tag->submitButton(array("Save","class"=>"btn btn-dark")) ?>
+    </div>
+    </form>
+</div>

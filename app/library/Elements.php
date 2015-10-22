@@ -16,11 +16,6 @@ class Elements extends Phalcon\Mvc\User\Component
                 'action' => 'index',
                 'icon' =>'icon-custom-home'
             ),
-            'login' => array(
-                'caption' => 'Logins',
-                'action' => 'index',
-                'icon' =>'icon-custom-home'
-            ),
             'dashboard' => array(
                 'caption' => 'Dashboards',
                 'action' => 'index',

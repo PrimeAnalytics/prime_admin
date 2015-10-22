@@ -2,7 +2,7 @@
 
 namespace PRIME\Models;
 
-class Process extends \Phalcon\Mvc\Model
+class ProcessScheduled extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -50,7 +50,7 @@ class Process extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'process';
+        return 'process_scheduled';
     }
 
     /**

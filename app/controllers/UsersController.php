@@ -7,12 +7,15 @@ use PRIME\Models\DashboardHasUsers;
 
 class UsersController extends ControllerBase
 {
+    public $organisation_id ="";
     public function initialize()
     {   
         
         $this->view->setTemplateAfter('main');
         \Phalcon\Tag::setTitle('Users');
         parent::initialize();
+        $auth = $this->session->get("auth");
+        $this->organisation_id= $auth['organisation_id'];
     }
 
     /**
@@ -21,18 +24,22 @@ class UsersController extends ControllerBase
     public function indexAction()
     {
         $this->persistent->parameters = null;
+
+
+        $data = Users::find("organisation_id= ".$this->organisation_id);
+        $this->view->setVar("users", $data);  
     }
 
 
     /**
      * Displays the creation form
      */
-    public function newAction($organisation_id)
+    public function newAction()
     {
         $this->tag->setDefault("status", "enable");
         $this->tag->setDefault("image_path", '/media/profile/default.jpg');
-        $this->tag->setDefault("organisation_id", $organisation_id);
-        $this->view->setTemplateAfter('');
+        $this->tag->setDefault("organisation_id", $this->organisation_id);
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
     }
 
     /**
@@ -55,6 +62,7 @@ class UsersController extends ControllerBase
                 ));
             }
 
+            $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
             $this->view->email = $user->email;
 
             $this->tag->setDefault("email", $user->email);
@@ -70,8 +78,19 @@ class UsersController extends ControllerBase
             $this->view->setVar("user_dashboards", $userdata);
             
             $data = Dashboard::find("organisation_id=".$user->organisation_id);
+
+            $data=$data->toArray();
+
+            foreach($userdata->toArray() as $dashboard)
+            {
+                if(($key = array_search($dashboard, $data)) !== false) {
+                    unset($data[$key]);
+                }
+            }
+            $object = json_decode(json_encode($data), FALSE);
            
-            $this->view->setVar("dashboards", $data); 
+            $this->view->setVar("dashboards", $object); 
+            $this->view->setVar("user", $user); 
                  
         }
     }
@@ -91,7 +110,11 @@ class UsersController extends ControllerBase
         }
 
         $this->flash->success("Dashboard was successfully enabled");
-                $this->response->redirect("users/edit/".$users_email);
+        return $this->dispatcher->forward(array(
+"namespace" => "PRIME\Controllers",
+"controller" => "users",
+"action"     => "index"
+));
 
     }
     
@@ -106,7 +129,11 @@ class UsersController extends ControllerBase
         }
 
         $this->flash->success("Dashboard was successfully disabled");
-         $this->response->redirect("users/edit/".$users_email);
+        return $this->dispatcher->forward(array(
+    "namespace" => "PRIME\Controllers",
+    "controller" => "users",
+    "action"     => "index"
+    ));
 
     }
     
@@ -152,9 +179,8 @@ class UsersController extends ControllerBase
 
         return $this->dispatcher->forward(array(
             "namespace" => "PRIME\Controllers",
-            "controller" => "organisation",
-            "action"     => "edit",
-            "params"     => array('id' => $user->organisation_id)
+            "controller" => "users",
+            "action"     => "index"
             ));
         
     }
@@ -221,8 +247,9 @@ class UsersController extends ControllerBase
      *
      * @param string $email
      */
-    public function deleteAction($email)
+    public function deleteAction()
     {
+        $email=$this->request->getPost("id");
 
         $user = Users::findFirstByemail($email);
         if (!$user) {
@@ -242,11 +269,11 @@ class UsersController extends ControllerBase
 
             return $this->dispatcher->forward(array(
                 "controller" => "users",
-                "action" => "search"
+                "action" => "index"
             ));
         }
 
-        $this->flash->success("user was deleted successfully");
+        $this->flash->success("User was deleted successfully");
 
         return $this->dispatcher->forward(array(
             "controller" => "users",

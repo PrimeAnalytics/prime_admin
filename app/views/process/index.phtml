@@ -1,86 +1,161 @@
+<div class="col-md-12 portlets">
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fa fa-table"></i> Analytics <strong>Processes</strong></h3>
+            <div class="control-btn">
+                <a href="#" class="panel-reload hidden"><i class="icon-reload"></i></a>
+                <a class="hidden" id="dropdownMenu1" data-toggle="dropdown">
+                    <i class="icon-settings"></i>
+                </a>
+                <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+                    <li>
+                        <a href="#">Action</a>
+                    </li>
+                    <li>
+                        <a href="#">Another action</a>
+                    </li>
+                    <li>
+                        <a href="#">Something else here</a>
+                    </li>
+                </ul>
+                <a href="#" class="panel-popout hidden tt" title="Pop Out/In"><i class="icons-office-58"></i></a>
+                <a href="#" class="panel-maximize hidden"><i class="icon-size-fullscreen"></i></a>
+                <a href="#" class="panel-toggle"><i class="fa fa-angle-down"></i></a>
+                <a href="#" class="panel-close"><i class="icon-trash"></i></a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <ul class="nav nav-tabs nav-primary">
+                <li class=""><a href="#tab2_1" data-toggle="tab"><i class="icon-home"></i> Create/Edit Scheduled Process</a></li>
+                <li class="active"><a href="#tab2_2" data-toggle="tab"><i class="icon-user"></i> Create/Edit Realtime Process</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade" id="tab2_1">
+                    <div class="row column-seperation">
+                        <div class="col-md-4">
+                            <h3>Create/Edit Scheduled Process</h3>
+                            <p>Scheduled Processes are executed in the background automatically, the are used to synchronize data source or do some type of batch analytics.</p>
+                            <div class="grid-body no-border">
+                                <button type="button" class="btn btn-success btn-rounded pull-right" onclick="create_new('process_scheduled')">Create New</button>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-8" style="min-height:798px;">
+
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>Name</th>
+                                        <th style="width:30%">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for process_scheduled in processes_scheduled %}
+                                    <tr>
+                                        <td>
+                                            {{process_scheduled.id}}
+                                        </td>
+                                        <td>
+                                            {{process_scheduled.name}}
+                                        </td>
+                                        <td>
+                                            {{ link_to('/process_scheduled/edit/' ~ process_scheduled.id, 'Edit', 'class': 'btn btn-success btn-xs btn-small') }}
+
+                                            <button class="btn btn-danger btn-xs btn-small" onclick="delete_modal('process_scheduled',{{process_scheduled.id}})">Delete</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="tab-pane fade active in" id="tab2_2">
+                    <div class="row column-seperation">
+                        <div class="col-md-4">
+                            <h3>Create/Edit Realtime Process</h3>
+                            <p>Realtime Processes are executed everytime the dashboard is loaded, they are less complex and are link bound.</p>
+                            <div class="grid-body no-border">
+                                <button type="button" class="btn btn-success btn-rounded pull-right" onclick="create_new('process')">Create New</button>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-8" style="min-height:798px;">
+
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>Name</th>
+                                        <th style="width:30%">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for process in processes %}
+                                    <tr>
+                                        <td>
+                                            {{process.id}}
+                                        </td>
+                                        <td>
+                                            {{process.name}}
+                                        </td>
+                                        <td>
+                                            {{ link_to('/process/edit/' ~ process.id, 'Edit', 'class': 'btn btn-success btn-xs btn-small') }}
+
+                                            <button class="btn btn-danger btn-xs btn-small" onclick="delete_modal('process',{{process.id}})">Delete</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="modal">
+        <div id="modal_content"></div>
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<script>
+
+    function create_new(dataType) {
+        $("#modal_content").load('/' + dataType + '/new', function () {
+            $("#myModal").modal("show");
+        });
+    }
+   
+
+           function delete_modal(dataType,id)
+            {
+                $("#modal_content").load('/form/delete/'+dataType+'/'+id, function () {
+                    $("#myModal").modal("show");
+                });
+            }
+
+
+</script>
+
 
 <?php echo $this->getContent() ?>
 
-<div align="right">
-    <?php echo $this->tag->linkTo(array("users/new", "Create users")) ?>
-</div>
 
-<?php echo $this->tag->form(array("users/search", "autocomplete" => "off")) ?>
-
-<div align="center">
-    <h1>Search users</h1>
-</div>
-
-<table>
-    <tr>
-        <td align="right">
-            <label for="email">Email</label>
-        </td>
-        <td align="left">
-            <?php echo $this->tag->textField(array("email", "size" => 30)) ?>
-        </td>
-    </tr>
-    <tr>
-        <td align="right">
-            <label for="full_name">Full Of Name</label>
-        </td>
-        <td align="left">
-            <?php echo $this->tag->textField(array("full_name", "size" => 30)) ?>
-        </td>
-    </tr>
-    <tr>
-        <td align="right">
-            <label for="image_path">Image Of Path</label>
-        </td>
-        <td align="left">
-            <?php echo $this->tag->textField(array("image_path", "size" => 30)) ?>
-        </td>
-    </tr>
-    <tr>
-        <td align="right">
-            <label for="phone_number">Phone Of Number</label>
-        </td>
-        <td align="left">
-            <?php echo $this->tag->textField(array("phone_number", "size" => 30)) ?>
-        </td>
-    </tr>
-    <tr>
-        <td align="right">
-            <label for="password">Password</label>
-        </td>
-        <td align="left">
-            <?php echo $this->tag->textField(array("password", "size" => 30)) ?>
-        </td>
-    </tr>
-    <tr>
-        <td align="right">
-            <label for="role">Role</label>
-        </td>
-        <td align="left">
-                <?php echo $this->tag->textField(array("role")) ?>
-        </td>
-    </tr>
-    <tr>
-        <td align="right">
-            <label for="status">Status</label>
-        </td>
-        <td align="left">
-                <?php echo $this->tag->textField(array("status")) ?>
-        </td>
-    </tr>
-    <tr>
-        <td align="right">
-            <label for="organisation_id">Organisation</label>
-        </td>
-        <td align="left">
-            <?php echo $this->tag->textField(array("organisation_id", "type" => "number")) ?>
-        </td>
-    </tr>
-
-    <tr>
-        <td></td>
-        <td><?php echo $this->tag->submitButton("Search") ?></td>
-    </tr>
-</table>
-
-</form>

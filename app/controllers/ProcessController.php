@@ -1,8 +1,10 @@
 <?php
 namespace PRIME\Controllers;
 use PRIME\Models\Process;
+use PRIME\Models\ProcessScheduled;
 use PRIME\Models\Organisation;
 use PRIME\Models\OrgDatabase;
+use \YaLinqo\Enumerable as E;
 
 class ProcessController extends ControllerBase
 {
@@ -24,13 +26,11 @@ class ProcessController extends ControllerBase
     /**
      * Displays the creation form
      */
-    public function newAction($organisation_id)
+    public function newAction()
     {
-        $organisation = Organisation::findFirstByid($organisation_id);   
-
-        $this->tag->setDefault("organisation_id", $organisation_id);
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->tag->setDefault("organisation_id", $this->organisation_id);
         
-        $this->view->setTemplateAfter('');
     }
 
 
@@ -42,6 +42,7 @@ class ProcessController extends ControllerBase
         $process = new Process();
 
         $process->name = $this->request->getPost("name");
+        $process->parameters="[]";
         $process->organisation_id = $this->request->getPost("organisation_id");
 
         if (!$process->save()) {
@@ -61,9 +62,15 @@ class ProcessController extends ControllerBase
     public function indexAction()
     {   
 
-        $processes = Process::find();
-        $this->view->setVar("processes", $processes);  
+        $data = Process::find("organisation_id= ".$this->organisation_id);
         
+        $this->view->setVar("processes", $data);  
+
+
+        $data = ProcessScheduled::find("organisation_id= ".$this->organisation_id);
+        
+        $this->view->setVar("processes_scheduled", $data); 
+
     } 
 
     public function editAction($id)
@@ -73,7 +80,39 @@ class ProcessController extends ControllerBase
 
         $this->view->setVar('process',$process);
 
+        $helpers=array();
+        $helpers["AGGREGATION"]="{{username}}";
+        $helpers["Menu Items"]="{{menu}}";
 
+
+
+
+        $this->view->setVar("helpers",$helpers);
+
+    }
+
+
+
+    public function deleteAction()
+    {
+        $id = $this->request->getPost("id");
+        $process = Process::findFirstByid($id);
+
+        if (!$process->delete()) {
+
+            foreach ($process->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+        }
+        else
+        {
+            $this->flash->success("Process was deleted successfully");
+        }
+
+        return $this->dispatcher->forward(array(
+     "controller" => "process",
+     "action" => "index"
+ ));
     }
 
     public function saveAction($id)
@@ -83,7 +122,6 @@ class ProcessController extends ControllerBase
         $process = Process::findFirstById($id);
 
         $process->name = $this->request->getPost("name");
-        $process->xml = $this->request->getPost("xml");
         $process->parameters = $this->request->getPost("parameters");
         $process->storage = $this->request->getPost("storage");
 
@@ -180,7 +218,7 @@ class ProcessController extends ControllerBase
        if($links!=null)
        {
 
-       $statement = $db->prepare("select column_name from information_schema.columns where schema_name = 'db_prime' and table_name ='$db_table_name'");
+       $statement = $db->prepare("select column_name from information_schema.columns where schema_name = 'doc' and table_name ='$db_table_name'");
        $statement->execute();
 
        while($row = $statement->fetch(\PDO::FETCH_ASSOC))
@@ -219,60 +257,80 @@ class ProcessController extends ControllerBase
 
       
 
-       $row_limit=200;
+       $row_limit=100;
        $data_out=array();
 
        $selects=array();
 
-       foreach($parameters['columns'] as $column)
-       {
-       
-           $selects[] = $column['aggregation']."(".$column['column'].") AS ".$column['name']."";
-       
-       }
-
-       $select_string= implode(" , ",$selects);
-
-       if(!empty( $parameters['group'] ))
-       {
-       $group_string= ' GROUP BY '.implode(" , ",$parameters['group']);
-       }
-       else{
-           $group_string="";
-       }
-       
-       if(!empty( $parameters['order'] ))
+       if(!empty( $parameters['columns'] ))
        {
 
-       $order_string= ' ORDER BY '.implode(" , ",$parameters['order']);
+           $parameters['columns']= explode(',',$parameters['columns']);
 
-       }
-       else{
-           $order_string="";
-       
-       }
+           foreach($parameters['columns'] as $column)
+           {
+               $temp = str_replace(":"," AS ",$column);
+               $temp = str_replace(";",",",$temp);
+               $selects[] = $temp;
+           }
 
-       
-
-
-      $additional_selects = array_unique(array_merge($parameters['group'],$parameters['order']));
-
-       if( empty( $additional_selects ) )
-       {
-           $additional_selects= "";
-
+           $select_string= $selects;
        }
        else
        {
-           $additional_selects= implode(" , ",$additional_selects).",";
+           $select_string=array();
        
        }
 
-       $sql="SELECT ".$additional_selects." $select_string FROM db_prime.$db_table_name $filter_string $group_string $order_string Limit $row_limit";
+
+       $additional_selects =array();
+
+       if(!empty( $parameters['rows'] ))
+       {
+           $parameters['rows']= explode(',',$parameters['rows']);
+
+           $groups=array();
+
+           foreach($parameters['rows'] as $row)
+           { 
+               $temp = str_replace(":"," AS ",$row);
+               $temp = str_replace(";"," , ",$temp);
+
+               $additional_selects[] =$temp;
+
+               if (strpos($row,':') !== false) {
+
+                   $groups[] =  explode(':',$row)[1];
+
+               }
+               else
+               {
+                   $groups[] = $temp;
+               }
+           }
+
+           $group_string= ' GROUP BY '.implode(" , ",$groups);
+           $order_string= ' ORDER BY '.implode(" , ",$groups);
+           //$additional_selects=implode(" , ",$additional_selects);
+       }
+       else{
+           $order_string="";
+           $group_string="";
+           $additional_selects=array();
+       }
+
+       $select_string=implode(" , ", array_merge($additional_selects,$select_string));
+
+       if($select_string== "")
+       {
+           $select_string= "*";
+       }
+
+       $sql="SELECT $select_string FROM doc.$db_table_name $filter_string $group_string $order_string Limit $row_limit";
      
        $statement=$db->prepare( $sql);
             
-                   if($statement->execute())
+                   if($error=$statement->execute())
                    {
                        
                        foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $row)
@@ -292,11 +350,64 @@ class ProcessController extends ControllerBase
                            }
                            $data_out[]= $row;
                        }
+                       return $data_out;
+                   }
+                   else
+                   {
+                       $errors = $statement->errorInfo();
+                       var_dump($errors[2]);
+                       return $data_out=null;
                    }
 
+                   
+                   
 
-              return $data_out;
+    }
 
+
+    function joinArrays($left,$right,$join)
+    {
+        foreach($left as $key=>$value)
+        {
+            $join_str="";
+            foreach($join as $str)
+            {
+                $join_str= $join_str.$value[$str];
+            }
+            $left[$key]['join']=$join_str; 
+        }
+
+
+        foreach($right as $key=>$value)
+        {
+            $join_str="";
+            foreach($join as $str)
+            {
+                $join_str= $join_str.$value[$str];
+            }
+            $right[$key]['join']=$join_str; 
+        }
+
+
+        $result=array();
+
+        foreach($right as $value)
+        {
+            $key=true;
+
+            while ($key!==false) 
+            { 
+                $key = array_search($value['join'], array_column($left, 'join'));
+                if($key!==false)
+                {
+                    $result[]=array_merge ($left[$key],$value);
+                    array_splice($left, $key, 1);
+                }
+            }
+        }
+    
+        return $result;
+    
     }
 
     public function resultTableAction($id){
@@ -343,6 +454,23 @@ class ProcessController extends ControllerBase
             echo $html;
 
         }
+
+
+    public function importAction()
+    {
+
+        $fp = fopen("C:\Fund Performance data.csv", "r");
+        while (($data = fgetcsv($fp, 1000, ",")) !== FALSE) {
+            $num = count($data);
+            echo "<p> $num fields in line $row: <br /></p>\n";
+            $row++;
+            for ($c=0; $c < $num; $c++) {
+                echo $data[$c] . "<br />\n";
+            }
+        }
+        fclose($fp);
+
+    }
 
 }
 

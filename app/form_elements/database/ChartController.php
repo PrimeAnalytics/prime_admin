@@ -5,7 +5,7 @@ use PRIME\FormElements\FormElementBase as FormElementBase;
 class ChartController extends FormElementBase
 {
     
-    public function Render($label,$name)
+    public function Render()
     {
         $output=array();
         $output['html'][]='<div class="form-group">
@@ -54,7 +54,7 @@ class ChartController extends FormElementBase
 
         });
 
-       })';
+       });';
 
         return $output;
 
