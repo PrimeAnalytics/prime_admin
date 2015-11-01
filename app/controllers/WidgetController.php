@@ -218,61 +218,7 @@ class WidgetController extends ControllerBase
  ));
           
     }
-    
-    /**
-     * Saves a widget edited
-     *
-     */
-    public function saveAction()
-    {
-
-        $id = $this->request->getPost("id");
-
-        $widget = Widget::findFirstByid($id);
-        if($this->request->getPost("column") != NULL)
-        {
-            $widget->column = $this->request->getPost("column");
-        }
-        
-        if($this->request->getPost("row") != NULL)
-        {
-            $widget->row = $this->request->getPost("row");
-        }
-        
-        if($this->request->getPost("width") != NULL)
-        {
-            $widget->width = $this->request->getPost("width");
-        }
-        
-        if($this->request->getPost("canvas_id") != NULL)
-        {
-            $widget->canvas_id = $this->request->getPost("canvas_id");
-        }
-        
-        if($this->request->getPost("parameters") != NULL)
-        {
-            $widget->parameters = json_encode($this->request->getPost("parameters"));
-        }
-        
-        
-        if (!$widget->save()) {
-
-            foreach ($widget->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-        }
-        else{
-            $this->flash->success("widget was updated successfully");
-        }
-        
-        
-        return $this->dispatcher->forward(array(
-    "controller" => "dashboard",
-    "action"     => "edit",
-    "params"     => array('id' => $widget->dashboard_id)
-));
-    }
+   
     
     public static function getWidgetList()
     {

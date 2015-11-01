@@ -4,6 +4,8 @@
     var links =<?php echo json_encode($links)?>;
     </script>
 
+
+
     <div class="page-content page-builder">
         <div id="hidden-small-screen-message">
             <h2 class="m-t-40"><strong>Page Builder</strong> is not available on small screen</h2>
@@ -14,11 +16,6 @@
             <div class="tabs tabs-linetriangle">
                 <ul class="nav nav-tabs">
                     <li class="width-16p active">
-                        <a href="#info" data-toggle="tab">
-                            <span class="text-center">Basic Info</span>
-                        </a>
-                    </li>
-                    <li class="width-16p">
                         <a href="#layout" data-toggle="tab">
                             <span class="text-center">Layout</span>
                         </a>
@@ -32,66 +29,7 @@
                     ?>
                 </ul>
                 <div class="tab-content clearfix" style="overflow:visible">
-                    <div class="tab-pane fade in active" id="info">
-                        <?php echo $this->tag->form("dashboard/save") ?>
-                        <div class="col-md-12">
-
-                            <div class="form-group col-md-3">
-                                <label class="form-label">Title</label>
-                                <span class="help">e.g. "Market Metrics"</span>
-                                <div class="input-with-icon  right">
-                                    <i class=""></i>
-                                    <?php echo $this->tag->textField(array("title", "class" => "form-control")) ?>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-md-3">
-                                <label class="form-label">Menu Weight</label>
-                                <span class="help">e.g. "Please Select"</span>
-                                <div class="input-with-icon  right">
-                                    <i class=""></i>
-                                    <?php echo $this->tag->textField(array("weight", "class" => "form-control")) ?>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group col-md-3">
-                                <label class="form-label">Icon</label>
-                                <span class="help">e.g. "Please Select"</span>
-                                <div class="input-group">
-                                    <?php echo $this->tag->textField(array("icon", "class"=>"form-control icp icp-auto","data-placement"=>"bottomRight")) ?>
-                                    <span class="input-group-addon"></span>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-md-3">
-                                <label class="form-label">Style</label>
-                                <span class="help">e.g. "Please Select"</span>
-                                <div class="input">
-
-                                    <select class="form-control" name="style">
-
-                                        <?php
-                        foreach($dashboardList as $subfile)
-                        {
-                        $type= strtolower(str_replace(" ","_",$subfile)) ;
-                        echo '<option value="'.$type.'" >'.$subfile.'</option>';
-                        }
-                                        ?>
-
-                                    </select>
-                                </div>
-                            </div>
-                            <?php echo $this->tag->hiddenField("organisation_id") ?>
-                            <?php echo $this->tag->hiddenField("id") ?>
-                        </div>
-                        <p class="pull-right">
-                            <?php echo $this->tag->submitButton(array("Save", "class" => "btn btn-success btn-cons")) ?>
-                            <button type="button" class="btn btn-white btn-cons">Cancel</button>
-                        </p>
-                        </form>
-                    </div>
-                    <div class="tab-pane fade" id="layout">
+                    <div class="tab-pane fade in active" id="layout">
                         <?php
                     foreach($portletList as $subfile)
                     {
@@ -205,9 +143,27 @@
 </div>
 <!-- /.modal -->
 
+
+<div id="context-menu-portlet" class="context-menu dropdown clearfix" style="position: absolute;">
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+        <li class="dropdown-title">Menu</li>
+        <li class="edit-icon"><a href="#" data-action="edit"><i class="icon-pencil c-gray"></i> Edit Portlet</a></li>
+        <li class="remove"><a href="#" data-action="remove"><i class="icon-ban c-gray"></i> Remove</a></li>
+    </ul>
+</div>
+
+<div id="context-menu-widget" class="context-menu dropdown clearfix" style="position: absolute;">
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+        <li class="dropdown-title">Menu</li>
+        <li class="edit-icon"><a href="#" data-action="edit"><i class="icon-pencil c-gray"></i> Edit Widget</a></li>
+        <li class="remove"><a href="#" data-action="remove"><i class="icon-ban c-gray"></i> Remove</a></li>
+    </ul>
+</div>
+    
+
 <script>
 
-        $(document).ready(function () {
+   $(document).ready(function () {
 
         var dataIn;
         $.getJSON("/widget/getAllTables", function(data){
@@ -268,74 +224,78 @@
 
 
 
-    });
+   });
 
 
-        var menuContext =   '<div id="context-menu" class="context-menu dropdown clearfix">'+
-                          '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">'+
-                           '<li class="dropdown-title">Panel</li>'+
-                            '<li class="color-background"><a href="#" data-action="background"><i class="icon-pencil c-gray"></i> Change Background Color</a></li>'+
-                            '<li class="edit-icon"><a href="#" data-action="icon"><i class="icon-star c-gray"></i> Edit Icon</a></li>'+
-                            '<li class="remove-icon"><a href="#" data-action="remove-icon"><i class="icon-pencil c-gray"></i> Remove Icon</a></li>'+
-                            '<li class="remove"><a href="#" data-action="remove"><i class="icon-ban c-gray"></i> Remove</a></li>'+
-                          '</ul>'+
-                        '</div>';
-    $('.page-content').append(menuContext);
-    var $contextMenu = $("#context-menu");
+   function iframe_load()
+   {
 
-    /* Context Menu */
-    $('.builder-wrapper').on('mousedown', '.panel-header h3, .panel-footer h3, .panel-content:not(.widget-info), i', function(){
-          $('#context-menu .color-background, #context-menu .edit-icon, #context-menu .remove-icon').show();
-          if($(this).hasClass('panel-content')){
-            $('#context-menu .edit-icon').hide();
-            $('#context-menu .remove-icon').hide();
-          }
-          if(!$(this).find('i').length){
-              $('#context-menu .remove-icon').hide();
-          }
-          if($(this).is('i')){
-              if($(this).parent().hasClass('form-sortable-btn')){
-                  return;
-              }
-              $('#context-menu .edit-icon').show();
-          }
-          $(this).contextmenu({
-              target: '#context-menu',
-              onItem: function (context, e) {
-                  var action = $(e.target).data("action");
-                  context.addClass('current-context');
-                  if(action == 'background'){
-                      $('#modal-background').modal('show');
-                  }
-                  if(action == 'icon'){
-                      $('#modal-icons').modal('show');
-                  }
-                  if(action == 'remove-icon'){
-                      context.find('i').remove();
-                  }
-                  if(action == 'remove'){
-                      $element = context;
-                      if($element.hasClass('nav-parent')) $remove_txt = "Are you sure to remove this element?<br>";
-                      else if($element.parent().hasClass('panel')) $remove_txt = "Are you sure this panel?";
-                      else $remove_txt = "Are you sure to remove this element?";
-                      bootbox.confirm($remove_txt, function(result) {
-                          if(result === true){
-                            $element.addClass("animated bounceOutLeft");
-                            window.setTimeout(function () {
-                              if($element.parent().hasClass('panel')){
-                                  $element.parent().remove();
-                              }
-                              else{
-                                  $element.remove();
-                              }
+       $('#dashboard_iframe').contents().find(".builder-portlet").mousedown(function(event) {
+           var $contextMenu = $("#context-menu-portlet");
+           if(event.which==3)
+           {
+               $('#context-menu-portlet').show();
+               $(this).contextmenu({
+                   leftOffset:$('#dashboard_iframe').offset().left,
+                   topOffset:$('#dashboard_iframe').offset().top,
+                   target: '#context-menu-portlet',
+                   onItem: function (context, e) {
+                       var action = $(e.target).data("action");
+                       $element = context;
+                       if(action == 'edit'){
+                           var type = $element.data("type");
+                           var id = $element.data("id");
+                           $("#modal_content").load("/portlets/"+type+"/edit/"+id , function () {
+                            $("#myModal").modal("show");
+                           });
+                       }
+                       else if(action == 'remove'){
+                           alert('remove');
+                       }
+                   }
+               });
+              
 
-                            }, 300);
-                          }
-                      });
-                  }
-              }
-          });
-    });
+           }
+       });
+
+       $('#dashboard_iframe').contents().find(".builder-widget").mousedown(function(event) {
+           var $contextMenu = $("#context-menu");
+           if(event.which==3)
+           {
+               $('#context-menu-widget').show();
+               $(this).contextmenu({
+                   leftOffset:$('#dashboard_iframe').offset().left,
+                   topOffset:$('#dashboard_iframe').offset().top,
+                   target: '#context-menu-widget',
+                   position: function(opt, x, y){
+                       opt.$menu.css({top: 123, left: 123});
+                   } ,
+                   onItem: function (context, e) {
+                       var action = $(e.target).data("action");
+                       $element = context;
+                       if(action == 'edit'){
+                           var type = $element.data("type");
+                           var id = $element.data("id");
+                           $("#modal_content").load("/widgets/"+type+"/edit/"+id , function () {
+                               $("#myModal").modal("show");
+                           });
+                       }
+                       else if(action == 'remove'){
+                           alert('remove');
+                       }
+                   }
+               });
+
+
+
+           }
+       });
+
+   }
+
+
+
 
 
 

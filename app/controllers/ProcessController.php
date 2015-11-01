@@ -84,9 +84,6 @@ class ProcessController extends ControllerBase
         $helpers["AGGREGATION"]="{{username}}";
         $helpers["Menu Items"]="{{menu}}";
 
-
-
-
         $this->view->setVar("helpers",$helpers);
 
     }
@@ -214,50 +211,120 @@ class ProcessController extends ControllerBase
 
        $filter=array();
        $filter_string="";
+       $having_string="";
 
        if($links!=null)
        {
 
-       $statement = $db->prepare("select column_name from information_schema.columns where schema_name = 'doc' and table_name ='$db_table_name'");
-       $statement->execute();
+               foreach($links as $link)
+               {
+                   
+                   if($db_table_name==$link['table'])
+                   {
+                       
+                       $filter['keys'][]=$link['column'];
+                       $filter['values'][]=explode(",",$link['default_value']);
+                       $filter['operator'][]=$link['operator'];
+                       $filter['type'][]=$link['type'];
 
-       while($row = $statement->fetch(\PDO::FETCH_ASSOC))
-       {	
-          
-          foreach($links as $link)
-          {
-              
-             if($row['column_name']==$link['column'])
-             {
-            
-                 $filter['keys'][]=$row['column_name'];
-                 $filter['values'][]=explode(",",$link['default_value']);
-             
-             }
-          }
+                   }
+               }
+
+
+           $having=0;
+           $where=0;
+           for($i=0;$i<count($filter['keys']);$i++)
+           {
+               if($filter['type'][$i]=="where")
+               {
+                   for($j=0;$j<count($filter['values'][$i]);$j++)
+                   {
+                       if($where==0)
+                       {
+                           $filter_string=" WHERE ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $where++;
+                       }
+                       else if($j==0)
+                       {
+                           $filter_string=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                       }
+                       else
+                       {
+                           $filter_string=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                       }
+
+                   }
+               }
+               else if($filter['type'][$i]=="having")
+               {
+
+                   for($j=0;$j<count($filter['values'][$i]);$j++)
+                   {
+                       if($having==0)
+                       {
+                           $having_string=" HAVING ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $where++;
+                       }
+                       else if($j==0)
+                       {
+                           $having_string=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                       }
+                       else
+                       {
+                           $having_string=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                       }
+
+                   }
+               }
+           }
+           
        }
+       $matches;
 
-
-
-       for($i=0;$i<count($filter['keys']);$i++)
+       if(!empty( $parameters['columns'] )||!empty( $parameters['rows'] ))
        {
-           if($i==0)
-           {
-               $filter_string=" WHERE ".$filter['keys'][$i]." in ('".implode("','",$filter['values'][$i])."') ";
-           }
-           else
-           {
-               
-               $filter_string=" AND ".$filter['keys'][$i]." in ('".implode("','",$filter['values'][$i])."') ";
-               
-           }
-       }
-       
+           $temp = str_replace(":"," AS ",$parameters['columns']);
+           $temp = str_replace("|",",",$temp);
+
+           preg_match_all('/total{(.*?)}/',$temp, $matches);
+
+           $temp = str_replace(":"," AS ",$parameters['rows']);
+           $temp = str_replace("|",",",$temp);
+
+           preg_match_all('/total{(.*?)}/',$temp, $matches2);
+
+          $matches[0]= array_merge($matches[0],$matches2[0]);
+          $matches[1]= array_merge($matches[1],$matches2[1]);
+
+         $matches[0]=array_unique ($matches[0]);
+         $matches[1]=array_unique ($matches[1]);
+
+         if(count($matches)!=0)
+         {
+             
+             $sql_totals="SELECT ".implode(" , ",$matches[1])." FROM doc.$db_table_name $filter_string";
+
+             $statement=$db->prepare($sql_totals);
+             if($error=$statement->execute())
+             {
+                 $i=0;
+                 $results_temp=$statement->fetchAll(\PDO::FETCH_ASSOC)[0];
+                 foreach($results_temp as $sub_key=>$sub_value)
+                 {
+                     $matches[2][]=$sub_value;
+                     
+                     $i++;
+                 }
+             }
+
+             $matches = array_map('array_values', $matches);
+             
+         }
        }
 
       
 
-       $row_limit=100;
+       $row_limit=1000;
        $data_out=array();
 
        $selects=array();
@@ -269,8 +336,22 @@ class ProcessController extends ControllerBase
 
            foreach($parameters['columns'] as $column)
            {
-               $temp = str_replace(":"," AS ",$column);
-               $temp = str_replace(";",",",$temp);
+               $formula=str_replace("|",",",$column);
+               if (isset($matches))
+               {
+               for($i=0;$i<count($matches[0]);$i++)
+               {
+                   $formula=str_replace($matches[0][$i],$matches[2][$i],$formula);
+               }
+               }
+                   if (strpos($column,':') !== false) {
+                       $temp = str_replace(":"," AS \"",$formula)."\"";
+                   }
+                   else
+                   {
+                       $temp=$formula." AS \"".$column."\"";
+                   }
+             
                $selects[] = $temp;
            }
 
@@ -293,25 +374,32 @@ class ProcessController extends ControllerBase
 
            foreach($parameters['rows'] as $row)
            { 
-               $temp = str_replace(":"," AS ",$row);
-               $temp = str_replace(";"," , ",$temp);
-
-               $additional_selects[] =$temp;
-
+               
+               $formula=str_replace("|",",",$row);
+               if (isset($matches))
+               {
+                   for($i=0;$i<count($matches[0]);$i++)
+                   {
+                       $formula=str_replace($matches[0][$i],$matches[2][$i],$formula);
+                   }
+               }
                if (strpos($row,':') !== false) {
-
-                   $groups[] =  explode(':',$row)[1];
-
+                   $temp = str_replace(":"," AS \"",$formula)."\"";
                }
                else
                {
-                   $groups[] = $temp;
+                   $temp=$formula." AS \"".$row."\"";
                }
+
+               $additional_selects[] =$temp;
+
+               $groups[] =  explode(' AS ',$temp)[1];
+
+   
            }
 
            $group_string= ' GROUP BY '.implode(" , ",$groups);
            $order_string= ' ORDER BY '.implode(" , ",$groups);
-           //$additional_selects=implode(" , ",$additional_selects);
        }
        else{
            $order_string="";
@@ -326,7 +414,11 @@ class ProcessController extends ControllerBase
            $select_string= "*";
        }
 
-       $sql="SELECT $select_string FROM doc.$db_table_name $filter_string $group_string $order_string Limit $row_limit";
+
+ 
+
+
+      $sql="SELECT $select_string FROM doc.$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
      
        $statement=$db->prepare( $sql);
             
@@ -337,15 +429,18 @@ class ProcessController extends ControllerBase
                        {
                            foreach($row as $sub_key=>$sub_value)
                            {
-                               $floatVal = floatval($sub_value);
-                               
-                               if($sub_value=="")
+     
+                               if(gettype ($sub_value)=='string')
                                {
-                                   $row[$sub_key]="0";
+                                   $row[$sub_key]="".$sub_value."";
                                }
-                               else if(ctype_digit($sub_value))
+                               elseif(gettype ($sub_value)=='double')
                                {
                                    $row[$sub_key] = round($sub_value, 2, PHP_ROUND_HALF_DOWN);
+                               }
+                               elseif($sub_value=="")
+                               {
+                                   $row[$sub_key]="0";
                                }
                            }
                            $data_out[]= $row;
@@ -415,9 +510,12 @@ class ProcessController extends ControllerBase
         $this->view->Disable();
 
         $array=$this->getResults($id);
+
+        if(count($array)!=0)
+        {
             // start table
 
-        $html = '<table class="table table-hover"><thead>';
+            $html = '<table class="table table-hover"><thead>';
 
             // header row
 
@@ -425,9 +523,9 @@ class ProcessController extends ControllerBase
 
             foreach($array[0] as $key=>$value){
 
-                    $html .= '<th>' . $key . '</th>';
+                $html .= '<th>' . $key . '</th>';
 
-                }
+            }
 
             $html .= '</tr></thead><tbody>';
 
@@ -452,6 +550,7 @@ class ProcessController extends ControllerBase
             $html .= '</tbody></table>';
 
             echo $html;
+        }
 
         }
 

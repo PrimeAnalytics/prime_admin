@@ -35,7 +35,7 @@ class SelectController extends FormElementBase
 
             $("#'.$name.'").select2({
               data: data
-            })';
+            });';
 
         return $output;
 

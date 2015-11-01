@@ -72,11 +72,11 @@
     $("#dbTable").on('change', function (event) {
         table = $("#dbTable").select2('val');
 
-        $.getJSON("/get/DBColumns/" + table, function (data) {
+        $.getJSON("/get/autocomplete/columns/" + table, function (data) {
             columnData = data;
 
-            $("#tableColumn").select2({
-                data: columnData
+            $("#tableColumn").autocomplete({
+                source: columnData
             });
         });
     });

@@ -5,6 +5,7 @@ use Phalcon\Mvc\Controller as Controller;
 use PRIME\Models\Widget;
 use PRIME\Models\OrgDatabase;
 use PRIME\Models\Organisation;
+use PRIME\Models\Dashboard;
 use PRIME\Models\Portlet;
 
 class PortletBase extends Controller
@@ -79,7 +80,7 @@ class PortletBase extends Controller
             
        foreach ($widgets as $widget) {
                 echo '<script> 
-                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<div></div>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(){';
+                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<a class=\"builder-widget\" data-type=\"'.$widget->type.'\" data-id=\"'.$widget->id.'\"></a>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(){';
            if($type=="builder"){
                echo 'parent.update_dropzone();';
            }
@@ -88,7 +89,6 @@ class PortletBase extends Controller
             };
         }
 
-    
     public function newAction($dashboard_id,$row,$column)
     {
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
@@ -121,6 +121,8 @@ class PortletBase extends Controller
         $portlet->column = $this->request->getPost("column");
         $portlet->row = $this->request->getPost("row");
         $portlet->dashboard_id = $this->request->getPost("dashboard_id");
+
+        $dashboard=Dashboard::findFirstById($portlet->dashboard_id);
         
         $portlet->parameters = json_encode($this->request->getPost("parameters"));
 
@@ -135,8 +137,8 @@ class PortletBase extends Controller
             
 
             return $this->dispatcher->forward(array(
-            "namespace" => "PRIME\Controllers",
-            "controller" => "dashboard",
+            "namespace" => "PRIME\Themes\\".$this->theme."\dashboards",
+            "controller" => $dashboard->type,
             "action"     => "edit",
             "params"     => array('id' => $portlet->dashboard_id)
             ));
@@ -145,29 +147,51 @@ class PortletBase extends Controller
 
     public function editAction($id)
     {
-        $this->view->pick(strtolower($this->view_dir."/".$this->router->getControllerName()).'/edit');
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->persistent->parameters = null;
 
-        $this->view->setTemplateAfter('modal');
+        $this->view->setViewsDir('../app/views/');
+        $this->view->pick('portlets/edit');
+
+        $formController = new \PRIME\Controllers\FormController();
+        $form_body= $formController->renderAction($this->form_struct);
+
+        $this->tag->setDefault("id", $id);
+
+        $this->view->setVar("form_body", $form_body);
+        $this->view->setVar("type", $this->portlet_name);
+
+        $form_type='/portlets/'.str_replace(" ","_",strtolower($this->portlet_name)).'/save';
+        $this->view->setVar("form_type", $form_type);
         
-        $this->tag->setDefault("type", $this->router->getControllerName());
-        
-        $this->view->setVar("header_text", "Edit ". $this->widget_name);
-        $this->view->setVar("icon", $this->icon);
-        $this->view->setVar("form_type", "widget/save"); 
-        
-        $widget = Widget::findFirstByid($id);
-        
-        $this->view->setVar("widget_id", $id); 
-        $this->view->setVar("type", $this->router->getControllerName()); 
-        $this->tag->setDefault("id", $widget->id);
-        $this->tag->setDefault("row", $widget->row);
-        $this->tag->setDefault("width", $widget->width);
-        $this->view->setVar("dashboard_id", $widget->dashboard_id);
-        
-        echo $this->tag->hiddenField("id");
-        
-        $parameters = json_decode($widget->parameters,true);
-        
+    }
+
+
+    public function saveAction()
+    {
+   
+        $id = $this->request->getPost("id");
+        $portlet = Portlet::findFirstByid($id);
+
+        $portlet->parameters = json_encode($this->request->getPost("parameters"));
+
+        if (!$portlet->save()) {
+            foreach ($portlet->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+        }
+        else
+        {
+            $this->flash->success("Portlet was saved successfully");
+            $dashboard=Dashboard::findFirstById($portlet->dashboard_id);
+
+            return $this->dispatcher->forward(array(
+            "namespace" => "PRIME\Themes\\".$this->theme."\dashboards",
+            "controller" => $dashboard->type,
+            "action"     => "edit",
+            "params"     => array('id' => $portlet->dashboard_id)
+            ));
+        }
     }
 
 

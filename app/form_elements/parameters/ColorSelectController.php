@@ -4,7 +4,6 @@ use PRIME\FormElements\FormElementBase as FormElementBase;
 
 class ColorSelectController extends FormElementBase
 {
-    
     public function Render($name,$label)
     {
         $output=array();

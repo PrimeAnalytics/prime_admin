@@ -14,6 +14,7 @@ class DashboardBase extends Controller
     public $organisation_id ="";
     private $view_dir;
     public $form_struct='';
+    public $theme="";
     
     function onConstruct()
     {
@@ -23,6 +24,7 @@ class DashboardBase extends Controller
             //Retrieve its value
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
+            $this->theme= $auth['theme'];
         }
 
         
@@ -213,10 +215,11 @@ class DashboardBase extends Controller
             
             foreach ($portlets as $portlet) {
                 echo '<script> 
-                $("div").find("#row_'.$portlet->row.'").append( $("<div></div>").load("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(){';
+                $("div").find("#row_'.$portlet->row.'").append( $("<a class=\"builder-portlet\" data-type=\"'.$portlet->type.'\" data-id=\"'.$portlet->id.'\"></a>").load("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(){';
 
                 if($type=="builder"){
-                    echo 'parent.update_dropzone();';
+                    echo 'parent.update_dropzone(); 
+                          parent.iframe_load();';
                   }
                 echo '}));
                 </script>';
@@ -313,7 +316,7 @@ class DashboardBase extends Controller
     }
 
 
-        public function newAction()
+    public function newAction()
     {
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         $this->persistent->parameters = null;
@@ -350,8 +353,6 @@ class DashboardBase extends Controller
         $dashboard->weight = $this->request->getPost("weight");
         $dashboard->organisation_id = $this->request->getPost("organisation_id");
 
-        var_dump($this->request->getPost("weight"));
-
         $dashboard->parameters = json_encode($this->request->getPost("parameters"));
 
         if (!$dashboard->save()) {
@@ -376,8 +377,8 @@ class DashboardBase extends Controller
 
 
             return $this->dispatcher->forward(array(
-            "namespace" => "PRIME\Controllers",
-            "controller" => "dashboard",
+            "namespace" => "PRIME\Themes\\".$this->theme."\dashboards",
+            "controller" => $dashboard->type,
             "action"     => "edit",
             "params"     => array('id' => $dashboard->id)
             ));

@@ -1,6 +1,7 @@
 <?php
 namespace PRIME\Controllers;
 use PRIME\Models\Dashboard;
+use PRIME\Models\DashboardHasUsers;
 use PRIME\Models\Widget;
 use PRIME\Models\Portlet;
 use PRIME\Models\Links;
@@ -14,7 +15,6 @@ class DashboardController extends ControllerBase
         $this->view->setTemplateAfter('main');
         \Phalcon\Tag::setTitle('Dashboard');
         parent::initialize();
-        
     }
 
 
@@ -57,106 +57,6 @@ class DashboardController extends ControllerBase
         echo json_encode($json);
         
         }
-    }
-
-    /**
-     * Displays the creation form
-     */
-    public function newAction($organisation_id)
-    {
-        $organisation = Organisation::findFirstByid($organisation_id);   
-        
-        $this->view->setVar('theme',$organisation->theme);
-        
-        $this->tag->setDefault("weight", "0");
-        $this->tag->setDefault("organisation_id", $organisation_id);
-
-        $DashboardList=\PRIME\Controllers\DashboardController::getDashboardList();
-
-        $this->view->setVar('dashboardList',$DashboardList);
-        
-        $this->view->setTemplateAfter('');
-    }
-
-    /**
-     * Edits a dashboard
-     *
-     * @param string $id
-     */
-    public function editAction($id)
-    {
-            $dashboard = Dashboard::findFirstByid($id);
-            
-            $organisation = Organisation::findFirstByid($dashboard->organisation_id);
-            $this->view->setVar('theme',$organisation->theme);
-
-            $WidgetList=\PRIME\Controllers\WidgetController::getWidgetList();
-
-            $this->view->setVar("widgetList", $WidgetList); 
-
-            $PortletList=\PRIME\Controllers\PortletController::getPortletList();
-
-            $this->view->setVar("portletList", $PortletList); 
-
-            $DashboardList=\PRIME\Controllers\DashboardController::getDashboardList();
-
-            $this->view->setVar("dashboardList", $DashboardList); 
-
-            $portlets = $dashboard->Portlet;
-            $this->view->setVar("portlets", $portlets); 
-
-            $this->view->setVar("dashboard_id", $dashboard->id);  
-            $this->view->setVar("links", $dashboard->links);
-            $this->view->setVar("organisation_id", $dashboard->organisation_id);
-            
-            $this->view->id = $dashboard->id;
-            
-            $this->tag->setDefault("style", $dashboard->style);
-            $this->tag->setDefault("id", $dashboard->id);
-            $this->tag->setDefault("title", $dashboard->title);
-            $this->tag->setDefault("icon", $dashboard->icon);
-            $this->tag->setDefault("weight", $dashboard->weight);
-            $this->tag->setDefault("organisation_id", $dashboard->organisation_id);
-            
-    }
-
-    /**
-     * Creates a new dashboard
-     */
-    public function createAction()
-    {
-
-     // Check if the user has uploaded files
-        if ($this->request->hasFiles() == true) {
-            $baseLocation = '/files/';
-
-            // Print the real file names and sizes
-            foreach ($this->request->getUploadedFiles() as $file) {          
-                $file->moveTo($baseLocation . $file->getName());
-            }
-        }
-
-        $dashboard = new Dashboard();
-
-        $dashboard->title = $this->request->getPost("title");
-        $dashboard->type = $this->request->getPost("type");
-        $dashboard->icon = $this->request->getPost("icon");
-        $dashboard->weight = $this->request->getPost("weight");
-        $dashboard->organisation_id = $this->request->getPost("organisation_id");
-        
-
-        if (!$dashboard->save()) {
-            foreach ($dashboard->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-           $this->response->redirect("organisation/index/");
-        }
-
-        $this->flash->success("dashboard was created successfully");
-
-        $this->response->redirect("dashboards/".$dashboard->type."/edit/".$dashboard->id);
-
     }
 
     /**
@@ -219,8 +119,22 @@ class DashboardController extends ControllerBase
     {
         $id = $this->request->getPost("id");
         $dashboard = Dashboard::findFirstByid($id);
+        
+        
+        if (!$dashboard) {
+            $this->flash->error("dashboard was not found");
+
+            return $this->dispatcher->forward(array(
+                "controller" => "dashboard",
+                "action" => "index"
+            ));
+        }
+       
+        
         $portlets=$dashboard->Portlet;
         
+        $enabledDashboards=$dashboard->DashboardHasUsers;
+
         foreach($portlets as $portlet)
         {
             $widgets= $portlet->Widget;
@@ -233,15 +147,10 @@ class DashboardController extends ControllerBase
             $portlet->delete();
             
         }
-        
-        if (!$dashboard) {
-            $this->flash->error("dashboard was not found");
 
-            return $this->dispatcher->forward(array(
-                "controller" => "dashboard",
-                "action" => "index"
-            ));
-        }
+        $enabledDashboards->delete();
+        
+        
 
         if (!$dashboard->delete()) {
 

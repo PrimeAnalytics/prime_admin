@@ -45,10 +45,10 @@
                         </div>
                     </div>
 
-                    <p class="pull-right">
+                    <div class="pull-right">
                         <?php echo $this->tag->submitButton(array("Save", "class" => "btn btn-success btn-cons")) ?>
                         <button type="button" class="btn btn-white btn-cons">Cancel</button>
-                    </p>
+                    </div>
                     </form>
                 </div>
                 <div class="tab-pane fade active in" id="tab2_2">
@@ -123,10 +123,10 @@
                         </div>
                     </div>
 
-                    <p class="pull-right">
+                    <div class="pull-right">
                         <?php echo $this->tag->submitButton(array("Save", "class" => "btn btn-success btn-cons")) ?>
                         <button type="button" class="btn btn-white btn-cons">Cancel</button>
-                    </p>
+                    </div>
                     </form>
                 </div>
             </div>

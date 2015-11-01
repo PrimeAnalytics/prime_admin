@@ -189,6 +189,7 @@ class GetController extends ControllerBase
         }
 
         $output['set'][]='concat()';
+        $output['set'][]='total{}';
         $output['set'][]='format()';
         $output['set'][]='substr()';
         $output['set'][]='regexp_matches()';

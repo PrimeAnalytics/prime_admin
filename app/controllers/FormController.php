@@ -79,7 +79,7 @@ class FormController extends ControllerBase
         if($table_set)
         {
         
-            $controller= "\PRIME\FormElements\\".ucwords($category)."\UpdateLinksController"; 
+            $controller= "\PRIME\FormElements\Database\UpdateLinksController"; 
             $tempController = new $controller();
             $output[]=call_user_func(array($tempController,'Render'));
 

@@ -1,0 +1,15 @@
+<thead><tr>
+                    {% for item in parm['db']['series'][0] %}
+                    <th>{{item}} </th>
+                    {% endfor  %}
+                          </tr></thead>
+<tbody>
+                          
+                             {% for row in parm['db']['series'] %}
+                             <tr>
+        {% for item in row %}
+<td class="v-align-middle">{{item}} </td>
+        {% endfor  %}
+</tr>
+{% endfor  %}
+                        </tbody>{{ content() }}

@@ -3,16 +3,18 @@ $('#w_{{widget.id}}').highcharts({
 title: {
     text: '{{parm['title']}}'
 },
-    xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    },
+    series: [
+{% for key,series in parm['db'] %}
+{
+     name: '{{key|escape_js}}',
+     data: [
+        {% for row in series %}
+    ['{{ row['x_axis']|escape_js }}',{{ row['value']|escape_js }}] ,
+        {% endfor  %}
+]},
 
-    series: [{
-        data: [{% for row in parm['db'] %}
-    {{ row['x_axis'] }} ,
-{% endfor  %}]
-    }]
+{% endfor  %}
+]
 
 });
 </script>{{ content() }}

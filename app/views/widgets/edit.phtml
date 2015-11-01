@@ -1,45 +1,17 @@
 <div class="modal-content">
-
-  <?php echo $this->getContent(); ?>
-  <?php echo $this->tag->form("canvas/save") ?>
-
-
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <br>
-      <i class="fa fa-columns fa-7x"></i>
-      <h4 id="myModalLabel" class="semi-bold">Edit Canvas.</h4>
-      <p class="no-margin">Please provide all the required information. </p>
-      <br>
-                        </div>
-  <div class="modal-body">
-    <div class="row form-row">
-      <div class="col-md-4">
-        <label class="form-label">Title</label>
-        <?php echo $this->tag->textField(array("title")) ?>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Style</label>
-        <?php echo Phalcon\Tag::selectStatic("style", array("default" => "Default","stripped" => "Stripped")) ?>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Width</label>
-        <?php echo Phalcon\Tag::selectStatic("width", array("col-md-12" => "100%","col-md-9" => "75%","col-md-8" => "66%","col-md-6" => "50%","col-md-4" => "33%","col-md-3" => "25%")) ?>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="modal-footer">
-    <?php echo $this->tag->hiddenField(array("row")) ?>
-    <?php echo $this->tag->hiddenField(array("column")) ?>
-    <?php echo $this->tag->hiddenField(array("dashboard_id")) ?>
-    <?php echo $this->tag->hiddenField(array("id")) ?>
-
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    <?php echo $this->tag->submitButton(array("Save","class"=>"btn btn-primary")) ?>
-
-  </div>
-
-  </form>
+    <?php echo $this->getContent(); ?>
+    <form method="post" action="{{form_type}}">
+        <div class="modal-header">
+            <h4 id="myModalLabel" class="semi-bold">Edit {{type}}.</h4>
+            <p class="no-margin">Please provide all the required information. </p>
+        </div>
+        <div class="modal-body">
+            {{form_body}}
+        </div>
+        <div class="modal-footer bg-blue">
+            {{ hidden_field("id")}}
+            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+            <?php echo $this->tag->submitButton(array("Save","class"=>"btn btn-dark")) ?>
+        </div>
+    </form>
 </div>

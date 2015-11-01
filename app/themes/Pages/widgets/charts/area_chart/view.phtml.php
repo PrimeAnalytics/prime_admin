@@ -3,16 +3,18 @@ $('#w_<?php echo $widget->id; ?>').highcharts({
 title: {
     text: '<?php echo $parm['title']; ?>'
 },
-    xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    },
+    series: [
+<?php foreach ($parm['db'] as $key => $series) { ?>
+{
+     name: '<?php echo $this->escaper->escapeJs($key); ?>',
+     data: [
+        <?php foreach ($series as $row) { ?>
+    ['<?php echo $this->escaper->escapeJs($row['x_axis']); ?>',<?php echo $this->escaper->escapeJs($row['value']); ?>] ,
+        <?php } ?>
+]},
 
-    series: [{
-        data: [<?php foreach ($parm['db'] as $row) { ?>
-    <?php echo $row['x_axis']; ?> ,
-<?php } ?>]
-    }]
+<?php } ?>
+]
 
 });
 </script><?php echo $this->getContent(); ?>

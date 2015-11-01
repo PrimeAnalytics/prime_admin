@@ -99,6 +99,7 @@
                 $("#columnsInput").val(data_temp);
                 $("#columnsInput").tagEditor({
                     placeholder: 'Add Parameters ...',
+                    maxLength:500,
                     autocomplete: { source: JSON.parse(result,true), minLength: 1, delay: 0, html: true, position: { collision: 'flip' } }
                 });
                 
@@ -119,6 +120,7 @@
                 $("#rowsInput").val(data_temp);
                 $("#rowsInput").tagEditor({
                     placeholder: 'Add Parameters ...',
+                    maxLength:500,
                     autocomplete: { source: JSON.parse(result,true), minLength: 1, delay: 0, html: true, position: { collision: 'flip' } }
                 });
                 

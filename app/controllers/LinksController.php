@@ -19,7 +19,7 @@ class LinksController extends ControllerBase
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
         }
-        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        
     }
 
     /**
@@ -27,7 +27,7 @@ class LinksController extends ControllerBase
      */
     public function newAction()
     {
-
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         $this->tag->setDefault("organisation_id", $this->organisation_id);
         
         $this->view->setTemplateAfter('');
@@ -85,6 +85,7 @@ class LinksController extends ControllerBase
 
     public function editAction($id)
     {
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         $link = Links::findFirstByid($id);  
         
         $this->tag->setDefault("name", $link->name);

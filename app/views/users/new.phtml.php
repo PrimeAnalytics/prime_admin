@@ -12,10 +12,6 @@
                 <label class="form-label">Full Name</label>
                 <?php echo $this->tag->textField(array("full_name", "class" => "form-control")) ?>
             </div>
-            <div class="col-md-6">
-                <label class="form-label">Phone Number</label>
-                <?php echo $this->tag->textField(array("phone_number", "class" => "form-control")) ?>
-            </div>
         </div>
 
         <div class="row form-row">

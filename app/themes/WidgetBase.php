@@ -16,13 +16,11 @@ class WidgetBase extends Controller
     private $view_dir;
     public $form_struct='';
     public $theme='';
-    public $dataFormat="ByRow";
+    public $data_format="ByRow";
     public $container="";
     
     function onConstruct()
-    {
-
-        
+    { 
         if ($this->session->has("auth")) {
             //Retrieve its value
             $auth = $this->session->get("auth");
@@ -72,8 +70,9 @@ class WidgetBase extends Controller
                }
            }
 
+           
 
-           $parameters=call_user_func(array($this, 'getData'.$this->dataFormat), $parameters,$widget_links);
+           $parameters=call_user_func(array($this, 'getData'.$this->data_format), $parameters,$widget_links);
 
        }
 
@@ -133,7 +132,7 @@ class WidgetBase extends Controller
             if(update == true)
             {
            
-            $( "#widget_'.$id.'" ).load( "/widgets/'.$widget->type.'/update/'.$id.'", { "links": links } );
+            $( "#widget_'.$id.'" ).load( "/widgets/'.$widget->type.'/update/'.$id.'", { links: links } );
             }
             
             
@@ -176,23 +175,21 @@ class WidgetBase extends Controller
     {
         $processController = new \PRIME\Controllers\ProcessController();
         $data=$processController->getResults($parameters["db"]['table'],$links);
-
         $dbTemp=$parameters["db"];
-        $parameters["db"]=array();
 
-        $parameters["db"]['x_axis'];
+        $data_layout=$parameters["db"];
+        $data_layout['series']=explode(',',$data_layout['series'][0]);
+        $parameters["db"]=array();
 
 	    $out = array();
         foreach ($data as $key => $subarr) {
-    	    foreach ($subarr as $subkey => $subvalue) {
-		    if($subkey!='x_axis'){
-			    $out[$subkey][$key] = array('x_axis'=>$subarr['x_axis'] ,'value'=>$subvalue) ;			
-			    }
+    	    foreach ($data_layout['series'] as $subkey) {
+			    $out[$subkey][$key] = array('x_axis'=>$subarr[$data_layout['x_axis']] ,'value'=>$subarr[$subkey]) ;			 
     	    }
         }
 
         $parameters["db"]=$out;
-        
+        return $parameters;
     }
 
     public function getDataByColumn($parameters,$links=null)
@@ -221,7 +218,6 @@ class WidgetBase extends Controller
         
     }
 
-    
     public function newAction($portlet_id,$row,$column)
     {
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
@@ -276,29 +272,71 @@ class WidgetBase extends Controller
     
     public function editAction($id)
     {
-        $this->view->pick(strtolower($this->view_dir."/".$this->router->getControllerName()).'/edit');
+        $widget = Widget::findFirstByid($id);
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->persistent->parameters = null;
 
-        $this->view->setTemplateAfter('modal');
+        $this->view->setViewsDir('../app/views/');
+        $this->view->pick('widgets/edit');
+
+        $formController = new \PRIME\Controllers\FormController();
+        $form_body= $formController->renderAction($this->form_struct);
+
+        $this->tag->setDefault("id", $id);
         
-        $this->tag->setDefault("type", $this->router->getControllerName());
+        //$this->tag->setDefault("parameters", json_decode($widget->parameters));
         
-        $this->view->setVar("header_text", "Edit ". $this->widget_name);
-        $this->view->setVar("icon", $this->icon);
-        $this->view->setVar("form_type", "widget/save"); 
-        
-            $widget = Widget::findFirstByid($id);
-            
-            $this->view->setVar("widget_id", $id); 
-            $this->view->setVar("type", $this->router->getControllerName()); 
-            $this->tag->setDefault("id", $widget->id);
-            $this->tag->setDefault("row", $widget->row);
-            $this->tag->setDefault("width", $widget->width);
-            $this->view->setVar("dashboard_id", $widget->dashboard_id);
-            
-            echo $this->tag->hiddenField("id");
-  
-            $parameters = json_decode($widget->parameters,true);
+        $this->view->setVar("form_body", $form_body);
+        $this->view->setVar("type", $this->widget_name);
+
+        $form_type='/widgets/'.str_replace(" ","_",strtolower($this->widget_name)).'/save';
+        $this->view->setVar("form_type", $form_type);
              
     }
-    
+
+    public function saveAction()
+    {
+        $id = $this->request->getPost("id");
+
+        $widget = Widget::findFirstByid($id);
+
+        if($this->request->getPost("column") != NULL)
+        {
+            $widget->column = $this->request->getPost("column");
+        }
+        
+        if($this->request->getPost("row") != NULL)
+        {
+            $widget->row = $this->request->getPost("row");
+        }
+      
+        if($this->request->getPost("portlet_id") != NULL)
+        {
+            $widget->canvas_id = $this->request->getPost("portlet_id");
+        }
+        
+        if($this->request->getPost("parameters") != NULL)
+        {
+            $widget->parameters = json_encode($this->request->getPost("parameters"),true);
+        }
+        
+
+        if (!$widget->save()) {
+            foreach ($widget->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+        }
+        else
+        {
+            $this->flash->success("Widget was saved successfully");
+
+            $portlet = Portlet::findFirstById($widget->portlet_id);
+            
+            $dashboard=Dashboard::findFirstById($portlet->dashboard_id);
+
+            return $this->response->redirect("/dashboards/".$dashboard->type."/edit/".$dashboard->id);
+        }
+        
+        
+    }
 }

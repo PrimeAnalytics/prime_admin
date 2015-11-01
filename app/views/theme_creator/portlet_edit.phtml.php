@@ -309,19 +309,38 @@
 
 
 <script src="/assets/global/plugins/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/assets/global/plugins/ace/ext-language_tools.js"></script>
 
 <script>
+    ace.require("ace/ext/language_tools");
+
+
     var htmleditor = ace.edit("html-editor");
     htmleditor.setTheme("ace/theme/monokai");
     htmleditor.getSession().setMode("ace/mode/html");
+    htmleditor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
 
     var csseditor = ace.edit("css-editor");
     csseditor.setTheme("ace/theme/monokai");
     csseditor.getSession().setMode("ace/mode/css");
+    csseditor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
 
     var jseditor = ace.edit("js-editor");
     jseditor.setTheme("ace/theme/monokai");
     jseditor.getSession().setMode("ace/mode/javascript");
+    jseditor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
 
 
     var jslinks = ace.edit("js-links");
@@ -351,7 +370,7 @@
 
     $("#csslinks").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/css",
+            url: "/theme_creator/inteli_format/<?php echo $theme_name; ?>/css",
             type: "Post",
             data: csslinks.getValue(),
             dataType: "html",
@@ -364,7 +383,7 @@
 
     $("#jslinks").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/js",
+            url: "/theme_creator/inteli_format/<?php echo $theme_name; ?>/js",
             type: "Post",
             data: jslinks.getValue(),
             dataType: "html",
@@ -377,7 +396,7 @@
 
     $("#htmlbody").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/body",
+            url: "/theme_creator/inteli_format/<?php echo $theme_name; ?>/body",
             type: "Post",
             data: htmleditor.getValue(),
             dataType: "html",
@@ -390,7 +409,7 @@
 
     $("#jsscript").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/script",
+            url: "/theme_creator/inteli_format/<?php echo $theme_name; ?>/script",
             type: "Post",
             data: jseditor.getValue(),
             dataType: "html",
@@ -403,7 +422,7 @@
 
     $("#cssstyle").click(function () {
         var request = $.ajax({
-            url: "/theme_creator/inteli_format/make/style",
+            url: "/theme_creator/inteli_format/<?php echo $theme_name; ?>/style",
             type: "Post",
             data: csseditor.getValue(),
             dataType: "html",
@@ -442,7 +461,7 @@
         jseditor.setValue(<?php echo json_encode($script); ?>);
         csseditor.setValue(<?php echo json_encode($style); ?>);
         htmleditor.setValue(<?php echo json_encode($html); ?>);
-       
+
         var form=JSON.parse(<?php echo json_encode($form); ?>);
         var i=0;
         $.each(form, function(idx, obj) {

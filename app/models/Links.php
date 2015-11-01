@@ -33,6 +33,12 @@ class Links extends \Phalcon\Mvc\Model
      *
      * @var string
      */
+    public $type;
+
+    /**
+     *
+     * @var string
+     */
     public $default_value;
 
     /**

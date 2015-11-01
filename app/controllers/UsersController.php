@@ -24,8 +24,6 @@ class UsersController extends ControllerBase
     public function indexAction()
     {
         $this->persistent->parameters = null;
-
-
         $data = Users::find("organisation_id= ".$this->organisation_id);
         $this->view->setVar("users", $data);  
     }
@@ -111,10 +109,10 @@ class UsersController extends ControllerBase
 
         $this->flash->success("Dashboard was successfully enabled");
         return $this->dispatcher->forward(array(
-"namespace" => "PRIME\Controllers",
-"controller" => "users",
-"action"     => "index"
-));
+                                                "namespace" => "PRIME\Controllers",
+                                                "controller" => "users",
+                                                "action"     => "index"
+                                                ));
 
     }
     
@@ -167,11 +165,10 @@ class UsersController extends ControllerBase
                 $this->flash->error($message);
             }
             return $this->dispatcher->forward(array(
-                "namespace" => "PRIME\Controllers",
-                "controller" => "organisation",
-                "action"     => "edit",
-                "params"     => array('id' => $user->organisation_id)
-                ));
+                        "namespace" => "PRIME\Controllers",
+                        "controller" => "users",
+                        "action"     => "index"
+                        ));
         }
         
         
@@ -214,10 +211,16 @@ class UsersController extends ControllerBase
         $user->email = $this->request->getPost("email", "email");
         $user->full_name = $this->request->getPost("full_name");
         $user->image_path = $this->request->getPost("image_path");
-        $user->password = $this->request->getPost("password");
+        
         $user->role = $this->request->getPost("role");
         $user->status = $this->request->getPost("status");
         $user->organisation_id = $this->request->getPost("organisation_id");
+
+
+        if($this->request->getPost("password")!=$user->password)
+        {
+            $user->password = sha1($this->request->getPost("password"));
+        }
         
 
         if (!$user->save()) {
@@ -227,18 +230,19 @@ class UsersController extends ControllerBase
             }
 
             return $this->dispatcher->forward(array(
-                "controller" => "users",
-                "action" => "edit",
-                "params" => array($user->email)
-            ));
+                        "namespace" => "PRIME\Controllers",
+                        "controller" => "users",
+                        "action"     => "index"
+                        ));
         }
 
-        $this->flash->success("user was updated successfully");
+        $this->flash->success("User was updated successfully");
 
         return $this->dispatcher->forward(array(
-            "controller" => "users",
-            "action" => "index"
-        ));
+                    "namespace" => "PRIME\Controllers",
+                    "controller" => "users",
+                    "action"     => "index"
+                    ));
 
     }
 
@@ -253,7 +257,7 @@ class UsersController extends ControllerBase
 
         $user = Users::findFirstByemail($email);
         if (!$user) {
-            $this->flash->error("user was not found");
+            $this->flash->error("User was not found");
 
             return $this->dispatcher->forward(array(
                 "controller" => "users",
