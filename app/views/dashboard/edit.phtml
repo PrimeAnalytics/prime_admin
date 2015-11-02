@@ -250,7 +250,11 @@
                            });
                        }
                        else if(action == 'remove'){
-                           alert('remove');
+                           var type = $element.data("type");
+                           var id = $element.data("id");
+                           $("#modal_content").load("/portlets/"+type+"/delete/"+id , function () {
+                               $("#myModal").modal("show");
+                           });
                        }
                    }
                });
@@ -282,7 +286,11 @@
                            });
                        }
                        else if(action == 'remove'){
-                           alert('remove');
+                           var type = $element.data("type");
+                           var id = $element.data("id");
+                           $("#modal_content").load("/widgets/"+type+"/delete/"+id , function () {
+                               $("#myModal").modal("show");
+                           });
                        }
                    }
                });

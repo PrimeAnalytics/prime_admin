@@ -1542,7 +1542,8 @@
 <script src="/themes/Pages/assets/pages/js/pages.min.js"></script>
 <script src="/themes/Pages/assets/assets/js/dashboard.js"></script>
 <script src="/themes/Pages/assets/assets/js/scripts.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script><script type="text/javascript">
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="/themes/Pages/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script><script type="text/javascript">
     window.onload = function()
     {
       // fix for windows 8

@@ -97,7 +97,7 @@ class ColorSelectController extends FormElementBase
         $output=array();
     foreach($colors as $key=>$value)
     {
-        $output[]=array("id"=>$key, "text"=>$key, "c1"=>$value[0],"c2"=>$value[1],"c3"=>$value[2],"c4"=>$value[3],"c5"=>$value[4]);
+        $output[]=array("id"=>json_encode($value,true), "text"=>$key, "c1"=>$value[0],"c2"=>$value[1],"c3"=>$value[2],"c4"=>$value[3],"c5"=>$value[4]);
     }
     
 

@@ -158,7 +158,15 @@ class WidgetBase extends Controller
             $temp=array();
             foreach($dbTemp as $parmKey=>$parmValue)
             {
-                if($parmKey!='table')
+                if(is_array($parmValue))
+                {
+                foreach($parmValue as $parm)
+                {
+                    $temp[$parmKey][]=$row[$parm];
+                }
+
+                }
+                else if($parmKey!='table')
                 {
                     $temp[$parmKey]=$row[$parmValue];    
                 }

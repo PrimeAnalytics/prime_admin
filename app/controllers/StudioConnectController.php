@@ -7,6 +7,7 @@ use PRIME\Models\OrgDatabase;
 class StudioConnectController extends ControllerBase
 {
     public $organisation_id ="";
+    public $db_name="";
     protected function initialize()
     {
         $this->view->disable();      
@@ -14,6 +15,7 @@ class StudioConnectController extends ControllerBase
             //Retrieve its value
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
+            $this->db_name=$auth['db_name'];
         }
     }
 
@@ -83,15 +85,8 @@ class StudioConnectController extends ControllerBase
 
     public function getUserDB()
     {
-        $database = OrgDatabase::findFirstByorganisation_id($this->organisation_id);
-        
-        $host= $database->db_host; 
-        $mySqlUser= $database->db_username;          
-        $mySqlPassword=$database->db_password;      
-        $mySqlDatabase=$database->db_name;
-
         try{
-            $db= new \Crate\PDO\PDO('crate:localhost:4200', $host, null, []);    
+            $db= new \Crate\PDO\PDO('crate:localhost:4200',null, null, []);    
         }
         catch(PDOException $ex){
             
@@ -123,12 +118,12 @@ class StudioConnectController extends ControllerBase
 
         if($queryType=="override")
         {
-            $sql = "DROP TABLE IF EXISTS ".$table;
+            $sql = "DROP TABLE IF EXISTS ".$this->db_name.".".$table;
 
             $connection->query($sql);
         }
 
-       $sql = "CREATE TABLE IF NOT EXISTS ".$table." (";
+       $sql = "CREATE TABLE IF NOT EXISTS ".$this->db_name.".".$table." (";
 
        $columnTypes=array();
         foreach($data['0'] as $key=>$column_name)
@@ -202,7 +197,7 @@ class StudioConnectController extends ControllerBase
         
         $rows=array();
 
-        $sql = "INSERT INTO ".$table." (".implode ("," , array_keys ($data['0'])).") VALUES ";
+        $sql = "INSERT INTO ".$this->db_name.".".$table." (".implode ("," , array_keys ($data['0'])).") VALUES ";
         foreach($data as $row)
         {
             if(count($data['0'])==count($row))
@@ -222,7 +217,7 @@ class StudioConnectController extends ControllerBase
                     }
                     elseif($columnTypes[$key]=="date")
                     {
-                        $temp.= "".strtotime($value)." , ";
+                        $temp.= "".(strtotime($value)*1000)." , ";
                     }
                     else
                     {

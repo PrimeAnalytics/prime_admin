@@ -3,7 +3,7 @@
   {{parm['title']}}
 </h3>
 
-<select id="w_{{widget.id}}" style="width:100%">
+<select id="w_{{widget.id}}" class="input form-control">
      {% for entry in parm['db'] %}
       <option value="{{entry['link_column']}}">{{entry['values']}}</option>
     {% endfor  %}

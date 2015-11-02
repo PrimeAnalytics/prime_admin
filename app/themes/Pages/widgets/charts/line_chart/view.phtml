@@ -1,30 +1,52 @@
-<div id="w_{{widget.id}}" style="width:100%"></div><script>
+<div id="w_{{widget.id}}" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div><script>
 $('#w_{{widget.id}}').highcharts({
             chart: {
             type: '{{parm['chart_type']}}',
-            zoomType: 'xy'
+            spacingBottom: 50,
+            spacingTop: 50,
+            spacingLeft: 50,
+            spacingRight: 50,
+			zoomType: 'xy'
         },
  title: {
-            text: '{{parm['chart_title']}}',
-            x: -20 //center
+            text: '{{parm['chart_title']}}'
         },
+        		  credits: {
+  enabled: false
+  },
         xAxis: {
             title: {
                 text: '{{parm['x_label']}}'
-            }
+            },
+            
+                {% if parm['xtype'] == "Date" %}
+                type: 'datetime',
+                {% elseif parm['xtype'] == "Category" %}
+                type: 'datetime',
+                {% else %}
+                {% endif  %}
+            
         },
         yAxis: {
             title: {
                 text: '{{parm['y_label']}}'
             }
         },
+        colors:{{parm['colors']}},
  series: [
 {% for key,series in parm['db'] %}
 {
      name: '{{key|escape_js}}',
      data: [
         {% for row in series %}
+        
+                {% if parm['xtype'] == "Date" %}
+    [Date.parse('{{ row['x_axis']|escape_js }}'),{{ row['value']|escape_js }}] ,
+                {% elseif parm['xtype'] == "Category" %}
     ['{{ row['x_axis']|escape_js }}',{{ row['value']|escape_js }}] ,
+                {% else %}
+    [{{ row['x_axis']|escape_js }},{{ row['value']|escape_js }}] ,
+                {% endif  %}
         {% endfor  %}
 ]},
 

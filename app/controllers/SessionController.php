@@ -135,6 +135,7 @@ class SessionController extends ControllerBase
     {
         
         $organisation= Organisation::findFirstById($user->organisation_id);
+        $database = OrgDatabase::findFirstByorganisation_id($user->organisation_id);
         
         $this->session->set('auth', array(
             'email' => $user->email,
@@ -142,6 +143,7 @@ class SessionController extends ControllerBase
             'full_name' => $user->full_name,
             'organisation_id' => $user->organisation_id,
             'theme' => $organisation->theme,
+            'db_name'=>$database->db_name,
             'organisation_name' => $organisation->name
         ));
         

@@ -1,13 +1,13 @@
 <thead><tr>
-                    {% for item in parm['db']['series'][0] %}
+                    {% for item in parm['db'][0]['series'] %}
                     <th>{{item}} </th>
                     {% endfor  %}
                           </tr></thead>
 <tbody>
                           
-                             {% for row in parm['db']['series'] %}
+                             {% for row in parm['db'] %}
                              <tr>
-        {% for item in row %}
+        {% for item in row['series'] %}
 <td class="v-align-middle">{{item}} </td>
         {% endfor  %}
 </tr>

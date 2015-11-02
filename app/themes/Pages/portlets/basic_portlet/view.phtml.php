@@ -11,7 +11,9 @@
                             </div>
                           </div>
                           <div class="panel-body">
+                              <div class="col-md-12">
                              <?php echo $region[0]; ?>
+                             </div>
                              </div>
                         </div>
                       </div><?php echo $this->getContent(); ?>

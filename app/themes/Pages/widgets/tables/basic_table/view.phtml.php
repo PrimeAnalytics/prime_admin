@@ -1,13 +1,13 @@
 <thead><tr>
-                    <?php foreach ($parm['db']['series'][0] as $item) { ?>
+                    <?php foreach ($parm['db'][0]['series'] as $item) { ?>
                     <th><?php echo $item; ?> </th>
                     <?php } ?>
                           </tr></thead>
 <tbody>
                           
-                             <?php foreach ($parm['db']['series'] as $row) { ?>
+                             <?php foreach ($parm['db'] as $row) { ?>
                              <tr>
-        <?php foreach ($row as $item) { ?>
+        <?php foreach ($row['series'] as $item) { ?>
 <td class="v-align-middle"><?php echo $item; ?> </td>
         <?php } ?>
 </tr>

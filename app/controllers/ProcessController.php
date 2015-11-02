@@ -9,6 +9,8 @@ use \YaLinqo\Enumerable as E;
 class ProcessController extends ControllerBase
 {
     public $organisation_id ="";
+    public $db_name="";
+
     protected function initialize()
     {
         \Phalcon\Tag::prependTitle('PRIME | ');
@@ -20,6 +22,7 @@ class ProcessController extends ControllerBase
             //Retrieve its value
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
+            $this->db_name=$auth['db_name'];
         }
     }
 
@@ -135,17 +138,8 @@ class ProcessController extends ControllerBase
 
     public function getUserDB()
     {
-        $auth = $this->session->get("auth");
-
-        $database = OrgDatabase::findFirstByorganisation_id($auth['organisation_id']);
-        
-        $host= $database->db_host; 
-        $mySqlUser= $database->db_username;          
-        $mySqlPassword=$database->db_password;      
-        $mySqlDatabase=$database->db_name;
-
         try{
-            $db= new \Crate\PDO\PDO('crate:localhost:4200;', null, null, []);    
+            $db= new \Crate\PDO\PDO('crate:localhost:4200;', null, null, []); 
         }
         catch(PDOException $ex){
             
@@ -181,8 +175,7 @@ class ProcessController extends ControllerBase
         
             $auth = $this->session->get("auth");
 
-            
-            $organisation = Organisation::findFirstByid($auth['organisation_id']);   
+            $organisation = Organisation::findFirstByid($this->organisation_id);   
             $processes = $organisation->Process;
             
             $json = array();
@@ -200,7 +193,9 @@ class ProcessController extends ControllerBase
 
     public function getResults($id,$links=null)
     {
-
+        $auth = $this->session->get("auth");
+        $this->db_name=$auth['db_name'];
+       
        $process = Process::findFirstById($id);
 
        $parameters= json_decode($process->parameters,true);
@@ -241,16 +236,16 @@ class ProcessController extends ControllerBase
                    {
                        if($where==0)
                        {
-                           $filter_string=" WHERE ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $filter_string=" WHERE ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
                            $where++;
                        }
                        else if($j==0)
                        {
-                           $filter_string=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $filter_string=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
                        }
                        else
                        {
-                           $filter_string=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $filter_string=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
                        }
 
                    }
@@ -302,7 +297,7 @@ class ProcessController extends ControllerBase
          if(count($matches)!=0)
          {
              
-             $sql_totals="SELECT ".implode(" , ",$matches[1])." FROM doc.$db_table_name $filter_string";
+           $sql_totals="SELECT ".implode(" , ",$matches[1])." FROM ".$this->db_name.".$db_table_name $filter_string";
 
              $statement=$db->prepare($sql_totals);
              if($error=$statement->execute())
@@ -418,7 +413,7 @@ class ProcessController extends ControllerBase
  
 
 
-      $sql="SELECT $select_string FROM doc.$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
+       $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
      
        $statement=$db->prepare( $sql);
             
@@ -553,23 +548,6 @@ class ProcessController extends ControllerBase
         }
 
         }
-
-
-    public function importAction()
-    {
-
-        $fp = fopen("C:\Fund Performance data.csv", "r");
-        while (($data = fgetcsv($fp, 1000, ",")) !== FALSE) {
-            $num = count($data);
-            echo "<p> $num fields in line $row: <br /></p>\n";
-            $row++;
-            for ($c=0; $c < $num; $c++) {
-                echo $data[$c] . "<br />\n";
-            }
-        }
-        fclose($fp);
-
-    }
 
 }
 

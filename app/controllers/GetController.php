@@ -6,6 +6,7 @@ use PRIME\Models\OrgDatabase;
 class GetController extends ControllerBase
 {
     public $organisation_id ="";
+    public $db_name="";
     protected function initialize()
     {
         $this->view->disable();      
@@ -13,6 +14,7 @@ class GetController extends ControllerBase
             //Retrieve its value
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
+            $this->db_name=$auth['db_name'];
         }
     }
 
@@ -60,15 +62,8 @@ class GetController extends ControllerBase
 
     public function getUserDB()
     {
-        $database = OrgDatabase::findFirstByorganisation_id($this->organisation_id);
-        
-        $host= $database->db_host; 
-        $mySqlUser= $database->db_username;          
-        $mySqlPassword=$database->db_password;      
-        $mySqlDatabase=$database->db_name;
-
         try{
-            $db= new \Crate\PDO\PDO('crate:localhost:4200', $host, null, []);    
+            $db= new \Crate\PDO\PDO('crate:localhost:4200', null, null, []);    
         }
         catch(PDOException $ex){
             
@@ -82,7 +77,7 @@ class GetController extends ControllerBase
     {
         $this->view->disable();
         $db = $this->getUserDB();
-        $statement = $db->prepare("select column_name, data_type from information_schema.columns where schema_name = 'doc' and table_name ='$db_table'");
+        $statement = $db->prepare("select column_name, data_type from information_schema.columns where schema_name = '".$this->db_name."' and table_name ='$db_table'");
         $statement->execute();
         
         $json = array();
@@ -108,7 +103,7 @@ class GetController extends ControllerBase
     {
         $this->view->disable();
         $db = $this->getUserDB();
-        $statement=$db->prepare("select table_name from information_schema.tables where schema_name='doc' limit 100");
+        $statement=$db->prepare("select table_name from information_schema.tables where schema_name='".$this->db_name."' limit 100");
         
         $statement->execute();
         
@@ -162,6 +157,13 @@ class GetController extends ControllerBase
                 $output['number'][]='round('.$column.')';
                 $output['number'][]='sqrt('.$column.')';
             }
+            if($type=='timestamp')
+            {
+
+                $output['time'][]='date_format('.$column.')';
+
+
+            }
 
             if(($type=='numeric' || $type=='timestamp'|| $type=='string') && $for_input_type =='columns')
             {
@@ -196,7 +198,6 @@ class GetController extends ControllerBase
         $output['set'][]='regexp_replace()';
         $output['set'][]='date_trunc()';
         $output['set'][]='extract()';
-        $output['set'][]='date_format()';
         $output['set'][]='distance()';
         $output['set'][]='within()';
 
