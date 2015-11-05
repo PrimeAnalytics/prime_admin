@@ -235,6 +235,8 @@
 
       <script src="/assets/global/plugins/jquery-tageditor/jquery.caret.min.js"></script>
       <script src="/assets/global/plugins/jquery-tageditor/jquery.tag-editor.min.js"></script>
+      <script src="/assets/global/plugins/datatables/jquery.dataTables.min.js"></script> 
+
     <!-- END PAGE SCRIPT -->
    
   </body>

@@ -77,16 +77,26 @@ class PortletBase extends Controller
                                         "order" => "column"
                                     ));
 
-            
-       foreach ($widgets as $widget) {
-                echo '<script> 
-                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<a class=\"builder-widget\" data-type=\"'.$widget->type.'\" data-id=\"'.$widget->id.'\"></a>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(){';
-           if($type=="builder"){
-               echo 'parent.update_dropzone();';
-           }
-           echo '}));
+                if($type=="builder"){
+                    foreach ($widgets as $widget) {
+                        echo '<script> 
+                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<div class=\"builder-widget\" data-type=\"'.$widget->type.'\" data-id=\"'.$widget->id.'\"></div>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(){';
+                        
+                        echo 'parent.update_dropzone();';
+                        echo '}));
                 </script>';
-            };
+                    };
+                }
+                else
+                {
+
+                    foreach ($widgets as $widget) {
+                        echo '<script> 
+                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<div ></div>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(){';
+                        echo '}));
+                </script>';
+                    };
+                }
         }
 
     public function newAction($dashboard_id,$row,$column)

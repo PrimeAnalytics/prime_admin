@@ -1,4 +1,4 @@
-
+<div id="widget_{{widget.id}}">
 <h3>
   {{parm['title']}}
 </h3>
@@ -11,7 +11,6 @@
 </select><script>
 
         $("#w_{{widget.id}}").change(function() {
-        
 
             update_dashboard("{{parm['target_link']}}", this.value);
   
@@ -19,4 +18,4 @@
 
         $("#w_{{widget.id}}" ).change();
 
-</script>{{ content() }}
+</script>{{ content() }}</div>

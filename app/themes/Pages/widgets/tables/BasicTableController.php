@@ -7,9 +7,8 @@ class BasicTableController extends WidgetBase
     
     public function initialize()
     {
-        $this->form_struct ='[{"type":"database/multi_select","name":"series","label":"Table Columns"}]';
+        $this->form_struct ='[{"type":"database/multi_select","name":"series","label":"Table Columns"},{"type":"parameters/input","name":"width","label":"Width"}]';
         $this->data_format='ByRow';
-        $this->container='<table id="widget_{{widget.id}}" class="table table-hover table-condensed" ></table>';
 
 
     }

@@ -9,7 +9,6 @@ class LineChartController extends WidgetBase
     {
         $this->form_struct ='[{"type":"database/chart"}]';
         $this->data_format='Chart';
-        $this->container='<div id="widget_{{widget.id}}"></div>';
 
 
     }

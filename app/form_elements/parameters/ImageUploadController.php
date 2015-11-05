@@ -10,10 +10,59 @@ class ImageUploadController extends FormElementBase
         $output=array();
         $output['html'][]='<div class="form-group">
                                     <label>'.$label.'</label>
-                                        <input type="file" id="'.$name.'" name="parameters['.$name.']" class="form-control" data-placeholder="Choose Image to Upload">
+                                        <input type="file" id="'.$name.'" class="form-control" data-placeholder="Choose Image to Upload">
                                         </input>
+<input name="parameters['.$name.']" type="hidden"></input>
+<div id="response"></div>
                                 </div>';
 
+
+        $output['js'][]= '(function () {
+	var input = document.getElementById("'.$name.'"), 
+		formdata = false; 
+
+	if (window.FormData) {
+  		formdata = new FormData();
+	}
+	
+ 	input.addEventListener("change", function (evt) {
+ 		document.getElementById("response").innerHTML = "Uploading . . ."
+ 		var i = 0, len = this.files.length, img, reader, file;
+	
+		for ( ; i < len; i++ ) {
+			file = this.files[i];
+			if (!!file.type.match(\'image.*\')) {
+				if ( window.FileReader ) {
+					reader = new FileReader();
+					reader.onloadend = function (e) { 
+					
+					};
+					reader.readAsDataURL(file);
+				}
+				if (formdata) {
+					formdata.append("images[]", file);
+				}
+			}	
+		}
+	
+		if (formdata) {
+			$.ajax({
+				url: "/form_elements/parameters/ImageUpload/upload",
+				type: "POST",
+				data: formdata,
+				processData: false,
+				contentType: false,
+				success: function (res) {
+                $(\'[name="parameters['.$name.']"]\').val(res);
+			    document.getElementById("response").innerHTML = res; 
+				}
+			});
+		}
+	}, false);
+}());
+
+
+';
 
         return $output;
 
@@ -29,36 +78,24 @@ class ImageUploadController extends FormElementBase
 
     public function uploadAction($id)
     {
-        // You need to add server side validation and better error handling here
 
-        $data = array();
+foreach ($_FILES["images"]["error"] as $key => $error) {
+    $files    = glob('./files/');      // get all files in folder
+    natsort($files);                         // sort
+    $lastFile = pathinfo(array_pop($files)); // split $lastFile into parts
+    $newFile  = $lastFile['filename'] +1;    // increase filename by 1
 
-        if(isset($_GET['files']))
-        {  
-            $error = false;
-            $files = array();
+    if(file_exists("./files/$newFile")) { // do not write file if it exists
+        die("$newFile aready exists");
+    }    
+    
+    if ($error == UPLOAD_ERR_OK) {
+        $name = $_FILES["images"]["name"][$key];
+        move_uploaded_file( $_FILES["images"]["tmp_name"][$key], "./files/" .$newFile.$_FILES['images']['name'][$key]);
+        echo "/files/".$newFile.$_FILES['images']['name'][$key];
+    }
 
-            $uploaddir = './uploads/';
-            foreach($_FILES as $file)
-            {
-                if(move_uploaded_file($file['tmp_name'], $uploaddir .basename($file['name'])))
-                {
-                    $files[] = $uploaddir .$file['name'];
-                }
-                else
-                {
-                    $error = true;
-                }
-            }
-            $data = ($error) ? array('error' => 'There was an error uploading your files') : array('files' => $files);
-        }
-        else
-        {
-            $data = array('success' => 'Form was submitted', 'formData' => $_POST);
-        }
-
-        echo json_encode($data);
-
+}
         }
 
 

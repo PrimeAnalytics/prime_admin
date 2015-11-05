@@ -1543,7 +1543,13 @@
 <script src="/themes/Pages/assets/assets/js/dashboard.js"></script>
 <script src="/themes/Pages/assets/assets/js/scripts.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="/themes/Pages/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script><script type="text/javascript">
+<script src="/themes/Pages/assets/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js" type="text/javascript"></script>
+    <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/themes/Pages/assets/assets/plugins/datatables-responsive/js/datatables.responsive.js"></script>
+    <script type="text/javascript" src="/themes/Pages/assets/assets/plugins/datatables-responsive/js/lodash.min.js"></script>
+<script type="text/javascript">
     window.onload = function()
     {
       // fix for windows 8

@@ -1,4 +1,14 @@
-<div id="widget_{{widget.id}}"><div id="w_{{widget.id}}" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div><script>
+<<div id="w_{{widget.id}}" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div>d<?php
+
+    $dataOut=array();
+    foreach($parm['db'] as $row)
+    {
+        $dataOut[$row['grouping']][]=array("x_axis"=>$row['x_axis'],"value"=>$row['y_axis']);
+    }
+
+?>
+
+<script>
 $('#w_{{widget.id}}').highcharts({
             chart: {
             type: '{{parm['chart_type']}}',
@@ -34,7 +44,7 @@ $('#w_{{widget.id}}').highcharts({
         },
         colors:{{parm['colors']}},
  series: [
-{% for key,series in parm['db'] %}
+{% for key,series in dataOut %}
 {
      name: '{{key|escape_js}}',
      data: [
@@ -51,7 +61,7 @@ $('#w_{{widget.id}}').highcharts({
 ]},
 
 {% endfor  %}
-]
+] 
 
 });
-</script>{{ content() }} </div>
+</script>{{ content() }}

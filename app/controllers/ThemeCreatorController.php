@@ -891,7 +891,8 @@ class ThemeCreatorController extends ControllerBase
 
                       if($temp['name']=='id')
                       {
-                          $countainer='<div id="widget_{{widget.id}}"></div>';
+                          $countainer[0]='<div id="widget_{{widget.id}}">{{controls}}';
+                          $countainer[1]='</div>';
                           $html_save=$html;
                           $break=true;
                           break 2;
@@ -904,15 +905,16 @@ class ThemeCreatorController extends ControllerBase
             }
             if(!$break)
             {
-                $countainer="<".$type." id=\"widget_{{widget.id}}\" ";
+                $temp="<".$type.' id="widget_{{widget.id}}"';
                 foreach($attributes as $attribute)
                 {
                     
-                    $countainer=$countainer.$attribute['name'].'="'.$attribute['value'].'" ';
+                    $temp=$temp.$attribute['name'].'="'.$attribute['value'].'" ';
 
                 }
 
-                $countainer=$countainer."></".$type.">";
+                $countainer[0]=$temp."> {{controls}}";
+                $countainer[1]="</".$type.">";
             }
             
         }
@@ -920,7 +922,8 @@ class ThemeCreatorController extends ControllerBase
         else
         {
             $html_save=$html;
-            $countainer='<div id="widget_{{widget.id}}"></div>';
+            $countainer[0]='<div id="widget_{{widget.id}}">{{controls}}';
+            $countainer[1]='</div>';
 
         }
 
@@ -961,7 +964,6 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
     {
         $this->form_struct =\''.$form.'\';
         $this->data_format=\''.$data_format.'\';
-        $this->container=\''.$countainer.'\';
 
 
     }
@@ -980,7 +982,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         fclose($fp);
 
 
-        $view=$html_save.$script.'{{ content() }}';
+        $view=$countainer[0].$html_save.$script.'{{ content() }}'.$countainer[1];
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))

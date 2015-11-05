@@ -11,7 +11,6 @@
 </select><script>
 
         $("#w_<?php echo $widget->id; ?>").change(function() {
-        
 
             update_dashboard("<?php echo $parm['target_link']; ?>", this.value);
   

@@ -139,7 +139,7 @@ class DashboardBase extends Controller
             
             echo '<script>
             
-            function update_dashboard(link_id, value)
+            function update_dashboard(link_id, value,widget_id)
             {  
       
             $.each(links, function(index, key ) {
@@ -154,8 +154,12 @@ class DashboardBase extends Controller
             {
                 $widgets=$portlet->Widget;
             foreach ($widgets as $widget) {
+                echo 'if(widget_id!='.$widget->id.'){
+';
             
-                echo "update_".$widget->id."(link_id);";
+                echo "update_".$widget->id."(link_id); 
+            }
+";
                 
             }
             }

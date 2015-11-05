@@ -1,6 +1,18 @@
+<div id="widget_{{widget.id}}"class="col-md-{{parm['width']}}" > {{controls}}
+                    <style>
+table tr.highlighted {
+  background-color:#999;
+}
+</style>
+<div class="pull-right">
+                  <div class="col-xs-12">
+                    <input type="text" id="search-table{{widget.id}}" class="form-control pull-right" placeholder="Search">
+</div> 
+                </div>
+<table id="w_{{widget.id}}" class="table table-hover table-condensed">
 <thead><tr>
-                    {% for item in parm['db'][0]['series'] %}
-                    <th>{{item}} </th>
+                    {% for key,item in parm['db'][0]['series'] %}
+                    <th>{{key}} </th>
                     {% endfor  %}
                           </tr></thead>
 <tbody>
@@ -12,4 +24,68 @@
         {% endfor  %}
 </tr>
 {% endfor  %}
-                        </tbody>{{ content() }}
+                        </tbody>
+</table>   <script>
+   var initTableWithSearch = function() {
+        var table = $('#w_{{widget.id}}');
+        
+        
+        
+            var isMouseDown = false,
+    isHighlighted;
+    $('#w_{{widget.id}} tbody tr').mousedown(function () {
+      isMouseDown = true;
+      $(this).toggleClass("highlighted");
+      isHighlighted = $(this).hasClass("highlighted");
+      return false; // prevent text selection
+    })
+    .mouseover(function () {
+      if (isMouseDown) {
+        $(this).toggleClass("highlighted", isHighlighted);
+      }
+    })
+    .bind("selectstart", function () {
+      return false;
+    })
+
+  $(document)
+    .mouseup(function () {
+      isMouseDown = false;
+    });
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        var settings = {
+            "sDom": "<'table-responsive't><'row'<p i>>",
+            "sPaginationType": "bootstrap",
+            "destroy": true,
+            "scrollCollapse": true,
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ ",
+                "sInfo": "Showing <b>_START_ to _END_</b> of _TOTAL_ entries"
+            },
+            "iDisplayLength": 5
+        };
+
+        table.dataTable(settings);
+
+        // search box for table
+        $('#search-table{{widget.id}}').keyup(function() {
+            table.fnFilter($(this).val());
+        });
+    }
+    
+    initTableWithSearch();
+    
+    
+    
+    
+    </script>{{ content() }}</div>

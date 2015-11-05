@@ -54,15 +54,17 @@ class WidgetBase extends Controller
            
            if($links!=null && $parameters['update_links']!="")
            {
+
                
                foreach($links as $link)
                {
+                   if(!array_key_exists("default_value",$link))
+                   {
+                       $link['default_value']="";
+                   }
+
                    if(in_array ( $link["id"] ,  $parameters['update_links'], true))
                    {
-                       if($link['default_value']=="")
-                       {
-                           return null;
-                       }
                        
                        $widget_links[]=$link;
                        
@@ -84,6 +86,10 @@ class WidgetBase extends Controller
        
        $this->view->pick(strtolower(end($type)."/view"));
 
+       $controls= '<div class="pull-right"><a onclick="reset_'.$widget->id.'()">Clear</a>  <a onclick="update_'.$widget->id.'(\'set\')">Set</a></div>';
+
+       $this->view->setVar("controls", $controls); 
+
        $this->view->setVar("parm", $parameters); 
 
        $this->view->setVar("widget", $widget);
@@ -92,18 +98,24 @@ class WidgetBase extends Controller
     
     }
 
-
-    public function renderAction($id,$type)
+    public function renderAction($id)
     {
         
         $widget = Widget::findFirstByid($id);  
         $parameters= (array)json_decode($widget->parameters,true);
         $this->view->Disable();
-
-        echo str_replace("{{widget.id}}", $id, $this->container);
-
+        echo '<div id="widget_'.$id.'"></div>';
+        
         echo '<script>
-          var update_'.$widget->id.' = function(link){
+
+        var reset_'.$widget->id.' = function(){';
+        if(array_key_exists ("target_link",$parameters))
+        {
+         echo 'update_dashboard("'.$parameters['target_link'].'", "","");';
+        }
+        echo '}; ';
+
+echo'var update_'.$widget->id.' = function(link){
                       
           var w_links ='.(array_key_exists ( 'update_links' , $parameters )? (($parameters['update_links']=="")? "[]" : json_encode($parameters['update_links'],true)) : "[]").';
           
@@ -113,7 +125,7 @@ class WidgetBase extends Controller
            
             var update=false;
             
-            if( link === \'load\' )
+            if( link === \'set\' )
             {
             update=true;
             }
@@ -131,14 +143,14 @@ class WidgetBase extends Controller
 
             if(update == true)
             {
-           
-            $( "#widget_'.$id.'" ).load( "/widgets/'.$widget->type.'/update/'.$id.'", { links: links } );
-            }
+
+            $.post("/widgets/'.$widget->type.'/update/'.$id.'", { links: links }, function(data) {
+                 $("#widget_'.$id.'").replaceWith(data);
+            });
             
-            
-          };';
+          }}; ';
         
-        echo 'update_'.$widget->id.'(\'load\');
+        echo 'update_'.$widget->id.'(\'set\');
 
         </script>';
 

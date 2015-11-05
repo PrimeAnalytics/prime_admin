@@ -208,6 +208,7 @@ class ProcessController extends ControllerBase
        $filter_string="";
        $having_string="";
 
+
        if($links!=null)
        {
 
@@ -218,7 +219,7 @@ class ProcessController extends ControllerBase
                    {
                        
                        $filter['keys'][]=$link['column'];
-                       $filter['values'][]=explode(",",$link['default_value']);
+                       $filter['values'][]=(array)$link['default_value'];
                        $filter['operator'][]=$link['operator'];
                        $filter['type'][]=$link['type'];
 
@@ -234,44 +235,54 @@ class ProcessController extends ControllerBase
                {
                    for($j=0;$j<count($filter['values'][$i]);$j++)
                    {
-                       if($where==0)
+                       if($filter['values'][$i][$j]!='')
                        {
-                           $filter_string=" WHERE ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
-                           $where++;
+                           if($where==0)
+                           {
+                               $filter_string.=" WHERE (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
+                               $where++;
+                           }
+                           else if($j==0)
+                           {
+                               $filter_string.=") AND (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
+                           }
+                           else
+                           {
+                               $filter_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
+                           }
                        }
-                       else if($j==0)
-                       {
-                           $filter_string=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
-                       }
-                       else
-                       {
-                           $filter_string=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
-                       }
-
                    }
+                   
                }
                else if($filter['type'][$i]=="having")
                {
 
                    for($j=0;$j<count($filter['values'][$i]);$j++)
                    {
-                       if($having==0)
+                       if($having==0 && $filter['values'][$i][$j]!='')
                        {
-                           $having_string=" HAVING ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $having_string.=" HAVING ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
                            $where++;
                        }
                        else if($j==0)
                        {
-                           $having_string=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $having_string.=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
                        }
                        else
                        {
-                           $having_string=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $having_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
                        }
 
                    }
                }
+
+
            }
+
+              if($where!=0)
+               {
+                   $filter_string.=") ";
+               }
            
        }
        $matches;
@@ -294,7 +305,7 @@ class ProcessController extends ControllerBase
          $matches[0]=array_unique ($matches[0]);
          $matches[1]=array_unique ($matches[1]);
 
-         if(count($matches)!=0)
+         if(count($matches[0])!=0)
          {
              
            $sql_totals="SELECT ".implode(" , ",$matches[1])." FROM ".$this->db_name.".$db_table_name $filter_string";
@@ -410,10 +421,7 @@ class ProcessController extends ControllerBase
        }
 
 
- 
-
-
-       $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
+        $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
      
        $statement=$db->prepare( $sql);
             
@@ -502,6 +510,7 @@ class ProcessController extends ControllerBase
 
     public function resultTableAction($id){
 
+
         $this->view->Disable();
 
         $array=$this->getResults($id);
@@ -510,7 +519,12 @@ class ProcessController extends ControllerBase
         {
             // start table
 
-            $html = '<table class="table table-hover"><thead>';
+            $html = '
+                <div class="panel">
+                <div class="panel-header panel-controls">
+                  <h3><i class="icon-bulb"></i> <strong>Filtering </strong> with <strong>Select</strong> Inputs in <strong>Footer</strong></h3>
+                </div>
+                <div class="panel-content"><table id="resultTable" class="table table-hover"><thead>';
 
             // header row
 
@@ -522,7 +536,20 @@ class ProcessController extends ControllerBase
 
             }
 
-            $html .= '</tr></thead><tbody>';
+            $html .= '</tr></thead><tfoot>';
+
+            // header row
+
+            $html .= '<tr>';
+
+            foreach($array[0] as $key=>$value){
+
+                $html .= '<th>' . $key . '</th>';
+
+            }
+
+            $html .= '</tr></tfoot><tbody>';
+
 
             // data rows
 
@@ -542,9 +569,38 @@ class ProcessController extends ControllerBase
 
             // finish table and return it
 
-            $html .= '</tbody></table>';
+            $html .= '</tbody></table></div></div>';
 
             echo $html;
+
+            echo '<script>
+                $(\'#resultTable\').DataTable( {
+                    initComplete: function () {
+                        var api = this.api();
+             
+                        api.columns().indexes().flatten().each( function ( i ) {
+                            var column = api.column( i );
+                            var select = $(\'<select class="form-control" data-placeholder="Select to filter"><option value=""></option></select>\')
+                                .appendTo( $(column.footer()).empty() )
+                                .on( \'change\', function () {
+                                    var val = $(this).val();
+             
+                                    column
+                                        .search( val ? \'^\'+val+\'$\' : \'\', true, false )
+                                        .draw();
+                                } );
+             
+                            column.data().unique().sort().each( function ( d, j ) {
+                                select.append( \'<option value="\'+d+\'">\'+d+\'</option>\' )
+                            } );
+                        } );
+                    }
+                } );
+</script>';
+
+
+     
+
         }
 
         }
