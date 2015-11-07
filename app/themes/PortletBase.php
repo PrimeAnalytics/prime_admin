@@ -55,8 +55,8 @@ class PortletBase extends Controller
         {
             for($i=0;$i<10;$i++)
             {
-                $region[$i]='<div id="'.$id.'_row_'.$i.'" data-portlet-id="'.$id.'" data-row="'.$i.'" class="dropzone-portlet">
-              </div>';
+                $region[$i]='<div id="portlet_'.$id.'_row_'.$i.'" data-portlet-id="'.$id.'" data-row="'.$i.'" class="dropzone-portlet">
+                          </div>';
             }
         }
         else
@@ -64,8 +64,8 @@ class PortletBase extends Controller
         
          for($i=0;$i<10;$i++)
             {
-                $region[$i]='<div id="'.$id.'_row_'.$i.'" data-portlet-id="'.$id.'" data-row="'.$i.'">
-              </div>';
+                $region[$i]='<div id="portlet_'.$id.'_row_'.$i.'" data-portlet-id="'.$id.'" data-row="'.$i.'">
+                          </div>';
             }
         
         }
@@ -77,25 +77,22 @@ class PortletBase extends Controller
                                         "order" => "column"
                                     ));
 
+                    foreach ($widgets as $widget) {
+                        echo '<script> 
+            $.post("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(data) {';
                 if($type=="builder"){
-                    foreach ($widgets as $widget) {
-                        echo '<script> 
-                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<div class=\"builder-widget\" data-type=\"'.$widget->type.'\" data-id=\"'.$widget->id.'\"></div>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(){';
-                        
-                        echo 'parent.update_dropzone();';
-                        echo '}));
-                </script>';
-                    };
-                }
-                else
-                {
+                    echo '$("#portlet_'.$id.'_row_'.$widget->row.'").append("<div class=\'builder-widget\' data-type=\"'.$widget->type.'\" data-id=\"'.$widget->id.'\" ><div id=\'widget_temp_'.$widget->id.'\'><div></div>");
+                $("#widget_temp_'.$widget->id.'").replaceWith(data);';
+                echo 'parent.update_dropzone(); 
+                        parent.iframe_load();';
+                        }
+                else{
+                    echo '$("#portlet_'.$id.'_row_'.$widget->row.'").append("<div id=\'widget_temp_'.$widget->id.'\'><div>");
+                $("#widget_temp_'.$widget->id.'").replaceWith(data);';
 
-                    foreach ($widgets as $widget) {
-                        echo '<script> 
-                $("div").find("#'.$id.'_row_'.$widget->row.'").append( $("<div ></div>").load("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(){';
-                        echo '}));
-                </script>';
-                    };
+                }
+                        echo "}); </script>";
+
                 }
         }
 

@@ -20,7 +20,7 @@ class LinkSelectController extends FormElementBase
                                                 </input>
                          </div>';
 
-        $output['js'][]=  '$.getJSON("/links/getList", function(data){
+        $output['js'][]=  ' $.getJSON("/links/getList", function(data){
                                                         $("#target-link").select2({
                                                         placeholder: "Select a Link",
                                                         data:data
@@ -39,7 +39,7 @@ class LinkSelectController extends FormElementBase
 
                 });
 
-               });';
+               }); ';
 
 
         return $output;

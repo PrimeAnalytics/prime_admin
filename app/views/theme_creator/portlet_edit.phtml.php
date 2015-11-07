@@ -307,6 +307,15 @@
 
 </script>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="modal">
+        <div id="modal_content"></div>
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 
 <script src="/assets/global/plugins/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="/assets/global/plugins/ace/ext-language_tools.js"></script>
@@ -450,7 +459,10 @@
 
 
     $("#savePortlet").click(function () {
-        $.post("/theme_creator/portlet_save/<?php echo $portlet_id; ?>", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters() });
+        $.post("/theme_creator/portlet_save/<?php echo $portlet_id; ?>", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters(), function(data){
+            $("#modal_content").html(data);
+            $("#myModal").modal("show");
+        } });
     });
 
 

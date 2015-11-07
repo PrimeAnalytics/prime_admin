@@ -29,6 +29,15 @@ class FormController extends ControllerBase
         $this->tag->setDefault('id',$id);
     
     }
+
+    public function deletePostAction($id)
+    {
+        $type = $this->request->getPost("type");
+        $this->view->pick('form/delete');
+        $this->view->setVar('type',$type);
+        $this->tag->setDefault('id',$id);
+        
+    }
     
     public function renderAction($layout)
     {      

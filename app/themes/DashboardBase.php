@@ -199,7 +199,7 @@ class DashboardBase extends Controller
 
                     for($i=0;$i<10;$i++)
                     {
-                        $region[$i]='<div id="row_'.$i.'" data-row="'.$i.'" class="dropzone-dashboard">
+                        $region[$i]='<div id="dashboard_row_'.$i.'" data-row="'.$i.'" class="dropzone-dashboard">
                           </div>';
                     }
                 }
@@ -208,7 +208,7 @@ class DashboardBase extends Controller
         
                     for($i=0;$i<10;$i++)
                     {
-                        $region[$i]='<div id="row_'.$i.'" data-row="'.$i.'">
+                        $region[$i]='<div id="dashboard_row_'.$i.'" data-row="'.$i.'">
                           </div>';
                     }
         
@@ -219,14 +219,14 @@ class DashboardBase extends Controller
             
             foreach ($portlets as $portlet) {
                 echo '<script> 
-                $("div").find("#row_'.$portlet->row.'").append( $("<a class=\"builder-portlet\" data-type=\"'.$portlet->type.'\" data-id=\"'.$portlet->id.'\"></a>").load("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(){';
-
+            $.post("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(data) {
+                $("#dashboard_row_'.$portlet->row.'").append("<div id=\'portlet_'.$portlet->id.'\'><div>");
+                $("#portlet_'.$portlet->id.'").replaceWith(data);';
                 if($type=="builder"){
                     echo 'parent.update_dropzone(); 
                           parent.iframe_load();';
-                  }
-                echo '}));
-                </script>';
+                 }
+            echo "}); </script>";
             };
     
 

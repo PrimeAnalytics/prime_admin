@@ -218,7 +218,7 @@ class ProcessController extends ControllerBase
                    if($db_table_name==$link['table'])
                    {
                        
-                       $filter['keys'][]=$link['column'];
+                       $filter['keys'][]=str_replace("|",",",$link['column']);
                        $filter['values'][]=(array)$link['default_value'];
                        $filter['operator'][]=$link['operator'];
                        $filter['type'][]=$link['type'];
@@ -239,16 +239,16 @@ class ProcessController extends ControllerBase
                        {
                            if($where==0)
                            {
-                               $filter_string.=" WHERE (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
+                               $filter_string.=" WHERE (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
                                $where++;
                            }
                            else if($j==0)
                            {
-                               $filter_string.=") AND (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
+                               $filter_string.=") AND (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
                            }
                            else
                            {
-                               $filter_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".$filter['values'][$i][$j]."' ";
+                               $filter_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
                            }
                        }
                    }
@@ -261,16 +261,16 @@ class ProcessController extends ControllerBase
                    {
                        if($having==0 && $filter['values'][$i][$j]!='')
                        {
-                           $having_string.=" HAVING ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $having_string.=" HAVING ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
                            $where++;
                        }
                        else if($j==0)
                        {
-                           $having_string.=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $having_string.=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
                        }
                        else
                        {
-                           $having_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".$filter['values'][$i][$j]." ";
+                           $having_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
                        }
 
                    }
@@ -421,7 +421,7 @@ class ProcessController extends ControllerBase
        }
 
 
-        $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
+       $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
      
        $statement=$db->prepare( $sql);
             

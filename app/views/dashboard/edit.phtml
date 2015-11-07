@@ -163,7 +163,8 @@
 
 <script>
 
-   $(document).ready(function () {
+    $(document).ready(function () {
+
 
         var dataIn;
         $.getJSON("/widget/getAllTables", function(data){
@@ -228,16 +229,30 @@
 
 
    function iframe_load()
-   {
+    {
+
+       function delete_modal(dataType,id)
+       {
+           $("#modal_content").load('/form/deletePost/'+id,{type:dataType}, function () {
+               $("#myModal").modal("show");
+           });
+       }
 
        $('#dashboard_iframe').contents().find(".builder-portlet").mousedown(function(event) {
+           
+           var w = $(window);
+           var offset = $('#dashboard_iframe').offset();
+           var iframe_left= (offset.left-w.scrollLeft());
+           var iframe_top= (offset.top-w.scrollTop());
+
+
            var $contextMenu = $("#context-menu-portlet");
            if(event.which==3)
            {
                $('#context-menu-portlet').show();
                $(this).contextmenu({
-                   leftOffset:$('#dashboard_iframe').offset().left,
-                   topOffset:$('#dashboard_iframe').offset().top,
+                   leftOffset:iframe_left,
+                   topOffset:iframe_top,
                    target: '#context-menu-portlet',
                    onItem: function (context, e) {
                        var action = $(e.target).data("action");
@@ -252,29 +267,29 @@
                        else if(action == 'remove'){
                            var type = $element.data("type");
                            var id = $element.data("id");
-                           $("#modal_content").load("/portlets/"+type+"/delete/"+id , function () {
-                               $("#myModal").modal("show");
-                           });
+                           delete_modal('portlets/'+type,id);
                        }
                    }
                });
-              
+
 
            }
        });
 
        $('#dashboard_iframe').contents().find(".builder-widget").mousedown(function(event) {
+           var w = $(window);
+           var offset = $('#dashboard_iframe').offset();
+           var iframe_left= (offset.left-w.scrollLeft());
+           var iframe_top= (offset.top-w.scrollTop());
+
            var $contextMenu = $("#context-menu");
            if(event.which==3)
            {
                $('#context-menu-widget').show();
                $(this).contextmenu({
-                   leftOffset:$('#dashboard_iframe').offset().left,
-                   topOffset:$('#dashboard_iframe').offset().top,
+                   leftOffset:iframe_left,
+                   topOffset:iframe_top,
                    target: '#context-menu-widget',
-                   position: function(opt, x, y){
-                       opt.$menu.css({top: 123, left: 123});
-                   } ,
                    onItem: function (context, e) {
                        var action = $(e.target).data("action");
                        $element = context;
@@ -288,9 +303,7 @@
                        else if(action == 'remove'){
                            var type = $element.data("type");
                            var id = $element.data("id");
-                           $("#modal_content").load("/widgets/"+type+"/delete/"+id , function () {
-                               $("#myModal").modal("show");
-                           });
+                           delete_modal('widgets/'+type,id);
                        }
                    }
                });
@@ -299,6 +312,8 @@
 
            }
        });
+
+
 
    }
 

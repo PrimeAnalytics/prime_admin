@@ -52,29 +52,24 @@ class WidgetBase extends Controller
 
            $widget_links= array();
            
-           if($links!=null && $parameters['update_links']!="")
+           if($links!=null)
            {
 
                
-               foreach($links as $link)
+               foreach($links as &$link)
                {
                    if(!array_key_exists("default_value",$link))
                    {
                        $link['default_value']="";
                    }
 
-                   if(in_array ( $link["id"] ,  $parameters['update_links'], true))
-                   {
-                       
-                       $widget_links[]=$link;
-                       
-                   }
+                 
                }
            }
 
            
 
-           $parameters=call_user_func(array($this, 'getData'.$this->data_format), $parameters,$widget_links);
+           $parameters=call_user_func(array($this, 'getData'.$this->data_format), $parameters,$links);
 
        }
 
@@ -115,40 +110,13 @@ class WidgetBase extends Controller
         }
         echo '}; ';
 
-echo'var update_'.$widget->id.' = function(link){
-                      
-          var w_links ='.(array_key_exists ( 'update_links' , $parameters )? (($parameters['update_links']=="")? "[]" : json_encode($parameters['update_links'],true)) : "[]").';
-          
-          
-          var widget_id ='.$widget->id.';
-          var widget_type ="'.$widget->type.'";
-           
-            var update=false;
-            
-            if( link === \'set\' )
-            {
-            update=true;
-            }
-            else
-            {
-            
-            $.each(w_links, function(index, key ) {
-                      if( w_links[index]==link)
-                      {                      
-                      update=true;
-                      return false;
-                      }
-                      })
-            }
-
-            if(update == true)
-            {
+        echo'var update_'.$widget->id.' = function(link){
 
             $.post("/widgets/'.$widget->type.'/update/'.$id.'", { links: links }, function(data) {
                  $("#widget_'.$id.'").replaceWith(data);
             });
             
-          }}; ';
+          }; ';
         
         echo 'update_'.$widget->id.'(\'set\');
 
@@ -172,9 +140,9 @@ echo'var update_'.$widget->id.' = function(link){
             {
                 if(is_array($parmValue))
                 {
-                foreach($parmValue as $parm)
+                foreach($parmValue as $sub_key=>$parm)
                 {
-                    $temp[$parmKey][]=$row[$parm];
+                    $temp[$parmKey][$parm]=$row[$parm];
                 }
 
                 }
@@ -358,5 +326,29 @@ echo'var update_'.$widget->id.' = function(link){
         }
         
         
+    }
+
+
+    public  function  deleteAction()
+    {
+        $id = $this->request->getPost("id");
+        $widget = Widget::findfirst('id ='.$id);
+        if (!$widget->delete()) {
+
+            foreach ($widget->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+        }
+        else
+        {
+            $this->flash->success("widget was deleted successfully");
+        }
+
+        $portlet = Portlet::findFirstById($widget->portlet_id);
+        
+        $dashboard=Dashboard::findFirstById($portlet->dashboard_id);
+
+        return $this->response->redirect("/dashboards/".$dashboard->type."/edit/".$dashboard->id);
     }
 }

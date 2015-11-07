@@ -677,6 +677,80 @@ class ThemeCreatorController extends ControllerBase
         $script=$this->request->getPost("script");
         $form=$this->request->getPost("form");
 
+
+        function get_inner_html( $node ) {
+            $innerHTML= '';
+            $children = $node->childNodes;
+            foreach ($children as $child) {
+                $innerHTML .= $child->ownerDocument->saveHTML( $child );
+            }
+            return $innerHTML;
+        } 
+
+
+        $dom = new \DOMDocument();
+        $dom->preserveWhiteSpace = FALSE;
+        \libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+
+        $countainer="";
+
+        if (count($dom->getElementsByTagName('body')->item(0)->childNodes) == 1)
+        {
+            $break=false;
+            $attributes=array();
+            foreach ($dom->getElementsByTagName('body')->item(0)->childNodes as $node) {
+                if ($node->nodeType === XML_ELEMENT_NODE) {
+
+                    
+                    $type=$node->tagName;
+                    
+                    foreach($node->attributes as $attribute)
+                    {
+                        $temp=array();
+                        $temp['name']=$attribute->name;
+                        $temp['value']=$attribute->value;
+                        $attributes[]=$temp;
+
+                        if($temp['name']=='id')
+                        {
+                            $countainer[0]='<div id="portlet_{{portlet.id}}">';
+                            $countainer[1]='</div>';
+                            $html_save=$html;
+                            $break=true;
+                            break 2;
+                        }
+                    }
+
+                    $html_save=get_inner_html($node);
+                    
+                }
+            }
+            if(!$break)
+            {
+                $temp="<".$type.' id="portlet_{{portlet.id}}"';
+                foreach($attributes as $attribute)
+                {
+                    
+                    $temp=$temp.$attribute['name'].'="'.$attribute['value'].'" ';
+
+                }
+
+                $countainer[0]=$temp."> ";
+                $countainer[1]="</".$type.">";
+            }
+            
+        }
+
+        else
+        {
+            $html_save=$html;
+            $countainer[0]='<div id="portlet_{{portlet.id}}">';
+            $countainer[1]='</div>';
+
+        }
+
+
         $portlet->css=$css;
         $portlet->style=$style;
         $portlet->html=$html;
@@ -698,6 +772,7 @@ class ThemeCreatorController extends ControllerBase
 
 
         $this->view->disable();
+
 
 
         $controller='<?php
@@ -726,8 +801,7 @@ class ThemeCreatorController extends ControllerBase
         fwrite($fp,$content);
         fclose($fp);
 
-
-        $view=$html.$script.'{{ content() }}';
+        $view=$countainer[0].$html_save.$script.'{{ content() }}'.$countainer[1];
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))

@@ -264,42 +264,29 @@
       <!-- START PAGE CONTENT WRAPPER -->
       <div class="page-content-wrapper">
         <!-- START PAGE CONTENT -->
-        <div class="content sm-gutter">
+        <div class="content">
           <!-- START CONTAINER FLUID -->
-          <div class="container-fluid padding-25 sm-padding-10">
-            <!-- START ROW -->
-            <div class="row">
+          <div class="container-fluid container-fixed-lg">
 <?php echo $region['0']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['1']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['2']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['3']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['4']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['5']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['6']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['7']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['8']; ?>
-            </div>
-                        <div class="row">
+</div><div class="container-fluid container-fixed-lg">
 <?php echo $region['9']; ?>
-            </div>
-
-          </div>
+</div>
           <!-- END CONTAINER FLUID -->
         </div>
         <!-- END PAGE CONTENT -->
@@ -1549,11 +1536,4 @@
     <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js" type="text/javascript"></script>
     <script type="text/javascript" src="/themes/Pages/assets/assets/plugins/datatables-responsive/js/datatables.responsive.js"></script>
     <script type="text/javascript" src="/themes/Pages/assets/assets/plugins/datatables-responsive/js/lodash.min.js"></script>
-<script type="text/javascript">
-    window.onload = function()
-    {
-      // fix for windows 8
-      if (navigator.appVersion.indexOf("Windows NT 6.2") != -1)
-        document.head.innerHTML += '<link rel="stylesheet" type="text/css" href="pages/css/windows.chrome.fix.css" />'
-    }
-    </script><?php echo $this->getContent(); ?></body>
+<?php echo $this->getContent(); ?></body>

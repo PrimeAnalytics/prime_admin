@@ -1,9 +1,5 @@
 <div id="widget_<?php echo $widget->id; ?>"class="col-md-<?php echo $parm['width']; ?>" > <?php echo $controls; ?>
-<h3>
-  <?php echo $parm['title']; ?>
-</h3>
-
-<select id="w_<?php echo $widget->id; ?>" style="width:100%" class="input" multiple placeholder="ALL">
+<select id="w_<?php echo $widget->id; ?>" style="width:100%" class="input" multiple placeholder="<?php echo $parm['title']; ?>">
      <?php foreach ($parm['db'] as $entry) { ?>
       <option value="<?php echo $entry['link_column']; ?>"><?php echo $entry['values']; ?></option>
     <?php } ?>
