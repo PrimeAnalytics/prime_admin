@@ -65,6 +65,7 @@ class LinksController extends ControllerBase
         $links->column = $this->request->getPost("column");
         $links->default_value = $this->request->getPost("default_value");
         $links->operator = $this->request->getPost("operator");
+        $links->type = "where";
 
         $links->organisation_id = $this->request->getPost("organisation_id");
 

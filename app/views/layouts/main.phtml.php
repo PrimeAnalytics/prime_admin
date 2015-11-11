@@ -149,7 +149,7 @@
               <!-- BEGIN USER DROPDOWN -->
               <li class="dropdown" id="user-header">
                 <a href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                <img src="/assets/global/images/avatars/user1.png" alt="user image">
+                <img src="<?php echo $auth['image_path'] ?>" alt="user image">
                 <span class="username">Hi, <?php echo $auth['full_name'] ?></span>
                 </a>
                 <ul class="dropdown-menu">
@@ -232,6 +232,7 @@
     <script src="/assets/global/plugins/skycons/skycons.min.js"></script> <!-- Animated Weather Icons -->
     <script src="/assets/global/plugins/simple-weather/jquery.simpleWeather.js"></script> <!-- Weather Plugin -->
     <script src="/assets/global/js/pages/notifications.js"></script>
+      <script src="/assets/global/plugins/colorpicker/spectrum.min.js"></script>
 
       <script src="/assets/global/plugins/jquery-tageditor/jquery.caret.min.js"></script>
       <script src="/assets/global/plugins/jquery-tageditor/jquery.tag-editor.min.js"></script>

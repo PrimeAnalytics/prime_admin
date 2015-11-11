@@ -60,11 +60,7 @@ class IndexController extends ControllerBase
         
         if( $user_dashboards)     
         {
-            return $this->dispatcher->forward(array(
-            "controller" => "dashboard",
-            "action" => "render",
-            "params" => array($user_dashboards[0]->id, "dashboard")
-            ));  
+            $this->response->redirect("dashboards/".$user_dashboards[0]->type."/render/".$user_dashboards[0]->id."/dashboard");
         }
 
     }

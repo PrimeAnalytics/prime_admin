@@ -1,0 +1,44 @@
+<div id="widget_{{widget.id}}" class="m-b-10 {{parm['width']}} "  class="{{parm['width']}}" > {{controls}}
+                    <!-- START WIDGET -->
+                    <div class="widget-9 panel no-border bg-primary no-margin widget-loader-bar">
+                      <div class="container-xs-height full-height">
+                        <div class="row-xs-height">
+                          <div class="col-xs-height col-top">
+                            <div class="panel-heading  top-left top-right">
+                              <div class="panel-title text-black">
+                                <span class="font-montserrat fs-11 all-caps">{{parm['title']}} <i class="fa fa-chevron-right"></i>
+                                                    </span>
+                              </div>
+                              <div class="panel-controls">
+                                <ul>
+<li>
+<a href="#" class="portlet-refresh text-black" data-toggle="refresh"><i class="portlet-icon portlet-icon-refresh"></i></a>
+                                  </li>
+                                </ul>
+</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row-xs-height">
+                          <div class="col-xs-height col-top">
+                            <div class="p-l-20 p-t-15">
+                              <h3 class="no-margin p-b-5 text-white">{{parm['db']['0']['value']}}</h3>
+                              <a href="#" class="btn-circle-arrow text-white"><i class="pg-arrow_minimize"></i>
+                                                        </a>
+                              <span class="small hint-text">{% if(parm['db']['0']['max']!=0) %}{{(parm['db']['0']['value']/parm['db']['0']['max'])*100}}{% else %} 0 {% endif %}%</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row-xs-height">
+                          <div class="col-xs-height col-bottom">
+                            <div class="progress progress-small m-b-20">
+                              <!-- START BOOTSTRAP PROGRESS (http://getbootstrap.com/components/#progress) -->
+                              <div class="progress-bar progress-bar-white" style="width:{% if(parm['db']['0']['max']!=0) %}{{(parm['db']['0']['value']/parm['db']['0']['max'])*100}}{% else %} 0 {% endif %}%"></div>
+                              <!-- END BOOTSTRAP PROGRESS -->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- END WIDGET -->
+                  {{ content() }}</div>

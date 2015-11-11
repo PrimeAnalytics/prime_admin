@@ -1,4 +1,4 @@
-<div id="widget_<?php echo $widget->id; ?>"class="col-md-<?php echo $parm['width']; ?>" > <?php echo $controls; ?>
+<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?>
 <div id="w_<?php echo $widget->id; ?>" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div>
 <script>
 $('#w_<?php echo $widget->id; ?>').highcharts({
@@ -33,42 +33,6 @@ $('#w_<?php echo $widget->id; ?>').highcharts({
  title: {
             text: '<?php echo $parm['chart_title']; ?>'
         },
-        plotOptions: {
-        series: {
-            allowPointSelect: true,
-            point: {
-                events: {
-                    select: function (event) {
-                        var chart = this.series.chart;
-                        if (event.accumulate) {
-                            selectedPoints.push(this);
-                        } else {
-                            selectedPoints = [this];
-                        }
-                        var temp=[];
-                        $.each(selectedPoints, function (i, value) {
-                            temp.push(value.x);
-                        });
-                        
-                             update_dashboard("<?php echo $parm['target_link']; ?>", temp,<?php echo $widget->id; ?>);
-                    },
-                    unselect: function (event) {
-                        
-                        var index = selectedPoints.indexOf(this);
-                        if (index > -1) {
-                            selectedPoints.splice(index, 1);
-                            var temp=[];
-                        $.each(selectedPoints, function (i, value) {
-                            temp.push(value.x);
-                        });
-                            update_dashboard("<?php echo $parm['target_link']; ?>", temp,<?php echo $widget->id; ?>);
-                        }
-                        
-                    }
-                }
-            }
-        }
-    },
         		  credits: {
   enabled: false
   },
@@ -112,4 +76,19 @@ $('#w_<?php echo $widget->id; ?>').highcharts({
 ]
 
 });
+
+$('#preview_<?php echo $widget->id; ?>').on('click', function(){
+    
+            var chart = $('#w_<?php echo $widget->id; ?>').highcharts(),
+            selectedPoints = chart.getSelectedPoints();
+
+                            var temp=[];
+                        $.each(selectedPoints, function (i, value) {
+                            temp.push(value.x);
+                        });
+                            update_dashboard("<?php echo $parm['target_link']; ?>", temp,<?php echo $widget->id; ?>);
+    
+});
+
+
 </script><?php echo $this->getContent(); ?></div>

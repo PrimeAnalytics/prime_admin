@@ -76,11 +76,11 @@ class ImageUploadController extends FormElementBase
     }
 
 
-    public function uploadAction($id)
+    public function uploadAction()
     {
 
-foreach ($_FILES["images"]["error"] as $key => $error) {
-    $files    = glob('./files/');      // get all files in folder
+    foreach ($_FILES["images"]["error"] as $key => $error) {
+    $files    = glob('./files/*');      // get all files in folder
     natsort($files);                         // sort
     $lastFile = pathinfo(array_pop($files)); // split $lastFile into parts
     $newFile  = $lastFile['filename'] +1;    // increase filename by 1

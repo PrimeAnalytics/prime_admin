@@ -7,7 +7,7 @@ class LineChartController extends WidgetBase
     
     public function initialize()
     {
-        $this->form_struct ='[{"type":"database/chart"}]';
+        $this->form_struct ='[{"type":"parameters/width"},{"type":"database/chart"}]';
         $this->data_format='Chart';
 
 

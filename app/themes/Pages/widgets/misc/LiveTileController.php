@@ -7,9 +7,8 @@ class LiveTileController extends WidgetBase
     
     public function initialize()
     {
-        $this->form_struct ='[{"type":"database/multi_select","name":"tiles","label":"Tiles Source"}]';
+        $this->form_struct ='[{"type":"parameters/width"},{"type":"database/multi_select","name":"tiles","label":"Tiles Source"},{"type":"parameters/color_picker","name":"tile_color","label":"Tile Color"}]';
         $this->data_format='ByRow';
-        $this->container='<div id="widget_{{widget.id}}" class="col-sm-3 m-b-10" ></div>';
 
 
     }

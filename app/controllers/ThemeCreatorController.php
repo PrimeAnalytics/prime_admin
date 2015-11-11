@@ -549,7 +549,8 @@ class ThemeCreatorController extends ControllerBase
         fclose($fp);
 
 
-        $view='<head>'.$css.$style.'</head><body>'.$html.$js.$script.'{{ content() }}</body>';
+        $view='<!DOCTYPE html>
+<html><head>'.$css.$style.'</head><body>'.$html.$js.$script.'{{ content() }}</body></html>';
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))
@@ -714,7 +715,7 @@ class ThemeCreatorController extends ControllerBase
 
                         if($temp['name']=='id')
                         {
-                            $countainer[0]='<div id="portlet_{{portlet.id}}">';
+                            $countainer[0]='<div id="portlet_{{portlet.id}}" class="{{parm[\'width\']}}">';
                             $countainer[1]='</div>';
                             $html_save=$html;
                             $break=true;
@@ -728,7 +729,7 @@ class ThemeCreatorController extends ControllerBase
             }
             if(!$break)
             {
-                $temp="<".$type.' id="portlet_{{portlet.id}}"';
+                $temp="<".$type.' id="portlet_{{portlet.id}}" class="{{parm[\'width\']}}" ';
                 foreach($attributes as $attribute)
                 {
                     
@@ -745,7 +746,7 @@ class ThemeCreatorController extends ControllerBase
         else
         {
             $html_save=$html;
-            $countainer[0]='<div id="portlet_{{portlet.id}}">';
+            $countainer[0]='<div id="portlet_{{portlet.id}}"  class="{{parm[\'width\']}}">';
             $countainer[1]='</div>';
 
         }
@@ -757,6 +758,8 @@ class ThemeCreatorController extends ControllerBase
         $portlet->js=$js;
         $portlet->script=$script;
         $portlet->form=$form;
+
+        $form='[{"type":"parameters/width"},'.substr($form, 1);
 
         $type=$portlet->name;
         $type=str_replace(" ","_",strtolower($type));
@@ -965,7 +968,7 @@ class ThemeCreatorController extends ControllerBase
 
                       if($temp['name']=='id')
                       {
-                          $countainer[0]='<div id="widget_{{widget.id}}">{{controls}}';
+                          $countainer[0]='<div id="widget_{{widget.id}}" class="{{parm[\'width\']}}" >{{controls}}';
                           $countainer[1]='</div>';
                           $html_save=$html;
                           $break=true;
@@ -979,12 +982,22 @@ class ThemeCreatorController extends ControllerBase
             }
             if(!$break)
             {
-                $temp="<".$type.' id="widget_{{widget.id}}"';
+                $temp="<".$type.' id="widget_{{widget.id}}" ';
+                $has_class=false;
                 foreach($attributes as $attribute)
                 {
-                    
-                    $temp=$temp.$attribute['name'].'="'.$attribute['value'].'" ';
+                    if($attribute['name']=="class")
+                    {
+                        $temp=$temp.$attribute['name'].'="'.$attribute['value'].' {{parm[\'width\']}} " ';
 
+                        $has_class=false;
+                    }
+
+                }
+
+                if(!$has_class)
+                {
+                    $temp.= ' class="{{parm[\'width\']}}" ';
                 }
 
                 $countainer[0]=$temp."> {{controls}}";
@@ -996,7 +1009,7 @@ class ThemeCreatorController extends ControllerBase
         else
         {
             $html_save=$html;
-            $countainer[0]='<div id="widget_{{widget.id}}">{{controls}}';
+            $countainer[0]='<div id="widget_{{widget.id}}" class="{{parm[\'width\']}}" >{{controls}}';
             $countainer[1]='</div>';
 
         }
@@ -1009,6 +1022,16 @@ class ThemeCreatorController extends ControllerBase
         $widget->script=$script;
         $widget->form=$form;
         $widget->data_format=$data_format;
+
+        if($form!="[]")
+        {
+            $form=",".substr($form, 1);
+        }
+        else
+        {
+            $form=substr($form, 1);
+        }
+        $form='[{"type":"parameters/width"}'.$form;
 
         $type=$widget->name;
         $type=str_replace(" ","_",strtolower($type));
@@ -1152,8 +1175,14 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         
     }
 
-    public function upload_assetsAction($theme)
+    public function upload_assetsAction($id)
     {
+        $theme_dashboard = ThemeDashboard::findFirstById($id);
+
+        $theme_layout=($theme_dashboard->ThemeLayout);
+
+        $theme=$theme_layout->name;
+       
         function rmdir_recursive($dir) {
             foreach(scandir($dir) as $file) {
                 if ('.' === $file || '..' === $file) continue;
@@ -1207,7 +1236,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
             }
         }
 
-        $this->response->redirect("/theme_creator/dashboard_edit/".$theme);
+        $this->response->redirect("/theme_creator/dashboard_edit/".$id);
         
     
     }

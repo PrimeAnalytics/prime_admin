@@ -201,6 +201,36 @@ class PortletBase extends Controller
         }
     }
 
+    public function deleteAction()
+    {
+        $id = $this->request->getPost("id");
+        $portlet = Portlet::findFirstByid($id);
+        $widgets=$portlet->Widget;
+        
+        
+        foreach($widgets as $widget)
+        {
+            $widget->delete();
+        }
+        
+
+        if (!$portlet->delete()) {
+
+            foreach ($portlet->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+        }
+        else
+        {
+            $this->flash->success("Portlet was deleted successfully");
+        }
+        
+        $dashboard=Dashboard::findFirstById($portlet->dashboard_id);
+
+        return $this->response->redirect("/dashboards/".$dashboard->type."/edit/".$dashboard->id);
+    }
+
 
 
 

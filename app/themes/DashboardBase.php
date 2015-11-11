@@ -15,6 +15,8 @@ class DashboardBase extends Controller
     private $view_dir;
     public $form_struct='';
     public $theme="";
+    public $user_image="";
+    public $full_name="";
     
     function onConstruct()
     {
@@ -25,6 +27,8 @@ class DashboardBase extends Controller
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
             $this->theme= $auth['theme'];
+            $this->user_image= $auth['image_path'];
+            $this->full_name= $auth['full_name'];
         }
 
         
@@ -116,7 +120,101 @@ class DashboardBase extends Controller
         $dashboard = Dashboard::findFirstByid($id);    
         $organisation= Organisation::findFirstByid($dashboard->organisation_id);
 
+        echo '<style>.ajax-loader {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+background: white;
+opacity: 0.7;
+  margin: auto; /* presto! */
+}
+.ajax-spinner-bars {
+  position:absolute;
+  width:35px;
+  height:35px;
+  left:50%;
+  top:50%;
+}
+.ajax-spinner-bars > div {
+	position: absolute;
+	width: 2px;
+	height: 8px;
+	background-color: #25363F;
+	opacity: 0.05;
+  animation: fadeit 0.8s linear infinite;
+}
+.ajax-spinner-bars > .bar-1 {
+  transform: rotate(0deg) translate(0, -12px);
+  animation-delay:0.05s;
+}
+.ajax-spinner-bars > .bar-2 {
+  transform: rotate(22.5deg) translate(0, -12px);
+  animation-delay:0.1s;
+}
+.ajax-spinner-bars > .bar-3 {
+  transform: rotate(45deg) translate(0, -12px);
+  animation-delay:0.15s;
+}
+.ajax-spinner-bars > .bar-4 {
+  transform: rotate(67.5deg) translate(0, -12px);
+  animation-delay:0.2s;
+}
+.ajax-spinner-bars > .bar-5 {
+  transform: rotate(90deg) translate(0, -12px);
+  animation-delay:0.25s;
+}
+.ajax-spinner-bars > .bar-6 {
+  transform: rotate(112.5deg) translate(0, -12px);
+  animation-delay:0.3s;
+}
+.ajax-spinner-bars > .bar-7 {
+  transform: rotate(135deg) translate(0, -12px);
+  animation-delay:0.35s;
+}
+.ajax-spinner-bars > .bar-8 {
+  transform: rotate(157.5deg) translate(0, -12px);
+  animation-delay:0.4s;
+}
+.ajax-spinner-bars > .bar-9 {
+  transform: rotate(180deg) translate(0, -12px);
+  animation-delay:0.45s;
+}
+.ajax-spinner-bars > .bar-10 {
+  transform: rotate(202.5deg) translate(0, -12px);
+  animation-delay:0.5s;
+}
+.ajax-spinner-bars > .bar-11 {
+  transform: rotate(225deg) translate(0, -12px);
+  animation-delay:0.55s;
+}
+.ajax-spinner-bars > .bar-12 {
+  transform: rotate(247.5deg) translate(0, -12px);
+  animation-delay:0.6s;
+}
+.ajax-spinner-bars> .bar-13 {
+  transform: rotate(270deg) translate(0, -12px);
+  animation-delay:0.65s;
+}
+.ajax-spinner-bars > .bar-14 {
+  transform: rotate(292.5deg) translate(0, -12px);
+  animation-delay:0.7s;
+}
+.ajax-spinner-bars > .bar-15 {
+  transform: rotate(315deg) translate(0, -12px);
+  animation-delay:0.75s;
+}
+.ajax-spinner-bars> .bar-16 {
+  transform: rotate(337.5deg) translate(0, -12px);
+  animation-delay:0.8s;
+}
+@keyframes fadeit{
+	0%{ opacity:1; }
+	100%{ opacity:0;}
+}
 
+</style>';
         $portlets=$dashboard->Portlet;
         
         echo ' <script>
@@ -157,7 +255,7 @@ class DashboardBase extends Controller
                 echo 'if(widget_id!='.$widget->id.'){
 ';
             
-                echo "update_".$widget->id."(link_id); 
+                echo " update_".$widget->id."(link_id); 
             }
 ";
                 
@@ -175,6 +273,12 @@ class DashboardBase extends Controller
         $parameters= (array)json_decode($dashboard->parameters,true);
 
         $this->view->setVar("parm", $parameters); 
+
+        
+
+        $this->view->setVar("userimage", $this->user_image); 
+        $this->view->setVar("username", $this->full_name); 
+        $this->view->setVar("logout", "/session/end"); 
        
         $menu= $this->elements->getMenu();
         $this->view->setVar("menu", $menu); 
@@ -218,10 +322,16 @@ class DashboardBase extends Controller
 
             
             foreach ($portlets as $portlet) {
-                echo '<script> 
-            $.post("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(data) {
-                $("#dashboard_row_'.$portlet->row.'").append("<div id=\'portlet_'.$portlet->id.'\'><div>");
-                $("#portlet_'.$portlet->id.'").replaceWith(data);';
+                echo '<script>
+            $.post("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(data) {';
+                if($type=="builder"){
+                    echo '$("#dashboard_row_'.$portlet->row.'").append("<div class=\'builder-portlet\' data-type=\"'.$portlet->type.'\" data-id=\"'.$portlet->id.'\" ><div id=\'portlet_'.$portlet->id.'\'><div><div>");';
+                    }
+                    else
+                {
+                    echo '$("#dashboard_row_'.$portlet->row.'").append("<div id=\'portlet_'.$portlet->id.'\'><div>");';
+                }
+                echo'$("#portlet_'.$portlet->id.'").replaceWith(data);';
                 if($type=="builder"){
                     echo 'parent.update_dropzone(); 
                           parent.iframe_load();';

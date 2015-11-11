@@ -1,4 +1,4 @@
-<div id="widget_{{widget.id}}"class="col-md-{{parm['width']}}" > {{controls}}
+<div id="widget_{{widget.id}}" class="{{parm['width']}}" >{{controls}}
 <div id="w_{{widget.id}}" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div>
 <script>
 $('#w_{{widget.id}}').highcharts({
@@ -33,42 +33,6 @@ $('#w_{{widget.id}}').highcharts({
  title: {
             text: '{{parm['chart_title']}}'
         },
-        plotOptions: {
-        series: {
-            allowPointSelect: true,
-            point: {
-                events: {
-                    select: function (event) {
-                        var chart = this.series.chart;
-                        if (event.accumulate) {
-                            selectedPoints.push(this);
-                        } else {
-                            selectedPoints = [this];
-                        }
-                        var temp=[];
-                        $.each(selectedPoints, function (i, value) {
-                            temp.push(value.x);
-                        });
-                        
-                             update_dashboard("{{parm['target_link']}}", temp,{{widget.id}});
-                    },
-                    unselect: function (event) {
-                        
-                        var index = selectedPoints.indexOf(this);
-                        if (index > -1) {
-                            selectedPoints.splice(index, 1);
-                            var temp=[];
-                        $.each(selectedPoints, function (i, value) {
-                            temp.push(value.x);
-                        });
-                            update_dashboard("{{parm['target_link']}}", temp,{{widget.id}});
-                        }
-                        
-                    }
-                }
-            }
-        }
-    },
         		  credits: {
   enabled: false
   },
@@ -112,4 +76,19 @@ $('#w_{{widget.id}}').highcharts({
 ]
 
 });
+
+$('#preview_{{widget.id}}').on('click', function(){
+    
+            var chart = $('#w_{{widget.id}}').highcharts(),
+            selectedPoints = chart.getSelectedPoints();
+
+                            var temp=[];
+                        $.each(selectedPoints, function (i, value) {
+                            temp.push(value.x);
+                        });
+                            update_dashboard("{{parm['target_link']}}", temp,{{widget.id}});
+    
+});
+
+
 </script>{{ content() }}</div>

@@ -175,7 +175,7 @@
 
                     <div class="tab-pane fade" id="tab2_6">
                         <h3>UPLOAD ASSETS</h3>
-                        <form action="/theme_creator/upload_assets/<?php echo $theme_name?>" enctype="multipart/form-data" method="post" class="dropzone">
+                        <form action="/theme_creator/upload_assets/<?php echo $dashboard_id; ?>" enctype="multipart/form-data" method="post" class="dropzone">
                             <div class="fallback">
                                 <input type="file" name="zip_file" />
                                 <input type="submit" name="submit" value="Upload" />

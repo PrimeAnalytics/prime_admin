@@ -1,14 +1,16 @@
-<div id="widget_<?php echo $widget->id; ?>"class="col-md-<?php echo $parm['width']; ?>" > <?php echo $controls; ?>
+<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?>
 <table id="w_<?php echo $widget->id; ?>" class="table table-hover table-condensed">
-<thead><tr>
+                        <thead>
+                          <tr>
                               <?php if (($this->length($parm['db']) != 0)) { ?>
                               
                     <?php foreach ($parm['db'][0]['series'] as $key => $item) { ?>
                     <th><?php echo $key; ?> </th>
                     <?php } ?>
                     <?php } ?>
-                          </tr></thead>
-<tbody>
+                          </tr>
+                        </thead>
+                        <tbody>
                           
                              <?php foreach ($parm['db'] as $row) { ?>
                              <tr>
@@ -18,7 +20,8 @@
 </tr>
 <?php } ?>
                         </tbody>
-</table>   <script>
+                      </table>
+                         <script>
    var initTableWithSearch = function() {
         var table = $('#w_<?php echo $widget->id; ?>');
         

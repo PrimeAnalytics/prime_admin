@@ -139,6 +139,7 @@ class SessionController extends ControllerBase
         
         $this->session->set('auth', array(
             'email' => $user->email,
+            'image_path' => $user->image_path,
             'role' =>$user->role,
             'full_name' => $user->full_name,
             'organisation_id' => $user->organisation_id,

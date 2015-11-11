@@ -35,7 +35,7 @@ class UsersController extends ControllerBase
     public function newAction()
     {
         $this->tag->setDefault("status", "enable");
-        $this->tag->setDefault("image_path", '/media/profile/default.jpg');
+        $this->tag->setDefault("image_path", '/assets/global/images/avatars/avatar11_big@2x.png');
         $this->tag->setDefault("organisation_id", $this->organisation_id);
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
     }

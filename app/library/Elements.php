@@ -14,22 +14,22 @@ class Elements extends Phalcon\Mvc\User\Component
             'index' => array(
                 'caption' => 'Settings',
                 'action' => 'index',
-                'icon' =>'icon-custom-home'
+                'icon' =>'fa-cogs'
             ),
             'dashboard' => array(
                 'caption' => 'Dashboards',
                 'action' => 'index',
-                'icon' =>'icon-custom-home'
+                'icon' =>'fa-tachometer'
             ),
             'process' => array(
                 'caption' => 'Processes',
                 'action' => 'index',
-                'icon' =>'icon-custom-home'
+                'icon' =>'fa-line-chart'
             ),
              'users' => array(
                 'caption' => 'Users',
                 'action' => 'index',
-                'icon' =>'icon-custom-home'
+                'icon' =>'fa-users'
             ),
             'theme_creator' => array(
                 'caption' => 'Theme Creator',
@@ -102,7 +102,7 @@ class Elements extends Phalcon\Mvc\User\Component
         foreach($user_dashboards as $dashboard)
         {    
             $newMenuLink =  array (
-            'link' => "dashboards/".$dashboard->type."/render/".$dashboard->id."/dashboard",
+            'link' => "/dashboards/".$dashboard->type."/render/".$dashboard->id."/dashboard",
             'title' => $dashboard->title,
             'icon' => $dashboard->icon,
             'selected' => 'false'
