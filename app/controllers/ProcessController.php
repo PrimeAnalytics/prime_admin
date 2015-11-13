@@ -421,7 +421,7 @@ class ProcessController extends ControllerBase
        }
 
 
-       $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
+      $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
      
        $statement=$db->prepare( $sql);
             

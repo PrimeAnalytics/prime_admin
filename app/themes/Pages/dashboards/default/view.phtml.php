@@ -20,7 +20,7 @@
     <nav class="page-sidebar" data-pages="sidebar">
       <!-- BEGIN SIDEBAR MENU HEADER-->
       <div class="sidebar-header">
-        <img src="<?php echo $parm['orgimg']; ?>" alt="logo" class="brand" data-src="<?php echo $parm['orgimg']; ?>" data-src-retina="<?php echo $parm['orgimg']; ?>" width="78" height="22"><div class="sidebar-header-controls">
+        <img src="<?php echo $parm['orgimg']; ?>" alt="logo" class="brand" data-src="<?php echo $parm['orgimg']; ?>" data-src-retina="<?php echo $parm['orgimg']; ?>" width="78" ><div class="sidebar-header-controls">
           <button type="button" class="btn btn-xs sidebar-slide-toggle btn-link m-l-20" data-pages-toggle="#appMenu">
           </button>
           <button type="button" class="btn btn-link visible-lg-inline" data-toggle-pin="sidebar"><i class="fa fs-12"></i>
@@ -66,7 +66,7 @@
         <div class=" pull-left sm-table">
           <div class="header-inner">
             <div class="brand inline">
-              <img src="<?php echo $parm['logo']; ?>" alt="logo" data-src="<?php echo $parm['logo']; ?>" data-src-retina="<?php echo $parm['logo']; ?>" width="78" height="22">
+              <img src="<?php echo $parm['logo']; ?>" alt="logo" data-src="<?php echo $parm['logo']; ?>" data-src-retina="<?php echo $parm['logo']; ?>" width="78" >
 </div>
 </div>
         </div>

@@ -1,6 +1,4 @@
-<div id="widget_<?php echo $widget->id; ?>"class="col-md-<?php echo $parm['width']; ?>" > <?php echo $controls; ?>
-<div id="w_<?php echo $widget->id; ?>" style="width:100% min-width: 600px; height: 500px; margin: 0 auto"></div>
-<script>
+<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?><div id="w_<?php echo $widget->id; ?>" style="width:100% min-width: 600px; height: 500px; margin: 0 auto"></div><script>
 selectedPoints = [];
 $('#w_<?php echo $widget->id; ?>').highcharts({
             chart: {

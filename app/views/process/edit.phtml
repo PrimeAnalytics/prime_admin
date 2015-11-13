@@ -98,6 +98,7 @@
                 $("#columnsInput").parent().empty().html('<textarea id="columnsInput" class="form-control" style="width:100%"></textarea>');
                 $("#columnsInput").val(data_temp);
                 $("#columnsInput").tagEditor({
+                    forceLowercase:false,
                     placeholder: 'Add Parameters ...',
                     maxLength:500,
                     autocomplete: { source: JSON.parse(result,true), minLength: 1, delay: 0, html: true, position: { collision: 'flip' } }
@@ -119,6 +120,7 @@
                 $("#rowsInput").parent().empty().html('<textarea id="rowsInput" class="form-control" style="width:100%"></textarea>');
                 $("#rowsInput").val(data_temp);
                 $("#rowsInput").tagEditor({
+                    forceLowercase:false,
                     placeholder: 'Add Parameters ...',
                     maxLength:500,
                     autocomplete: { source: JSON.parse(result,true), minLength: 1, delay: 0, html: true, position: { collision: 'flip' } }

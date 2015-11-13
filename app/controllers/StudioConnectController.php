@@ -20,12 +20,37 @@ class StudioConnectController extends ControllerBase
     }
 
 
-    public function ProcessOperatorListAction($accessibility)
+    public function ProcessOperatorListAction()
     {
 
         $process_operators = ProcessOperator::findByorganisation_id($this->organisation_id);
+        $temp=array();
+        foreach($process_operators as $operator)
+        {
+            $temp[]=array("id"=>$operator->id,"name"=>$operator->name,"category"=>$operator->category);
+        }
+
+        echo json_encode($temp);
+
+    }
+
+    public function ProcessOperatorListFullAction()
+    {
+
+        $process_operators = ProcessOperator::findByorganisation_id($this->organisation_id);
+
+
+        echo json_encode($process_operators->ToArray());
+
+    }
+
+
+    public function GetProcessOperatorAction($id)
+    {
         
-       echo json_encode($process_operators->toArray());
+        $process_operators = ProcessOperator::findFirstById($id);
+
+        echo json_encode($process_operators,true);
 
     }
 
@@ -111,8 +136,6 @@ class StudioConnectController extends ControllerBase
 
     public function writeDatabase($table,$data,$queryType="update")
     {
-
-        
         $this->view->disable();
         $connection = $this->getUserDB();
 
@@ -126,51 +149,81 @@ class StudioConnectController extends ControllerBase
        $sql = "CREATE TABLE IF NOT EXISTS ".$this->db_name.".".$table." (";
 
        $columnTypes=array();
-        foreach($data['0'] as $key=>$column_name)
-        {
-            $type=gettype($data['0'][$key]);
 
-            if('string'==gettype($data['0'][$key]))
-            {
-                if(is_numeric ($data['0'][$key]))
-                {
-                    if ((int) $data['0'][$key] == (double)$data['0'][$key]) 
-                    {
-                        $type="integer";
+       $num_rows=50;
+       for($i=0;$i<$num_rows;$i++)
+       {
+           foreach($data[$i] as $key=>$column_name)
+           {
+               $type=gettype($data[$i][$key]);
 
-                    }
-                    else
-                    {
-                        $type="double";
-                    }
-                }
-                else if(strtotime($data['0'][$key])!=false)
-                {
-                    $type="date";
+               if('string'==gettype($data[$i][$key]))
+               {
+                   if(is_numeric ($data[$i][$key]))
+                   {
+                       if ((int) $data[$i][$key] == (double)$data['0'][$key]) 
+                       {
+                           $type="integer";
+                       }
+                       else
+                       {
+                           $type="double";
+                       }
+                   }
+                   else if(strtotime($data[$i][$key])!=false)
+                   {
+                       $type="date";
 
-                }
-                else
-                { 
-                }
-            }
+                   }
+                   else
+                   { 
+                   }
+               }
 
-            $columnTypes[$key]=$type;
+               $columnTypes[$key][$type]=true;
 
+           }
+       }
+
+       foreach($columnTypes as $key=>$value)
+       {
+       if (array_key_exists("string",$value))
+       {
+           $columnTypes[$key]="string";
+       }
+       elseif (array_key_exists("double",$value))
+       {
+           $columnTypes[$key]="double";
+       }
+       elseif (array_key_exists("integer",$value))
+       {
+           $columnTypes[$key]="integer";
+       }
+       elseif (array_key_exists("date",$value))
+       {
+           $columnTypes[$key]="date";
+       }
+
+
+       }
+           
+           foreach($columnTypes as $key=>$type)
+           {
             if($type=="integer")
             {
-                $sql=$sql."".$key." int, ";
+                $sql=$sql."\"".strtolower(str_replace(" ", "_", $key))."\" int, ";
             }
             elseif($type=="double")
             {
-                $sql=$sql."".$key." double, "; 
+                $sql=$sql."\"".strtolower(str_replace(" ", "_", $key))."\" double, "; 
             }
             elseif($type=="date")
             {
-                $sql=$sql."".$key." timestamp, "; 
+                $sql=$sql."\"".strtolower(str_replace(" ", "_", $key))."\" timestamp, "; 
             }
             else
             {
-                $sql=$sql."".$key." string, ";  
+                $sql=$sql."\"".strtolower(str_replace(" ", "_", $key))."\" string, ";  
             }
         }
 
@@ -189,7 +242,7 @@ class StudioConnectController extends ControllerBase
         //    $sql=$sql."PRIMARY KEY (".$primary_key.")";
         //}
         
-         $sql=$sql.")";                
+          $sql=$sql.")";                
         
 
         $connection->query($sql);
@@ -197,7 +250,16 @@ class StudioConnectController extends ControllerBase
         
         $rows=array();
 
-        $sql = "INSERT INTO ".$this->db_name.".".$table." (".implode ("," , array_keys ($data['0'])).") VALUES ";
+
+
+        $headings=array();
+
+        foreach(array_keys ($data['0']) as $key)
+        {
+          $headings[]=strtolower(str_replace(" ", "_", $key));
+        }
+
+        $sql = "INSERT INTO ".$this->db_name.".".$table." (\"".implode ("\",\"" , $headings)."\") VALUES ";
         foreach($data as $row)
         {
             if(count($data['0'])==count($row))
@@ -209,19 +271,39 @@ class StudioConnectController extends ControllerBase
 
                     if($columnTypes[$key]=="integer")
                     {
+                        if ($value=="")
+                        {
+                            $value=0;
+                        }
                         $temp.= $value." , ";
                     }
                     elseif($columnTypes[$key]=="double")
                     {
+                        if ($value=="")
+                        {
+                            $value=0;
+                        }
                         $temp.= $value." , ";
                     }
                     elseif($columnTypes[$key]=="date")
                     {
+                        if ($value=="")
+                        {
+                            $value=0;
+                        }
                         $temp.= "".(strtotime($value)*1000)." , ";
                     }
                     else
                     {
-                        $temp.= "'".addslashes ($value)."' , ";
+                        if ($value=="")
+                        {
+                            $temp.= "NULL , ";
+
+                        }
+                        else
+                        {
+                            $temp.= "'".addslashes ($value)."' , ";
+                        }
                     }
  
                 }
@@ -238,12 +320,27 @@ class StudioConnectController extends ControllerBase
 
         foreach($data['0'] as $column_name=>$values)
         {
-            $duplicate_values[]="".$column_name." =VALUES(".$column_name.")";        
+            $duplicate_values[]="\"".strtolower(str_replace(" ", "_", $column_name))."\" =VALUES(\"".strtolower(str_replace(" ", "_", $column_name))."\")";        
         }
 
-      echo $sql=$sql.implode (" ," , $duplicate_values)."";
+       $sql=$sql.implode (" ," , $duplicate_values)."";
 
-        $connection->query($sql);
+
+        if($error=$connection->query($sql))
+        {
+         
+            echo "success";
+         
+        }
+        else
+        {
+            $errors = $connection->errorInfo();
+            print_r($errors[2]);
+            return $data_out=null;
+        }
+
+
+
 
     }
     

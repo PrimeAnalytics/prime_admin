@@ -128,7 +128,7 @@
             </div>
         </div>
 
-        <iframe width="100%" src="/dashboards/<?php echo $dashboard_type ?>/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe" height="2000px" frameborder="0"></iframe>
+        <iframe width="100%" src="/dashboards/<?php echo $dashboard_type ?>/render/<?php echo $dashboard_id ?>/builder/" scrolling="no" id="dashboard_iframe" height="5000px" frameborder="0"></iframe>
 
     </div> 
 
