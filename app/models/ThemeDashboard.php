@@ -21,6 +21,12 @@ class ThemeDashboard extends \Phalcon\Mvc\Model
      *
      * @var string
      */
+    public $image;
+
+    /**
+     *
+     * @var string
+     */
     public $html;
 
     /**

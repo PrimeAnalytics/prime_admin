@@ -71,6 +71,37 @@ class ThemeCreatorController extends ControllerBase
     
     }
 
+
+    public function delete_layoutAction($id)
+    {
+        $layout=ThemeLayout::findFirstById($id);
+        foreach($layout->ThemePortlet as $item)
+        {
+            $item->delete();
+        }
+        foreach($layout->ThemeDashboard as $item)
+        {
+            $item->delete();
+        }
+        foreach($layout->ThemeWidget as $item)
+        {
+            $item->delete();
+        }
+        foreach($layout->ThemeLogin as $item)
+        {
+            $item->delete();
+        }
+
+        $layout->delete();
+
+        $this->response->redirect("/theme_creator/index");
+
+        
+        
+    }
+
+
+
     public function inteli_formatAction($theme,$type)
     {  
         $this->view->disable();
@@ -471,6 +502,7 @@ class ThemeCreatorController extends ControllerBase
         $dashboard = new ThemeDashboard();
 
         $dashboard->name = $this->request->getPost("name");
+        $dashboard->image = $this->request->getPost("image");
         $dashboard->theme_layout_id = $this->request->getPost("theme_id");
         
 
