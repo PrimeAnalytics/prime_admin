@@ -186,6 +186,7 @@ class OrganisationController extends ControllerBase
 
         $organisation->id = $this->request->getPost("id");
         $organisation->name = $this->request->getPost("name");
+        $organisation->theme = $this->request->getPost("theme");
         $organisation->image_path = $this->request->getPost("image_path");
         
 

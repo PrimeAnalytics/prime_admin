@@ -464,14 +464,20 @@ class ThemeCreatorController extends ControllerBase
 
         $helpers=array();
 
-        $helpers["Drop Zone Region"]="{{region.name}}";
+        $helpers["Drop Zone Region"]="{{region[0]}}";
 
         $helpers["Username"]="{{username}}";
+        $helpers["User Image"]="{{userimage}}";
+        
         $helpers["Log Out Link"]="{{logout}}";
-        $helpers["Menu Items"]="{{menu}}";
+        $helpers["Menu Items"]="{% for item in menu %}\r\n
+{{item['icon']}}\r\n
+{{item['title']}}\r\n
+{{item['link']}}\r\n
+{% endfor %}";
 
-        $helpers["Parameters by Name"]="{{parm.parameter_name}}";
-        $helpers["Database by Name"]="{{db.column_name}}";
+        $helpers["Parameters by Name"]="{{parm[parameter_name]}}";
+        $helpers["Database by Name"]="{{db[column_name]}}";
 
         $this->view->setVar("helpers",$helpers);
 

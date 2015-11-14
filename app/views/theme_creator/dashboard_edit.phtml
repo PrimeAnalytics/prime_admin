@@ -60,14 +60,7 @@
                                     <button id="cssstyle" class="btn btn-info pull-right">Inteli-Format</button>
                                 </div>
                                 <div class="row">
-                                    <div id="css-editor" style="height:300px"></div>
-                                </div>
-                                <div class="row">
-                                    <h3>Html</h3>
-                                    <button id="htmlbody" class="btn btn-info pull-right">Inteli-Format</button>
-                                </div>
-                                <div class="row">
-                                    <div id="html-editor" style="height:700px"></div>
+                                    <div id="css-editor" style="height:200px"></div>
                                 </div>
                                 <div class="row">
 
@@ -76,7 +69,7 @@
                                 </div>
                                 <div class="row">
 
-                                    <div id="js-editor" style="height:300px"></div>
+                                    <div id="js-editor" style="height:200px"></div>
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-6">
@@ -102,7 +95,19 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="row">
+                            <div class="row">
+                                <h3>Html</h3>
+                                <button id="htmlbody" class="btn btn-info pull-right">Inteli-Format</button>
+                            </div>
+                            <div class="row">
+                                <div id="html-editor" style="height:2000px"></div>
+                            </div>
+                        </div>
+
+
+                        </div>
                     <div class="tab-pane fade" id="tab2_4">
                         <div class="row">
                             <h3>CSS URLs</h3>

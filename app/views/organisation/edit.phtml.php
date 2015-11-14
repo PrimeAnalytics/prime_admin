@@ -40,6 +40,22 @@
                                         <?php echo $this->tag->textField(array("name", "class" => "form-control")) ?>
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Organisation Theme</label>
+                                    <div class="">
+                                        <select class="form-control" name="theme">
+                                            <?php
+                        foreach($themeList as $subfile)
+                        {
+                        $type= strtolower(str_replace(" ","_",$subfile)) ;
+                        echo '<option value="'.$type.'" >'.$subfile.'</option>';
+                        }
+                                            ?>
+
+                                        </select>
+                                    </div>
+                                </div>
                                 <?php echo $this->tag->hiddenField("id") ?>
                             </div>
                         </div>
@@ -100,21 +116,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="form-label">Organisation Theme</label>
-                                    <div class="">
-                                        <select class="form-control" name="theme">
-                                            <?php
-                        foreach($themeList as $subfile)
-                        {
-                        $type= strtolower(str_replace(" ","_",$subfile)) ;
-                        echo '<option value="'.$type.'" >'.$subfile.'</option>';
-                        }
-                                            ?>
-
-                                        </select>
-                                    </div>
-                                </div>
+                               
                                 
 
                                     <?php echo $this->tag->hiddenField("organisation_id") ?>
