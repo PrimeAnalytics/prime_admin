@@ -1,0 +1,241 @@
+/*-------------------------------
+	Response For Lower Than 1024
+------------------------------*/
+@media all and (max-width: 1025px) {
+	.leftbar-sticky{
+		width: 100% !important;
+		height: auto !important;
+		position: relative !important;
+		float: left !important;
+	}
+	.met_left_bar{
+		position: relative !important;
+		width: 100% !important;
+		top: auto !important;
+		padding-right: 0;
+		border-right: none;
+	}
+
+	.met_content_wrapper{
+		margin-left: 0;
+		float: left;
+		width: 100%;
+	}
+
+	.met_full_portfolio.columns_4 > div.mix{
+	    width: 33.33333333333333%;
+    }
+
+    .met_left_bar nav{display: none}
+    .met_responsive_nav{display: block}
+
+    .met_sidebar_half{
+	    width: 50%;
+	    float: left;
+    }
+
+    .met_sidebar_full{
+	    clear: left;
+    }
+
+	.met_split_130{display: none}
+
+	.met_portfolio_filter{
+		right: 150px;
+		top: -25px;
+	}
+
+	.met_sidebar_hider_seeker a {
+		display: inline-block;
+	}
+
+    .met_sidebar_hide_seek_contents{
+	    display: none;
+    }
+	/*
+		.met_blog_list_masonry_style > article{
+			position: relative !important;
+			left: auto !important;
+			top: auto !important;
+			float: left !important;
+		}
+	/*
+		.met_bg_list_masonry_style{
+			width: 100% !important;
+			margin: 0 !important;
+		}*/
+
+	.rightbar-sticky {
+		position: relative!important;
+		right: 0!important;
+	}
+
+    .met_rightSide{
+	    width: 100% !important;
+	    height: auto !important;
+	    position: relative !important;
+	    float: left !important;
+	    top: 0 !important;
+    }
+
+    .rightbar-sticky{
+	    width: 100% !important;
+	    height: auto !important;
+	    position: relative !important;
+	    float: right !important;
+    }
+
+	.met_blog_list {
+		margin: 0 -20px;
+	}
+
+	.rightbar-sticky + .met_content,
+	.met_rightSide + .met_content{
+		margin-right: 0;
+		border-right: none;
+	}
+
+	.met_bl_iframe {
+		width: 100%;
+	}
+
+	.met_fcp_item_caption{
+		font-size: 45px;
+		line-height: 75px;
+		height: 75px;
+	}
+
+	.met_box_page{
+		margin: 0 auto;
+	}
+
+	.met_blog_list_masonry_style > article.one_col,
+	.met_blog_list_masonry_style > article.two_cols{width: 49.9%;}
+}
+
+/*-------------------------------
+	Response For Lower Than 768
+------------------------------*/
+@media all and (max-width: 768px) {
+	.met_blog_list {
+		margin: 0;
+	}
+
+	.row > [class*="col-md-"] + [class*="col-md-"]{
+		margin-top: 30px;
+	}
+
+	.met_div5 {
+		width: 33%;
+		margin-bottom: 30px;
+	}
+
+	.met_sidebar_block .met_accordion_icon:before{display: none}
+
+    [class*="col-sm-"],
+    [class*="col-md-"]{
+	    padding-right: 0;
+	    padding-left: 0;
+    }
+
+	.met_breadcrumb{
+		padding: 0 22px;
+	}
+}
+
+
+
+/*-------------------------------
+	Response For Lower Than 640
+------------------------------*/
+@media all and (max-width: 640px) {
+	.met_full_portfolio.columns_4 > div.mix {
+		width: 50%;
+	}
+
+	.met_title2{margin: 0}
+
+	.met_fcp_item_caption{
+		font-size: 30px;
+		line-height: 55px;
+		height: 55px;
+	}
+
+    body{background-image: none;}
+
+	.met_blog_list_masonry_style > article.one_col,
+	.met_blog_list_masonry_style > article.two_cols{width: 100%;}
+
+	.horizontal_stripes .met_portfolio_striped_caption{
+		display: none;
+	}
+}
+
+
+
+/*-------------------------------
+	Response For Lower Than 360
+------------------------------*/
+@media all and (max-width: 360px) {
+	.met_full_portfolio.columns_4 > div.mix {
+		width: 100%;
+	}
+	.met_portfolio_filter {
+		right: auto;
+		left: 0;
+		top: -25px;
+	}
+
+	header nav{
+		float: right;
+	}
+
+	.met_header_socials {
+		margin-right: 0;
+		width: 100%;
+		text-align: center;
+	}
+
+	.met_header_socials li {
+		float: none;
+		display: inline;
+	}
+
+	.met_sidebar_half{
+		width: 100%;
+	}
+
+    .met_breadcrumb{
+	    height: auto;
+	    text-align: center;
+    }
+
+	.met_breadcrumb ul{
+		float: none!important;
+		display: inline-block;
+	}
+
+	.met_breadcrumb span{
+		display: none;
+	}
+
+	.met_breadcrumb li{
+		line-height: 25px;
+	}
+
+	.met_breadcrumb h1{
+		display: block;
+		text-align: center;
+		line-height: 60px;
+	}
+
+	.met_fcp_item_caption{
+		font-size: 20px;
+		line-height: 30px;
+		height: 30px;
+		padding: 0 10px;
+		bottom: 30px;
+		left: 10px;
+		letter-spacing: -1px;
+	}
+}

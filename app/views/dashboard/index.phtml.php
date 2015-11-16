@@ -48,11 +48,10 @@
 
                             <div class="portfolioContainer grid ">
                                 <?php foreach ($dashboardList as $dashboard) { ?>
-
-                                <figure class="effect-lily pull-left" onClick="create_new_dashboard('<?php echo $dashboard; ?>')">
-                                    <img src="/assets/global/images/gallery/1.jpg">
+                                <figure class="effect-lily pull-left" onClick="create_new_dashboard('<?php echo $dashboard->name; ?>')">
+                                    <img src="<?php echo $dashboard->image; ?>" style="width:140%">
                                     <figcaption>
-                                        <h2><?php echo $dashboard; ?></h2>
+                                        <h2><?php echo $dashboard->name; ?></h2>
                                         <p>Click to start using this template</p>
                                         <a href="#">Create Dashboard</a>
                                     </figcaption>

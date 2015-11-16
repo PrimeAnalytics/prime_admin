@@ -1,0 +1,12 @@
+.met_content_loading{display: none!important;}
+.met_fp_item.mix{
+	opacity: 1;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	display: inline-block;
+}
+.met_full_portfolio > div.mix{display: inline-block;}
+
+.met_fp_item_text{display: none}
+.met_fp_item:hover .met_fp_item_text{display: block}
+
+.met_fpip_overlay{border: none}

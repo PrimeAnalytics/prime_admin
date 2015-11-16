@@ -1,0 +1,130 @@
+.met_audio_player{
+	background-color: #E6E6E6;
+	height: 37px;
+	overflow: hidden;
+}
+
+.met_audio_play_pause{
+	width: 37px;
+	height: 37px;
+	line-height: 37px;
+	border: none;
+	border-right: 1px solid #FFFFFF;
+	color: #575757;
+	text-align: center;
+	font-size: 12px;
+	background: none;
+	display: block;
+	float: left;
+
+	-webkit-transition: all ease-in 0.3s;
+	-moz-transition: all ease-in 0.3s;
+	-ms-transition: all ease-in 0.3s;
+	-o-transition: all ease-in 0.3s;
+}
+
+.met_audio_play_pause:hover{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+.met_html5_video video{
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	margin-bottom: 1px;
+}
+
+.met_audio_current_time{
+	width: 40px;
+	height: 37px;
+	line-height: 37px;
+	text-align: center;
+	font-size: 11px;
+	color: #575757;
+	display: inline-block;
+}
+
+.met_audio_progress_bar{
+	height: 5px;
+	background-color: #B8B8B8;
+	width: auto;
+	margin: 0 85px;
+	display: block;
+	margin-top: -22px;
+	cursor: pointer;
+}
+
+.met_audio_current_progress{
+	background-color: #18ADB6;
+	height: 5px;
+	position: relative;
+	-webkit-transition: width linear 0.1s;
+	-moz-transition: width linear 0.1s;
+	-ms-transition: width linear 0.1s;
+	-o-transition: width linear 0.1s;
+}
+
+.met_audio_total_time{
+	width: 40px;
+	height: 37px;
+	line-height: 37px;
+	text-align: center;
+	font-size: 11px;
+	color: #575757;
+	display: inline-block;
+	float: right;
+}
+
+.met_audio_sound{
+	width: 37px;
+	height: 37px;
+	line-height: 37px;
+	border: none;
+	border-left: 1px solid #FFFFFF;
+	color: #575757;
+	text-align: center;
+	font-size: 16px;
+	background: none;
+	float: right;
+	position: relative;
+	z-index: 3;
+	-webkit-transition: all ease-in 0.3s;
+	-moz-transition: all ease-in 0.3s;
+	-ms-transition: all ease-in 0.3s;
+	-o-transition: all ease-in 0.3s;
+}
+
+.met_audio_sound:hover{
+	background-color: #18ADB6;
+	color: #FFFFFF;
+}
+
+.met_audio_volume{
+	position: absolute;
+	height: 37px;
+	width: 0;
+	top: 0;
+	right: 100%;
+	overflow: hidden;
+	background-color: #18ADB6;
+	-webkit-transition: width ease-in 0.3s, padding ease-in 0.3s;
+	-moz-transition: width ease-in 0.3s, padding ease-in 0.3s;
+	-ms-transition: width ease-in 0.3s, padding ease-in 0.3s;
+	-o-transition: width ease-in 0.3s, padding ease-in 0.3s;
+}
+
+.met_audio_sound:hover .met_audio_volume{
+	width: 114px;
+	padding: 0 15px;
+	color: #FFFFFF;
+}
+
+.met_audio_sound .met_audio_sound_volume{
+	position: absolute;
+	line-height: 37px;
+	top: 0;
+	left: 0;
+	width: 100%;
+	display: none;
+}

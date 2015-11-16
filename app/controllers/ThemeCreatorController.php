@@ -532,9 +532,9 @@ class ThemeCreatorController extends ControllerBase
         $theme= ThemeLayout::findFirstById($dashboard->theme_layout_id);
         $theme=$theme->name;
 
-        $css=$this->request->getPost("css");
-        $style=$this->request->getPost("style");
-        $html=$this->request->getPost("html");
+        $css=urldecode ($this->request->getPost("css"));
+        $style=urldecode ($this->request->getPost("style"));
+        $html=urldecode ($this->request->getPost("html"));
         $js=$this->request->getPost("js");
         $script=$this->request->getPost("script");
         $form=$this->request->getPost("form");
@@ -624,7 +624,6 @@ class ThemeCreatorController extends ControllerBase
         $this->tag->setDefault("theme_id", $theme_id);
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         $this->persistent->parameters = null;
-        
     }
 
     public function portlet_deleteAction($id)
@@ -632,6 +631,8 @@ class ThemeCreatorController extends ControllerBase
         $portlet=ThemePortlet::findFirstById($id);
 
         $portlet->delete();
+
+        $this->response->redirect("/theme_creator/edit/".$portlet->theme_layout_id);
         
     }
 
@@ -702,6 +703,88 @@ class ThemeCreatorController extends ControllerBase
         
     }
 
+    public function portlet_copyAction($id)
+    {
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->view->setVar("id", $id); 
+        $themes=ThemeLayout::find();
+        $this->view->setVar("themes", $themes); 
+
+    }
+
+    public function widget_copyAction($id)
+    {
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        $this->view->setVar("id", $id); 
+        $themes=ThemeLayout::find();
+        $this->view->setVar("themes", $themes); 
+
+    }
+
+    public function portlet_create_copyAction($id)
+    {
+        $portlet_old=ThemePortlet::findFirstById($id);
+
+        $portlet = new ThemePortlet();
+        $portlet->theme_layout_id = $this->request->getPost("theme_id");
+        $portlet->name = $this->request->getPost("name");
+
+        $portlet->css=$portlet_old->css;
+        $portlet->style=$portlet_old->style;
+        $portlet->html=$portlet_old->html;
+        $portlet->js=$portlet_old->js;
+        $portlet->script=$portlet_old->script;
+        $portlet->form=$portlet_old->form;
+
+        if (!$portlet->save()) {
+            foreach ($portlet->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            $this->response->redirect("/theme_creator/index");
+        }
+
+        $this->flash->success("Portlet was created successfully");
+
+        $this->response->redirect("/theme_creator/portlet_edit/".$portlet->id);
+
+        
+    
+    }
+
+    public function widget_create_copyAction($id)
+    {
+        $widget_old=ThemeWidget::findFirstById($id);
+
+        $widget = new ThemeWidget();
+        $widget->theme_layout_id = $this->request->getPost("theme_id");
+        $widget->name = $this->request->getPost("name");
+
+        $widget->category=$widget_old->category;
+        $widget->data_format=$widget_old->data_format;
+        $widget->css=$widget_old->css;
+        $widget->style=$widget_old->style;
+        $widget->html=$widget_old->html;
+        $widget->js=$widget_old->js;
+        $widget->script=$widget_old->script;
+        $widget->form=$widget_old->form;
+
+        if (!$widget->save()) {
+            foreach ($widget->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            $this->response->redirect("/theme_creator/index");
+        }
+
+        $this->flash->success("Widget was created successfully");
+
+        $this->response->redirect("/theme_creator/widget_edit/".$widget->id);
+
+        
+        
+    }
+
     public function portlet_saveAction($id)
     {
         $portlet=ThemePortlet::findFirstById($id);
@@ -709,9 +792,9 @@ class ThemeCreatorController extends ControllerBase
         $theme= ThemeLayout::findFirstById($portlet->theme_layout_id);
         $theme=$theme->name;
 
-        $css=$this->request->getPost("css");
-        $style=$this->request->getPost("style");
-        $html=$this->request->getPost("html");
+        $css=urldecode ($this->request->getPost("css"));
+        $style=urldecode ($this->request->getPost("style"));
+        $html=urldecode ($this->request->getPost("html"));
         $js=$this->request->getPost("js");
         $script=$this->request->getPost("script");
         $form=$this->request->getPost("form");
@@ -869,12 +952,15 @@ class ThemeCreatorController extends ControllerBase
         $widget=ThemeWidget::findFirstById($id);
 
         $widget->delete();
+
+        $this->response->redirect("/theme_creator/edit/".$widget->theme_layout_id);
         
     }
 
     public function widget_editAction($id)
     {
         $widget=ThemeWidget::findFirstById($id);
+
         $theme= ThemeLayout::findFirstById($widget->theme_layout_id);
         $theme=$theme->name;
 
@@ -961,9 +1047,9 @@ class ThemeCreatorController extends ControllerBase
         $theme= ThemeLayout::findFirstById($widget->theme_layout_id);
         $theme=$theme->name;
 
-        $css=$this->request->getPost("css");
-        $style=$this->request->getPost("style");
-        $html=$this->request->getPost("html");
+        $css=urldecode ($this->request->getPost("css"));
+        $style=urldecode ($this->request->getPost("style"));
+        $html=urldecode ($this->request->getPost("html"));
         $js=$this->request->getPost("js");
         $script=$this->request->getPost("script");
         $form=$this->request->getPost("form");
@@ -1117,7 +1203,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         fclose($fp);
 
 
-        $view=$countainer[0].$html_save.$script.'{{ content() }}'.$countainer[1];
+        $view=$countainer[0].$style.urldecode ($html_save).$script.'{{ content() }}'.$countainer[1];
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))

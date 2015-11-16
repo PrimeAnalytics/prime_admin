@@ -206,6 +206,7 @@
                             <?php echo $portlet->name ?>
                         </td>
                         <td>
+                            <button class="btn btn-warning btn-xs btn-small" onClick="copy_item('portlet','<?php echo $portlet->id ?>')">Copy</button>
                             <?php echo $this->tag->linkTo(array("theme_creator/portlet_edit/".$portlet->id, "Edit",'class'=>"btn btn-success btn-xs btn-small")); ?>
                             <?php echo $this->tag->linkTo(array("theme_creator/portlet_delete/".$portlet->id, "Delete",'class'=>"btn btn-danger btn-xs btn-small")); ?>
                         </td>
@@ -263,6 +264,7 @@
                             <?php echo $widget->name ?>
                         </td>
                         <td>
+                            <button class="btn btn-warning btn-xs btn-small" onClick="copy_item('widget','<?php echo $widget->id ?>')">Copy</button>
                             <?php echo $this->tag->linkTo(array("theme_creator/widget_edit/".$widget->id, "Edit",'class'=>"btn btn-success btn-xs btn-small")); ?>
                             <?php echo $this->tag->linkTo(array("theme_creator/widget_delete/".$widget->id, "Delete",'class'=>"btn btn-danger btn-xs btn-small")); ?>
                         </td>
@@ -289,6 +291,14 @@
             function create_new(datatype)
             {
                 $("#modal_content").load("/theme_creator/"+datatype+"_new/<?php echo $theme_id ?>", function () {
+                    $("#myModal").modal("show");
+                });
+            }
+
+
+            function copy_item(datatype,id)
+            {
+                $("#modal_content").load("/theme_creator/"+datatype+"_copy/"+id, function () {
                     $("#myModal").modal("show");
                 });
             }

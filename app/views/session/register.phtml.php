@@ -87,7 +87,7 @@
             </label>
           </div>
           <div class="m-t-20">
-            <button type="submit"  class="btn btn-lg btn-dark btn-rounded" data-style="expand-left">Sign In</button>
+            <button type="submit"  class="btn btn-lg btn-dark btn-rounded" data-style="expand-left">Sign Up</button>
           </div>
         </form>
         <div class="form-footer">

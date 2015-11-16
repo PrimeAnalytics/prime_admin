@@ -6,6 +6,7 @@ use PRIME\Models\Widget;
 use PRIME\Models\Portlet;
 use PRIME\Models\Links;
 use PRIME\Models\Organisation;
+use PRIME\Models\ThemeLayout;
 
 
 class DashboardController extends ControllerBase
@@ -23,7 +24,7 @@ class DashboardController extends ControllerBase
         $auth = $this->session->get("auth");
         $DashboardList=\PRIME\Controllers\GetController::getDashboardList();
 
-        $this->view->setVar('dashboardList',$DashboardList);
+        $this->view->setVar('dashboardList',$this->getDashboardList());
 
         $data = Dashboard::find("organisation_id= ".$auth['organisation_id']);
         
@@ -175,21 +176,13 @@ class DashboardController extends ControllerBase
     public static function getDashboardList()
     {
         $theme = $_SESSION["auth"]['theme'];
+        $theme_layout = ThemeLayout::findFirstByName($theme);
+        
+        echo count($theme_layout);
 
-        $data=array();
+        $dashboards=$theme_layout->ThemeDashboard;
 
-        $subdirectory = '../app/themes/'.$theme.'/dashboards/';
-        //get all files in specified directory
-        $subfiles = glob($subdirectory."*.{php}", GLOB_BRACE);
-        foreach($subfiles as $subfile)
-        {
-            $type = str_replace("Controller.php","",basename($subfile));
-            $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
-            $data[]=$name;
-
-        }
-
-        return $data;
+        return $dashboards;
     }
 
 }

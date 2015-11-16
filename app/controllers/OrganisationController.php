@@ -52,7 +52,7 @@ class OrganisationController extends ControllerBase
             if(is_dir($file))
             {
                 $type = basename($file);
-                $name = trim(implode(' ', preg_split('/(?=\p{Lu})/u', $type)));
+                $name = trim($type);
                 $data[]=$name;
             }
 

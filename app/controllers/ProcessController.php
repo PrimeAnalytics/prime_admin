@@ -520,11 +520,7 @@ class ProcessController extends ControllerBase
             // start table
 
             $html = '
-                <div class="panel">
-                <div class="panel-header panel-controls">
-                  <h3><i class="icon-bulb"></i> <strong>Filtering </strong> with <strong>Select</strong> Inputs in <strong>Footer</strong></h3>
-                </div>
-                <div class="panel-content"><table id="resultTable" class="table table-hover"><thead>';
+                <div class="panel-content" style="overflow:auto;"><table id="resultTable" class="table table-hover"><thead>';
 
             // header row
 
@@ -569,12 +565,13 @@ class ProcessController extends ControllerBase
 
             // finish table and return it
 
-            $html .= '</tbody></table></div></div>';
+            $html .= '</tbody></table></div>';
 
             echo $html;
 
             echo '<script>
                 $(\'#resultTable\').DataTable( {
+
                     initComplete: function () {
                         var api = this.api();
              
