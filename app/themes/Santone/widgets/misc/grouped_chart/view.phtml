@@ -1,0 +1,67 @@
+<div id="widget_{{widget.id}}" class="{{parm['width']}}" >{{controls}}<div id="w_{{widget.id}}" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div><?php
+
+    $dataOut=array();
+    foreach($parm['db'] as $row)
+    {
+        $dataOut[$row['grouping']][]=array("x_axis"=>$row['x_axis'],"value"=>$row['y_axis']);
+    }
+
+?>
+
+<script>
+$('#w_{{widget.id}}').highcharts({
+            chart: {
+            type: '{{parm['chart_type']}}',
+            spacingBottom: 50,
+            spacingTop: 50,
+            spacingLeft: 50,
+            spacingRight: 50,
+			zoomType: 'xy'
+        },
+ title: {
+            text: '{{parm['chart_title']}}'
+        },
+        		  credits: {
+  enabled: false
+  },
+        xAxis: {
+            title: {
+                text: '{{parm['x_label']}}'
+            },
+            
+                {% if parm['xtype'] == "Date" %}
+                type: 'datetime',
+                {% elseif parm['xtype'] == "Category" %}
+                type: 'datetime',
+                {% else %}
+                {% endif  %}
+            
+        },
+        yAxis: {
+            title: {
+                text: '{{parm['y_label']}}'
+            }
+        },
+        colors:{{parm['colors']}},
+ series: [
+{% for key,series in dataOut %}
+{
+     name: '{{key|escape_js}}',
+     data: [
+        {% for row in series %}
+        
+                {% if parm['xtype'] == "Date" %}
+    [Date.parse('{{ row['x_axis']|escape_js }}'),{{ row['value']|escape_js }}] ,
+                {% elseif parm['xtype'] == "Category" %}
+    ['{{ row['x_axis']|escape_js }}',{{ row['value']|escape_js }}] ,
+                {% else %}
+    [{{ row['x_axis']|escape_js }},{{ row['value']|escape_js }}] ,
+                {% endif  %}
+        {% endfor  %}
+]},
+
+{% endfor  %}
+] 
+
+});
+</script>{{ content() }}</div>

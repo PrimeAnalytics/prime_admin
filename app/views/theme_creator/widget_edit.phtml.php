@@ -202,7 +202,7 @@
 
 <script>
     // This makes the Builder Elements Sortable
-    $(".FormBuilder ul").sortable({
+    $("#parameters").sortable({
         placeholder: "placeHolder",
         opacity: 0.5,
         start: function (e, ui) {
@@ -471,7 +471,7 @@
 
 
     $("#saveWidget").click(function () {
-        $.post("/theme_creator/widget_save/<?php echo $widget_id; ?>", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters(), data_format: $("#dataFormat").select2('data').id }, function(data){
+        $.post("/theme_creator/widget_save/<?php echo $widget_id; ?>", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: encodeURIComponent(htmleditor.getValue()), form: getParameters(), data_format: $("#dataFormat").select2('data').id }, function(data){
             $("#modal_content").html(data);
                     $("#myModal").modal("show");
         });

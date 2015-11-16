@@ -81,7 +81,10 @@ class WidgetBase extends Controller
        
        $this->view->pick(strtolower(end($type)."/view"));
 
-       $controls= '<div class="pull-right"><a onclick="reset_'.$widget->id.'()">Clear</a>  <a onclick="update_'.$widget->id.'(\'set\')">Set</a></div>';
+       $controls= '
+
+<table style="background:white;"><a class="widget-control"   onclick="reset_'.$widget->id.'()">Clear</a>
+    <a class="widget-control" onclick="update_'.$widget->id.'(\'set\')">Set</a></table>';
 
        $this->view->setVar("controls", $controls); 
 

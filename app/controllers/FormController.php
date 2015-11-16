@@ -84,15 +84,6 @@ class FormController extends ControllerBase
             $output[]=call_user_func_array(array($tempController,'Render'),$arg);
         }
 
-
-        if($table_set)
-        {
-        
-            $controller= "\PRIME\FormElements\Database\UpdateLinksController"; 
-            $tempController = new $controller();
-            $output[]=call_user_func(array($tempController,'Render'));
-
-        }
         
         $data_out['style']=array();
         $data_out['style'][]="<style>";

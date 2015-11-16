@@ -3,7 +3,7 @@
 w<?php echo $widget->id; ?>_selectedPoints = [];
 $('#w_<?php echo $widget->id; ?>').highcharts({
             chart: {
-            type: 'pie',
+            type: 'funnel',
             spacingBottom: 50,
             spacingTop: 50,
             spacingLeft: 50,

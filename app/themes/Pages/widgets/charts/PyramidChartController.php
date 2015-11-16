@@ -2,7 +2,7 @@
 namespace PRIME\Themes\Pages\Widgets\Charts;
 use PRIME\Themes\WidgetBase as WidgetBase;
 
-class PieChartController extends WidgetBase
+class PyramidChartController extends WidgetBase
 {
     
     public function initialize()

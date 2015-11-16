@@ -120,7 +120,14 @@ class DashboardBase extends Controller
         $dashboard = Dashboard::findFirstByid($id);    
         $organisation= Organisation::findFirstByid($dashboard->organisation_id);
 
-        echo '<style>.ajax-loader {
+        echo '
+<style> .widget-control {float:right; margin: .4em;
+  padding: .3em 1em .3em 1em;
+  cursor: pointer;
+  background: #ececec;
+  text-decoration: none;
+  color: #666;} </style>
+<style>.ajax-loader {
   position: absolute;
   left: 0;
   top: 0;

@@ -1,8 +1,8 @@
 <?php
-namespace PRIME\Themes\Santone\Widgets\Charts;
+namespace PRIME\Themes\Pages\Widgets\Charts;
 use PRIME\Themes\WidgetBase as WidgetBase;
 
-class BasicChartController extends WidgetBase
+class BarChartController extends WidgetBase
 {
     
     public function initialize()

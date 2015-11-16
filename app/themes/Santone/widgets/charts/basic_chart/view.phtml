@@ -61,7 +61,7 @@
 
 $('#w_{{widget.id}}').highcharts({
             chart: {
-            type: '{{parm['chart_type']}}',
+            type: 'line',
             spacingBottom: 50,
             spacingTop: 50,
             spacingLeft: 50,
@@ -99,7 +99,7 @@ $('#w_{{widget.id}}').highcharts({
         },
         yAxis: {
             title: {
-                text: '{{parm['y_label']}}'
+                text: 'Value'
             }
         },
         colors:{{parm['colors']}},
@@ -109,7 +109,6 @@ $('#w_{{widget.id}}').highcharts({
      name: '{{key|escape_js}}',
      data: [
         {% for row in series %}
-        
                 {% if parm['xtype'] == "Date" %}
     [Date.parse('{{ row['x_axis']|escape_js }}'),{{ row['value']|escape_js }}] ,
                 {% elseif parm['xtype'] == "Category" %}

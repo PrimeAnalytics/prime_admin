@@ -61,7 +61,7 @@
 
 $('#w_<?php echo $widget->id; ?>').highcharts({
             chart: {
-            type: 'line',
+            type: 'bar',
             spacingBottom: 50,
             spacingTop: 50,
             spacingLeft: 50,

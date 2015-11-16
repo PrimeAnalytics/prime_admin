@@ -86,7 +86,7 @@ $('#w_<?php echo $widget->id; ?>').highcharts({
   },
         xAxis: {
             title: {
-                text: '<?php echo $parm['x_label']; ?>'
+                text: ''
             },
             
                 <?php if ($parm['xtype'] == 'Date') { ?>
@@ -99,7 +99,7 @@ $('#w_<?php echo $widget->id; ?>').highcharts({
         },
         yAxis: {
             title: {
-                text: '<?php echo $parm['y_label']; ?>'
+                text: 'value'
             }
         },
         colors:<?php echo $parm['colors']; ?>,

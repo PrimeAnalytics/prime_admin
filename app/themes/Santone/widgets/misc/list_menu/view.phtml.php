@@ -1,14 +1,17 @@
 <div id="widget_<?php echo $widget->id; ?>"  class="<?php echo $parm['width']; ?>" > <?php echo $controls; ?>
+
+<div>
     
-    <?php $max =array();  ?>
+    <?php  $max =array();  ?>
     
     <?php foreach ($parm['db'] as $entry) { ?>
     
-         <?php $max[] = $entry['value']; ?>
+         <?php  $max[] = $entry['value']; ?>
 
 <?php } ?>
     
-    <?php if(max($max)>0) 
+    <?php 
+    if(max($max)>0) 
     { 
     $max=max($max);
     }
@@ -16,7 +19,7 @@
     {
     $max=1;
     }
-    ?>;
+    ?>
     
     <style>
     
@@ -28,24 +31,27 @@
     left: 0;
     top: 0;
     bottom: 0;
-    background-color: #8ef;
+    background-color: green;
      opacity: 0.2;
     z-index: 99;
 }
 </style>
+
 <table id="w_<?php echo $widget->id; ?>" class="table table-hover">
-<thead><tr>
-<th>ggg </th>
-                              </tr></thead>
-<tbody>
+    <thead>
+                          <tr>
+                              <th>Please Select </th>
+                              </tr>
+                        </thead>
+    <tbody>
 <?php foreach ($parm['db'] as $entry) { ?>
- <tr>
-<td>
-<div class="rowprogress" style="width:<?php echo ($entry['value'] * 100) / $max; ?>%"></div> <?php echo $entry['label']; ?> </td>
+ <tr> 
+    <td ><div class="rowprogress" style="width:<?php echo ($entry['value'] * 100) / $max; ?>%"></div> <?php echo $entry['label']; ?> </td>
  </tr>
 <?php } ?>
 </tbody>
-</table>   <script>
+</table>
+</div>   <script>
    var initTableWithSearch = function() {
         var table = $('#w_<?php echo $widget->id; ?>');
         

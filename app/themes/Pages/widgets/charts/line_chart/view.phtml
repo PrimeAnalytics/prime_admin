@@ -86,7 +86,7 @@ $('#w_{{widget.id}}').highcharts({
   },
         xAxis: {
             title: {
-                text: '{{parm['x_label']}}'
+                text: ''
             },
             
                 {% if parm['xtype'] == "Date" %}
@@ -99,7 +99,7 @@ $('#w_{{widget.id}}').highcharts({
         },
         yAxis: {
             title: {
-                text: '{{parm['y_label']}}'
+                text: 'value'
             }
         },
         colors:{{parm['colors']}},

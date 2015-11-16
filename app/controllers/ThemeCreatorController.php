@@ -844,7 +844,7 @@ class ThemeCreatorController extends ControllerBase
                         }
                     }
 
-                    $html_save=get_inner_html($node);
+                    $html_save=$html;//get_inner_html($node);
                     
                 }
             }
@@ -925,7 +925,7 @@ class ThemeCreatorController extends ControllerBase
         fwrite($fp,$content);
         fclose($fp);
 
-        $view=$countainer[0].$html_save.$script.'{{ content() }}'.$countainer[1];
+        $view=$countainer[0].$style.$html_save.$script.'{{ content() }}'.$countainer[1];
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))
@@ -1069,7 +1069,7 @@ class ThemeCreatorController extends ControllerBase
         $dom = new \DOMDocument();
         $dom->preserveWhiteSpace = FALSE;
         \libxml_use_internal_errors(true);
-        $dom->loadHTML($html);
+        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8") );
 
         $countainer="";
 
@@ -1100,7 +1100,9 @@ class ThemeCreatorController extends ControllerBase
                       }
                     }
 
-                    $html_save=get_inner_html($node);
+
+
+                    $html_save=$html;
                     
                 }
             }
@@ -1203,7 +1205,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
         fclose($fp);
 
 
-        $view=$countainer[0].$style.urldecode ($html_save).$script.'{{ content() }}'.$countainer[1];
+        $view=$countainer[0].$style.$html_save.$js.$script.'{{ content() }}'.$countainer[1];
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))
@@ -1251,6 +1253,7 @@ class '.\Phalcon\Text::camelize($type).'Controller extends WidgetBase
 
         foreach ($children as $child) 
         { 
+            $element->encoding='UTF-8';
             $innerHTML .= $element->ownerDocument->saveHTML($child);
         }
 

@@ -13,17 +13,6 @@ class ChartController extends FormElementBase
                                         <input name="parameters[chart_title]" class="form-control">
                                         </input>
                                 </div>';
-        $output['html'][]='<div class="form-group">
-                                    <label>X-Axis Label</label>
-                                        <input name="parameters[x_label]" class="form-control">
-                                        </input>
-                                </div>';
-
-        $output['html'][]='<div class="form-group">
-                                    <label>Y-Axis Label</label>
-                                        <input name="parameters[y_label]" class="form-control">
-                                        </input>
-                                </div>';
     
 
         $output['html'][]= '<div class="form-group db-item">

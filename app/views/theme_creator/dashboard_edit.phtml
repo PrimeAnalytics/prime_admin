@@ -214,7 +214,7 @@
 
 <script>
     // This makes the Builder Elements Sortable
-    $(".FormBuilder ul").sortable({
+    $("#parameters").sortable({
         placeholder: "placeHolder",
         opacity: 0.5,
         start: function (e, ui) {
