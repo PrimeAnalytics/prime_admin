@@ -10,7 +10,7 @@
     <section><!-- BEGIN SIDEBAR --><div class="sidebar">
         <div class="logopanel">
           <h1>
-            <a href="dashboard.html"></a>
+            <a href="dashboard.html" style="background: url(<?php echo $parm['orgimg']; ?>) no-repeat;"></a>
           </h1>
         </div>
         <div class="sidebar-inner">

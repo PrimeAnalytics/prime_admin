@@ -1,0 +1,38 @@
+<div id="portlet_{{portlet.id}}" class="{{parm['width']}}" class=" portlets" >  <style type="text/css">
+.tab-content > .tab-pane,
+.pill-content > .pill-pane {
+    display: block;     /* undo display:none          */
+    height: 0;          /* height:0 is also invisible */ 
+    overflow-y: hidden; /* no-overflow                */
+}
+.tab-content > .active,
+.pill-content > .active {
+    height: auto;       /* let the content decide it  */
+}   
+ </style>    
+              <div class=" portlets">
+                  <div class="panel">
+                    <div class="panel-header panel-controls">
+                      <h3>{{parm['title']}}</h3>
+                    </div>
+                    <div class="panel-content">
+                    <?php $tabs = explode(',', $parm['tabs']) ?>
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs nav-primary">
+                        {% for key,tab in tabs %}
+                        <li class="{% if key == 0 %}active{% endif  %}">
+                        <a data-toggle="tab" href="#tab{{portlet.id}}-<?php echo str_replace (" ","_",$key) ?>"><span>{{ tab }}</span></a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                      <div class="tab-content">
+                        {% for key,tab in tabs %}
+                        <div class="tab-pane fade {% if key == 0 %}active{% endif  %}" id="tab{{portlet.id}}-<?php echo str_replace (" ","_",$key) ?>">
+                       {{region[key]}}
+                      </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>{{ content() }}</div>

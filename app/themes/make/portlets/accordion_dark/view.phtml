@@ -1,0 +1,28 @@
+<div id="portlet_{{portlet.id}}" class="{{parm['width']}}" > 
+				<div>
+				    <?php $tabs = explode(',', $parm['tabs']) ?>
+                      <h3>{{parm['title']}}</h3>
+                      <div class="panel-group panel-accordion dark-accordion" id="accordion{{portlet.id}}">
+                          {% for key,tab in tabs %}
+                          
+                        <div class="panel panel-default">
+                          <div class="panel-heading">
+                            <h4>
+                              <a class="collapsed" data-toggle="collapse" data-parent="#accordion{{portlet.id}}" href="#tab{{portlet.id}}-<?php echo str_replace (" ","_",$key) ?>">
+                              {{ tab }}
+                              </a>
+                            </h4>
+                          </div>
+                          <div id="tab{{portlet.id}}-<?php echo str_replace (" ","_",$key) ?>" class="panel-collapse collapse">
+                            <div class="panel-body">
+                              {{region[key]}}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {% endfor %}
+
+                      </div>
+                    </div>
+				
+{{ content() }}</div>
