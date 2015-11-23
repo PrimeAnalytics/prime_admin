@@ -120,6 +120,10 @@ class DashboardBase extends Controller
         $dashboard = Dashboard::findFirstByid($id);    
         $organisation= Organisation::findFirstByid($dashboard->organisation_id);
 
+
+
+
+
         echo '<style> @import url(http://fonts.googleapis.com/css?family=Open+Sans);
 
 .tags {
@@ -151,7 +155,7 @@ margin-bottom: 1em;
 
 
 
-echo "<script>
+        echo "<script>
     var app;
     $(document).ready(function () {
         return app.init();
@@ -212,6 +216,12 @@ echo "<script>
     };
 
 </script>";
+
+
+
+
+
+
 
         echo '
 <style> .widget-control {float:right; margin: .4em;
@@ -317,9 +327,7 @@ opacity: 0.7;
 </style>';
         $portlets=$dashboard->Portlet;
         
-        echo ' 
-
-<script>
+        echo ' <script>
                        var links = '.json_encode($organisation->Links->toArray()).' ;
                        </script>';
 
@@ -337,44 +345,45 @@ opacity: 0.7;
             ';
                 
             
-            echo '
+            echo '<script>
+            function clear_filters()
+            {
+            $.each(links, function(index, key ) {
 
-<script>
-function clear_filters()
-{
-$.each(links, function(index, key ) {
-
-            links[index].default_value = "";
+                        links[index].default_value = "";
             
-}); 
-               $.each(links, function(index, key ) {
-                $.each(d_links, function(index_d, key_d ) {
+            }); 
+                           $.each(links, function(index, key ) {
+                            $.each(d_links, function(index_d, key_d ) {
 
-          if(links[index].name==d_links[index_d].name)
-          links[index].default_value= d_links[index_d].value;
-          });
-          });
+                      if(links[index].name==d_links[index_d].name)
+                      links[index].default_value= d_links[index_d].value;
+                      });
+                      });
 
-update_dashboard();
-};
+            update_dashboard();
+            };
             
             function update_dashboard(link_id, value,widget_id)
             {  
+            
             var filter_string="";
             $(\'.tags .tag\').remove();
       
             $.each(links, function(index, key ) {
-
             if( links[index].id==link_id)
             {
             links[index].default_value = value;
             }
-
             if(links[index].default_value != "")
             {
             app.add_tag(links[index].name,links[index].id);
             }
+
             }); 
+
+            
+
             ';
             
             foreach($portlets as $portlet)
@@ -403,14 +412,11 @@ update_dashboard();
 
         $this->view->setVar("parm", $parameters); 
 
-        
+        $this->view->setVar("filters", '<label>Filters:</label><div class=\'tags\'><input style="display:none" id="dashboard_filters"  ></input></div>'); 
 
         $this->view->setVar("userimage", $this->user_image); 
         $this->view->setVar("username", $this->full_name); 
         $this->view->setVar("logout", "/session/end"); 
-
-        $this->view->setVar("filters", '<label>Filters:</label><div class=\'tags\'><input style="display:none" id="dashboard_filters"  ></input></div>'); 
-        
        
         $menu= $this->elements->getMenu();
         $this->view->setVar("menu", $menu); 

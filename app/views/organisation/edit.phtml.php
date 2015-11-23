@@ -17,6 +17,7 @@
             <ul class="nav nav-tabs nav-primary">
                 <li class=""><a href="#tab2_1" data-toggle="tab"><i class="icon-home"></i> Basic Information</a></li>
                 <li class="active"><a href="#tab2_2" data-toggle="tab"><i class="icon-user"></i> Database Settings</a></li>
+                <li class=""><a href="#tab2_3" data-toggle="tab"><i class="icon-lock"></i> Logins</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade" id="tab2_1">
@@ -131,10 +132,61 @@
                     </div>
                     </form>
                 </div>
+
+
+                <div class="tab-pane fade" id="tab2_3">
+                    <div class="row column-seperation">
+                        <div class="col-md-4">
+                            <h3>Create/Edit Logins</h3>
+                            <p>Some themes have multiple login skins and you can select your desired look and feel over here.</p>
+                            <div class="grid-body no-border">
+                                <button type="button" class="btn btn-success btn-rounded pull-right" onclick="create_new_login()">Create New</button>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-8" style="min-height:798px;">
+
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th style="width:20%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($logins as $login) { ?>
+                                    <tr>
+                                        <td>
+                                            <?php echo $login->name; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $login->type; ?>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-success btn-xs btn-small" onclick="edit_login_modal(<?php echo $login->id; ?>)">Edit</button>
+                                            <button class="btn btn-danger btn-xs btn-small" onclick="delete_modal('login',<?php echo $login->id; ?>)">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
             </div>
         </div>
     </div>
 </div>
+
+
+
 
 
 <div class="col-md-12 portlets">

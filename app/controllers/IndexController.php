@@ -1,6 +1,7 @@
 <?php
 namespace PRIME\Controllers;
 use PRIME\Models\Users;
+use PRIME\Models\Organisation;
 
 class IndexController extends ControllerBase
 {
@@ -13,22 +14,41 @@ class IndexController extends ControllerBase
     
     public function indexAction()
     {
+        
+        
         if ($this->session->has("auth")) {
             //Retrieve its value
             $auth = $this->session->get("auth");
             $role= $auth['role'];
             
             return $this->dispatcher->forward(array(
-"controller" => "Index",
-"action" => $role
-)); 
+            "controller" => "Index",
+            "action" => $role
+            )); 
         }
         else
         {
+
+            $organisations = Organisation::find();
+            foreach($organisations as $org)
+            {
+                if($org->url==$_SERVER['HTTP_HOST'])
+                {
+                    $this->session->set('auth', array(
+                                        'theme' => $organisation->theme,
+                                        'organisation_name' => $organisation->name
+                                        ));
+
+                    return $this->forward('/logins/default/render/');
+                    
+                }
+            }
+
+
             return $this->dispatcher->forward(array(
-     "controller" => "session",
-     "action" => "index"
- )); 
+             "controller" => "session",
+             "action" => "index"
+         )); 
         }
     }
     

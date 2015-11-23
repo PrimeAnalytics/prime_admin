@@ -98,18 +98,6 @@ class LoginBase extends Controller
         else
         {
             $this->flash->success("Login was created successfully");
-            
-                 // Check if the user has uploaded files
-            if ($this->request->hasFiles() == true) {
-                $baseLocation = '/files/';
-
-                // Print the real file names and sizes
-                foreach ($this->request->getUploadedFiles() as $file) {
-                    $ext = end((explode(".", $file->getName())));          
-                    $file->moveTo($baseLocation ."login_".$login->id.".".$ext);
-                }
-            }
-
 
             return $this->dispatcher->forward(array(
             "namespace" => "PRIME\Controllers",

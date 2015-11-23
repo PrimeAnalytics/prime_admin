@@ -20,7 +20,16 @@ class SessionController extends ControllerBase
 
     public function indexAction()
     {
-        
+        $organisations = Organisation::find();
+        foreach($organisations as $org)
+        {
+            if($org->url==$_SERVER['HTTP_HOST'])
+            {
+                return $this->forward('/logins/'.$org->theme.'/default/render/');
+                
+            }
+        }
+       
         
     }
     
@@ -51,6 +60,7 @@ class SessionController extends ControllerBase
             
             $organisation->name = $organisation_name;
             $organisation->theme = 'make';
+
             
             if ($organisation->save() == true) {
 
@@ -72,6 +82,13 @@ class SessionController extends ControllerBase
                 $user->created_at = new \Phalcon\Db\RawValue('now()');
                 $user->status = 'disable';
                 $user->organisation_id = $organisation->id;
+
+                if ($login->save() == false) {
+                    foreach ($login->getMessages() as $message) {
+                        $this->flash->error((string) $message);
+                    }
+                } 
+
                 
                 if ($user->save() == false) {
                     foreach ($user->getMessages() as $message) {

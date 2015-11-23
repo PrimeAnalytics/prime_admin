@@ -71,6 +71,7 @@ class Security extends Phalcon\Mvc\User\Plugin
 
 			//Private area resources
 			$publicResources = array(
+                'logins' => array('*'),
 				'session' => array('index', 'register', 'start', 'end'),
                 'bucket_list' => array('*'),
                 'google' => array('*')

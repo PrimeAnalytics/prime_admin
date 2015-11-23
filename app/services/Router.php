@@ -66,14 +66,23 @@ class Router extends PhRouter
             
             $this->themeLevel1SetupNamespacedRoutes("dashboards");
 
-
             $directory ='../app/themes/'.$this->theme.'/logins/';
-
+            
             $this->themeLevel1SetupNamespacedRoutes("logins");
+
+
 
         }
 
     }
+
+    public function loginConvertNamespace($namespace)
+    {
+        
+        return 'PRIME\Themes\\'. PhText::camelize($namespace); 
+    }
+
+
 
 
     public function level2ConvertNamespace($namespace,$prefix)
