@@ -9,7 +9,7 @@
 <link href="/themes/Santone/assets/css/metcreative.audio/style.css" rel="stylesheet">
 <link href="/themes/Santone/assets/css/superfish.css" rel="stylesheet">
 <link href="/themes/Santone/assets/css/magnific-popup.css" rel="stylesheet">
-<link href="/themes/Santone/assets/css/jquery.mCustomScrollbar.css" rel="stylesheet">
+<link href="/assets/plugins/malihu-custom-scrollbar/jquery.mCustomScrollbar.css" rel="stylesheet">
 <link href="/themes/Santone/assets/css/style.css" rel="stylesheet">
 <link href="/themes/Santone/assets/css/responsive.css" rel="stylesheet">
 <link href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
 <header class="clearfix"><form method="get" action="?">
 		<div class="met_bgcolor met_transition">
 			<button type="submit"><i class="fa fa-search"></i></button>
-			<input type="text" name="searchTerm" placeholder="Search Term...">
+			
 </div>
 	</form>
 
@@ -28,8 +28,9 @@
             <li><a href="{{item['link']}}" class="met_color_transition">{{item['title']}}</a></li>  
             {% endfor %}
 		</ul></nav><ul class="met_clean_list met_header_socials">
+		    
 <li><a href="{{logout}}" class="met_color_transition"><i class="fa fa-sign-out"></i></a></li>
-    </ul></header><aside class="met_left_bar"><a href="#" class="met_logo"><img src="{{parm['orgimg']}}" alt="" height="108px"></a>
+    </ul></header><aside class="met_left_bar"><a href="#" class="met_logo"><img src="{{parm['orgimg']}}" alt="" style="max-height:108px;max-width:160px;"></a>
     <div class="row">
         {{region[0]}}
     </div>
@@ -56,6 +57,9 @@
 	<!-- Center Content -->
 	<div class="met_content">
 		<div class="met_content_inner">
+		    <div class="row">
+		    {{filters}}
+		    </div>
 			<div class="row">
                 {{region[4]}}
 			</div>
@@ -84,7 +88,7 @@
 <script src="/themes/Santone/assets/js/jquery.mCustomScrollbar.min.js"></script>
 <script src="/themes/Santone/assets/js/jquery.mousewheel.min.js"></script>
 <script src="/themes/Santone/assets/js/bootstrap.min.js"></script>
-<script src="/themes/Santone/assets/js/jquery.mCustomScrollbar.min.js"></script>
+<script src="/assets/plugins/malihu-custom-scrollbar/jquery.mCustomScrollbar.js"></script>
 <script src="/themes/Santone/assets/js/retina.js"></script>
 <script src="/themes/Santone/assets/js/superfish.js"></script>
 <script src="/themes/Santone/assets/js/hoverIntent.js"></script>
@@ -115,4 +119,9 @@
     <script type="text/javascript" src="/themes/Pages/assets/assets/plugins/datatables-responsive/js/lodash.min.js"></script>
     
     <script type="text/javascript" src="/assets/plugins/listboxjs/listbox.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>{{ content() }}</body></html>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <script src="https://code.highcharts.com/modules/funnel.js"></script>
+        
+        <script src="http://www.amcharts.com/lib/3/ammap.js"></script>
+<script src="http://www.amcharts.com/lib/3/maps/js/worldLow.js"></script>
+<script src="http://www.amcharts.com/lib/3/themes/dark.js"></script>{{ content() }}</body></html>

@@ -29,6 +29,7 @@ class ThemeCreatorController extends ControllerBase
         $theme = new ThemeLayout();
 
         $theme->name = $this->request->getPost("name");
+        $theme->width = $this->request->getPost("width");
 
         if(!ThemeLayout::findFirstByName($theme->name))
         {       
@@ -789,8 +790,8 @@ class ThemeCreatorController extends ControllerBase
     {
         $portlet=ThemePortlet::findFirstById($id);
 
-        $theme= ThemeLayout::findFirstById($portlet->theme_layout_id);
-        $theme=$theme->name;
+        $theme_layout= ThemeLayout::findFirstById($portlet->theme_layout_id);
+        $theme=$theme_layout->name;
 
         $css=urldecode ($this->request->getPost("css"));
         $style=urldecode ($this->request->getPost("style"));
@@ -880,7 +881,7 @@ class ThemeCreatorController extends ControllerBase
         $portlet->script=$script;
         $portlet->form=$form;
 
-        $form='[{"type":"parameters/width"},'.substr($form, 1);
+        $form='[{"type":"parameters/width", "value":"'.$theme_layout->width.'"},'.substr($form, 1);
 
         $type=$portlet->name;
         $type=str_replace(" ","_",strtolower($type));
@@ -912,7 +913,6 @@ class ThemeCreatorController extends ControllerBase
                         }
                     }';
         
-        $parms=$_POST['parms'];
 
         $root=str_replace("public","app",$_SERVER['DOCUMENT_ROOT']);
         
@@ -1044,8 +1044,8 @@ class ThemeCreatorController extends ControllerBase
     {
         $widget=ThemeWidget::findFirstById($id);
 
-        $theme= ThemeLayout::findFirstById($widget->theme_layout_id);
-        $theme=$theme->name;
+        $theme_layout= ThemeLayout::findFirstById($widget->theme_layout_id);
+        $theme=$theme_layout->name;
 
         $css=urldecode ($this->request->getPost("css"));
         $style=urldecode ($this->request->getPost("style"));
@@ -1157,7 +1157,7 @@ class ThemeCreatorController extends ControllerBase
         {
             $form=substr($form, 1);
         }
-        $form='[{"type":"parameters/width"}'.$form;
+        $form='[{"type":"parameters/width", "value":"'.$theme_layout->width.'"}'.$form;
 
         $type=$widget->name;
         $type=str_replace(" ","_",strtolower($type));

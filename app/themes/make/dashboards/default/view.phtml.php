@@ -3,7 +3,10 @@
 <link href="/themes/Make/assets/global/css/style.css" rel="stylesheet">
 <link href="/themes/Make/assets/global/css/theme.css" rel="stylesheet">
 <link href="/themes/Make/assets/global/css/ui.css" rel="stylesheet">
-<link href="/themes/Make/assets/admin/layout1/css/layout.css" rel="stylesheet"></head><body><body class="fixed-topbar fixed-sidebar theme-sdtl color-default">
+<link href="/themes/Make/assets/admin/layout1/css/layout.css" rel="stylesheet">
+<link href="/assets/global/plugins/ion-slider/style.min.css" rel="stylesheet">
+
+</head><body><body class="fixed-topbar fixed-sidebar theme-sdtl color-default">
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -103,7 +106,11 @@
         </div>
         <!-- END TOPBAR -->
         <!-- BEGIN PAGE CONTENT -->
+        
         <div class="page-content">
+<?php echo $filters; ?>
+              
+            
           <div class="row">
               <?php echo $region[0]; ?>
           </div>
@@ -186,7 +193,38 @@
 <script src="/themes/Make/assets/global/js/sidebar_hover.js"></script>
 <script src="/themes/Make/assets/global/js/widgets/notes.js"></script>
 <script src="/themes/Make/assets/global/js/quickview.js"></script>
-<script src="/themes/Make/assets/global/js/pages/search.js"></script>
 <script src="/themes/Make/assets/global/js/plugins.js"></script>
 <script src="/themes/Make/assets/global/js/application.js"></script>
-<script src="/themes/Make/assets/admin/layout1/js/layout.js"></script><?php echo $this->getContent(); ?></body></html>
+<script src="/themes/Make/assets/admin/layout1/js/layout.js"></script>
+
+
+ <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="/assets/global/plugins/morris/morris.min.js"></script>
+
+    <script src="/assets/global/plugins/ion-slider/ion.rangeSlider.min.js"></script> <!-- Range Input Slider -->
+
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/treemap.js"></script>
+<script src="/themes/Pages/assets/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js" type="text/javascript"></script>
+    <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/themes/Pages/assets/assets/plugins/datatables-responsive/js/datatables.responsive.js"></script>
+    <script type="text/javascript" src="/themes/Pages/assets/assets/plugins/datatables-responsive/js/lodash.min.js"></script>
+    
+    <script type="text/javascript" src="/assets/plugins/listboxjs/listbox.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <script src="https://code.highcharts.com/modules/funnel.js"></script>
+        
+<script src="http://www.amcharts.com/lib/3/ammap.js"></script>
+<script src="http://www.amcharts.com/lib/3/maps/js/worldLow.js"></script>
+<script src="http://www.amcharts.com/lib/3/themes/dark.js"></script>
+
+          <script async defer
+              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBam1FbkVBI2b_qzh-N_NMQe-gytWVZXl4&callback=initMap">
+      </script>
+      
+          <script src="//maps.google.com/maps/api/js?sensor=true"></script> <!-- Google Maps -->
+    <script src="/assets/global/plugins/google-maps/markerclusterer.min.js"></script> <!-- Google Maps Marker Clusterer -OPTIONAL -->
+    <script src="/assets/global/plugins/google-maps/gmaps.min.js"></script> <!-- Google Maps Easy -->
+    <script src="/assets/global/js/pages/maps-google.js"></script><?php echo $this->getContent(); ?></body></html>

@@ -14,20 +14,9 @@
                                                 <input id="dbTable" class="form-control" data-search="true">
                                                 </input>
                                             </div>
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Table Columns</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="tableColumns">
-                                                    
-                                                    <tr>
-                                                        <td>Username</td>
-                                                       
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            <div id="tableColumns" style="overflow:hidden">
+                                               
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
@@ -44,12 +33,25 @@
                                             <tr><td style="width:100px"><label>Columns:</label></td><td><textarea id="columnsInput" class="form-control" style="width:100%"></textarea></td></tr>
                                             </table>
                                         
+                                        
                                         <div class="clearfix"></div>
 
                                     </div>
-                                    <div class="email-details-inner" data-padding="200">
-                                        <div style="min-height:500px">
-                                            <div id="result"></div>
+                                    </br>
+                                    <div class="row"
+                                    <div class="pull-right form-group">
+                                        <label>Report Type:</label>
+                                        <select id="report-type">
+                                            <option value="data_table">Data Table</option>
+                                            <option value="column_chart">Column Chart</option>
+                                        </select>
+                                    </div>
+                                    </div>
+                                        <div class="email-details-inner" data-padding="200">
+
+                                        
+                                        <div style="min-height:500px;overflow: auto;" >
+                                            <div id="result" style="overflow: auto;"></div>
                                         </div>
 
                                     </div>
@@ -98,6 +100,7 @@
                 $("#columnsInput").parent().empty().html('<textarea id="columnsInput" class="form-control" style="width:100%"></textarea>');
                 $("#columnsInput").val(data_temp);
                 $("#columnsInput").tagEditor({
+                    delimiter: ',',
                     forceLowercase:false,
                     placeholder: 'Add Parameters ...',
                     maxLength:500,
@@ -120,6 +123,7 @@
                 $("#rowsInput").parent().empty().html('<textarea id="rowsInput" class="form-control" style="width:100%"></textarea>');
                 $("#rowsInput").val(data_temp);
                 $("#rowsInput").tagEditor({
+                    delimiter: ',',
                     forceLowercase:false,
                     placeholder: 'Add Parameters ...',
                     maxLength:500,
@@ -136,19 +140,17 @@
                 
             
 
-        $.getJSON("/get/DBColumns/" + table +"/true", function (data) {
+        $.get("/process/getColumns/" + table, function (data) {
             columnData = data;
             $("#tableColumns").html("");
-            $.each(columnData, function(i, item) {
-                $("#tableColumns").append("<tr><td>"+columnData[i].text+"</td></tr>");
-            });
+            $("#tableColumns").html(data);
         });
 
     }
 
 
     $('#getResult').on('click', function(){
-        $("#result").load( "/process/resultTable/<?php echo $process->id; ?>", function(){
+        $("#result").load( "/process/resultTable/<?php echo $process->id; ?>/"+$('#report-type').val(), function(){
             generateNoty("The Process was Succesfully Executed","success");
         });
 

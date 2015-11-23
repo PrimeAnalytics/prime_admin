@@ -1,0 +1,83 @@
+<div id="widget_{{widget.id}}" class="{{parm['width']}}" >{{controls}}
+<table id="w_{{widget.id}}" class="table table-hover table-condensed">
+                        <thead>
+                          <tr>
+                              {% if (parm['db']|length !=0) %}
+                              
+                    {% for key,item in parm['db'][0]['series'] %}
+                    <th>{{key}} </th>
+                    {% endfor  %}
+                    {% endif %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+                             {% for row in parm['db'] %}
+                             <tr>
+        {% for item in row['series'] %}
+<td class="v-align-middle">{{item}} </td>
+        {% endfor  %}
+</tr>
+{% endfor  %}
+                        </tbody>
+                      </table>
+                         <script>
+   var initTableWithSearch = function() {
+        var table = $('#w_{{widget.id}}');
+        
+ <?php $linking_column=array(); ?>     
+ {% for row in parm['db'] %}
+  <?php $linking_column[]=reset($row['series']); ?> 
+{% endfor  %}
+var linking_column=<?php echo json_encode($linking_column) ?> ;
+
+        var settings = {
+            "sDom": 'T<"clear">lfrtip',
+            "sPaginationType": "bootstrap",
+            "destroy": true,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging":         true,
+                    "oTableTools": {
+            "sRowSelect": "multi",
+            "aButtons" : []
+        }
+        };
+        
+
+
+    table.dataTable(settings);
+        
+
+         $('#w_{{widget.id}} tbody').on( 'click', 'tr', function () {
+        $(this).toggleClass('selected');
+            var oTT = TableTools.fnGetInstance( 'w_{{widget.id}}' );
+    var aData = oTT.fnGetSelectedIndexes();
+    var link_set=[];
+    $.each( aData, function( key, value ) {
+    link_set.push(linking_column[value]);
+    });
+    
+    
+    
+    
+     update_dashboard("{{parm['target_link']}}", link_set,{{widget.id}});
+        
+    } );
+   
+
+        // search box for table
+        $('#search-table{{widget.id}}').keyup(function() {
+            table.fnFilter($(this).val());
+        });
+    }
+    
+    initTableWithSearch();
+    
+    
+    
+    
+    </script>{{ content() }}</div>

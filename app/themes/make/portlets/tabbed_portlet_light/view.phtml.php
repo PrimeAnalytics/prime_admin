@@ -21,18 +21,22 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs">
                         <?php foreach ($tabs as $key => $tab) { ?>
-                        <li class="<?php if ($key == 0) { ?>active<?php } ?>">
+                        <li class="<?php if ($key == 0) { ?>active in<?php } ?>">
                         <a data-toggle="tab" href="#tab<?php echo $portlet->id; ?>-<?php echo str_replace (" ","_",$key) ?>"><span><?php echo $tab; ?></span></a>
                         </li>
                         <?php } ?>
                     </ul>
                       <div class="tab-content">
                         <?php foreach ($tabs as $key => $tab) { ?>
-                        <div class="tab-pane fade <?php if ($key == 0) { ?>active<?php } ?>" id="tab<?php echo $portlet->id; ?>-<?php echo str_replace (" ","_",$key) ?>">
+                        <div class="tab-pane fade <?php if ($key == 0) { ?>active in<?php } ?>" id="tab<?php echo $portlet->id; ?>-<?php echo str_replace (" ","_",$key) ?>">
+                      <div class="row">
                        <?php echo $region[$key]; ?>
+                      </div>
                       </div>
                         <?php } ?>
                       </div>
                     </div>
                   </div>
-                </div><?php echo $this->getContent(); ?></div>
+                </div>
+                
+<?php echo $this->getContent(); ?></div>

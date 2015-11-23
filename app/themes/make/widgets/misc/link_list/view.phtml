@@ -1,0 +1,50 @@
+<div id="widget_{{widget.id}}"  class="{{parm['width']}}" > {{controls}}
+<style>
+#w_{{widget.id}} .ui-selecting { background: #FECA40; }
+  #w_{{widget.id}} .ui-selected { background: #F39814; color: white; }
+</style><div>
+    <div class="panel-content widget-news" id="scroll_{{widget.id}}" style="max-height:400px">
+                  <div id="w_{{widget.id}}" >
+                      				    {% for entry in parm['db'] %}
+                      				    
+                    <a data-link="{{entry['value']}}" class="message-item media">
+                      <div class="media">
+                        <div class="media-body">
+                          <div>
+                            <h4 class="c-dark">{{entry['value']}}</h4>
+                         
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+{% endfor  %}
+                    
+
+                  </div>
+                </div>
+    
+			</div>
+  
+  <script>
+  $(function() {
+    $( "#w_{{widget.id}}" ).selectable({
+      stop: function() {
+        var link_set=[];
+        $( "a.ui-selected", this ).each(function() {
+            link_set.push($(this).data('link'));
+        });
+        
+     update_dashboard("{{parm['target_link']}}", link_set,{{widget.id}});
+        
+        
+      }
+    });
+    
+    $("#scroll_{{widget.id}}").mCustomScrollbar();
+    
+    
+    
+  });
+  </script>
+  
+{{ content() }}</div>

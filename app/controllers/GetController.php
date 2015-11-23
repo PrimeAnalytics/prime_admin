@@ -77,7 +77,7 @@ class GetController extends ControllerBase
     {
         $this->view->disable();
         $db = $this->getUserDB();
-        $statement = $db->prepare("select column_name, data_type from information_schema.columns where schema_name = '".$this->db_name."' and table_name ='$db_table'");
+        $statement = $db->prepare("select column_name, data_type from information_schema.columns where schema_name = '".strtolower($this->db_name)."' and table_name ='$db_table'");
         $statement->execute();
         
         $json = array();
@@ -103,8 +103,9 @@ class GetController extends ControllerBase
     {
         $this->view->disable();
         $db = $this->getUserDB();
-        $statement=$db->prepare("select table_name from information_schema.tables where schema_name='".$this->db_name."' limit 100");
-        
+        $statement=$db->prepare("select table_name from information_schema.tables where schema_name='".strtolower($this->db_name)."' limit 100");
+       
+
         $statement->execute();
         
         $json = array();

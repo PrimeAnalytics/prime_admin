@@ -1,9 +1,9 @@
-<div id="widget_{{widget.id}}"  class="{{parm['width']}}" > {{controls}}
+<div id="widget_{{widget.id}}" class="{{parm['width']}}" >{{controls}}
 <style>
 #w_{{widget.id}} .ui-selecting { background: #FECA40; }
   #w_{{widget.id}} .ui-selected { background: #F39814; color: white; }
-</style><div>
-<nav style="max-height:400px; overflow: auto; overflow-x: hidden;">
+</style><div id="scroll_{{widget.id}}" style="max-height:400px; overflow: auto; overflow-x: hidden;">
+<nav  >
 				<ul id="w_{{widget.id}}" class="met_clean_list sf-js-enabled sf-arrows">
 				    
 				    {% for entry in parm['db'] %}
@@ -27,6 +27,7 @@
         
       }
     });
+            $("#scroll_{{widget.id}}").mCustomScrollbar({theme:"minimal-dark"});
   });
   </script>
   

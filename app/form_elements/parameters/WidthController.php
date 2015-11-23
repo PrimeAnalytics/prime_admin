@@ -5,21 +5,34 @@ use PRIME\FormElements\FormElementBase as FormElementBase;
 class WidthController extends FormElementBase
 {
     
-    public function Render()
+    public function Render($values="")
     {
-        $values=array();
-        $values[]=array('id'=>'col-md-1' ,'text'=>'8.3%' );
-        $values[]=array('id'=>'col-md-2' ,'text'=>'16.7%' );
-        $values[]=array('id'=>'col-md-3' ,'text'=>'25%' );
-        $values[]=array('id'=>'col-md-4' ,'text'=>'33.3%' );
-        $values[]=array('id'=>'col-md-5' ,'text'=>'41.7%' );
-        $values[]=array('id'=>'col-md-6' ,'text'=>'50%' );
-        $values[]=array('id'=>'col-md-7' ,'text'=>'58.3%' );
-        $values[]=array('id'=>'col-md-8' ,'text'=>'66.7%' );
-        $values[]=array('id'=>'col-md-9' ,'text'=>'75%' );
-        $values[]=array('id'=>'col-md-10' ,'text'=>'83.3%' );
-        $values[]=array('id'=>'col-md-11' ,'text'=>'91.7%' );
-        $values[]=array('id'=>'col-md-12' ,'text'=>'100%' );
+        if($values=="")
+        {
+            $values=array();
+            $values[]=array('id'=>'col-md-1' ,'text'=>'8.3%' );
+            $values[]=array('id'=>'col-md-2' ,'text'=>'16.7%' );
+            $values[]=array('id'=>'col-md-3' ,'text'=>'25%' );
+            $values[]=array('id'=>'col-md-4' ,'text'=>'33.3%' );
+            $values[]=array('id'=>'col-md-5' ,'text'=>'41.7%' );
+            $values[]=array('id'=>'col-md-6' ,'text'=>'50%' );
+            $values[]=array('id'=>'col-md-7' ,'text'=>'58.3%' );
+            $values[]=array('id'=>'col-md-8' ,'text'=>'66.7%' );
+            $values[]=array('id'=>'col-md-9' ,'text'=>'75%' );
+            $values[]=array('id'=>'col-md-10' ,'text'=>'83.3%' );
+            $values[]=array('id'=>'col-md-11' ,'text'=>'91.7%' );
+            $values[]=array('id'=>'col-md-12' ,'text'=>'100%' );
+
+        }
+        else
+        {
+           $temp= explode(',',$values);
+           $values=array();
+           for($i=1;$i<=count($temp);$i++)
+           {
+               $values[]=array('id'=>$temp[$i-1],'text'=>(($i*100)/count($temp))."%");
+           }
+        }
  
         $output=array();
         $output['html'][]='<div class="form-group">

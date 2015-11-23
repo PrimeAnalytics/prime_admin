@@ -191,14 +191,29 @@ class ProcessController extends ControllerBase
             
     }
 
-    public function getResults($id,$links=null)
+    public function getResults($id,$links=null,$override=null)
     {
         $auth = $this->session->get("auth");
         $this->db_name=$auth['db_name'];
-       
-       $process = Process::findFirstById($id);
 
-       $parameters= json_decode($process->parameters,true);
+        if($override!=null)
+        {
+            $parameters=$override;
+        }
+        else
+        {
+            if(is_numeric ($id))
+            {
+            $process = Process::findFirstById($id);
+            $parameters= json_decode($process->parameters,true);
+            }
+            else
+            {
+                $parameters=$id;
+            }
+        }
+       
+
 
        $db_table_name=$parameters['table'];
 
@@ -217,66 +232,68 @@ class ProcessController extends ControllerBase
                    
                    if($db_table_name==$link['table'])
                    {
-                       
                        $filter['keys'][]=str_replace("|",",",$link['column']);
-                       $filter['values'][]=(array)$link['default_value'];
                        $filter['operator'][]=$link['operator'];
                        $filter['type'][]=$link['type'];
-
+                       $filter['values'][]=(array)$link['default_value'];
+                       
                    }
                }
 
 
            $having=0;
            $where=0;
-           for($i=0;$i<count($filter['keys']);$i++)
+           if( array_key_exists('keys',$filter))
            {
-               if($filter['type'][$i]=="where")
+               for($i=0;$i<count($filter['keys']);$i++)
                {
-                   for($j=0;$j<count($filter['values'][$i]);$j++)
+                   if($filter['type'][$i]=="where")
                    {
-                       if($filter['values'][$i][$j]!='')
+                       for($j=0;$j<count($filter['values'][$i]);$j++)
                        {
-                           if($where==0)
+                           if($filter['values'][$i][$j]!='')
                            {
-                               $filter_string.=" WHERE (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
+                               if($where==0)
+                               {
+                                   $filter_string.=" WHERE (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
+                                   $where++;
+                               }
+                               else if($j==0)
+                               {
+                                   $filter_string.=") AND (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
+                               }
+                               else
+                               {
+                                   $filter_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
+                               }
+                           }
+                       }
+                       
+                   }
+                   else if($filter['type'][$i]=="having")
+                   {
+
+                       for($j=0;$j<count($filter['values'][$i]);$j++)
+                       {
+                           if($having==0 && $filter['values'][$i][$j]!='')
+                           {
+                               $having_string.=" HAVING ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
                                $where++;
                            }
                            else if($j==0)
                            {
-                               $filter_string.=") AND (".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
+                               $having_string.=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
                            }
                            else
                            {
-                               $filter_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." '".addslashes($filter['values'][$i][$j])."' ";
+                               $having_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
                            }
+
                        }
                    }
-                   
+
+
                }
-               else if($filter['type'][$i]=="having")
-               {
-
-                   for($j=0;$j<count($filter['values'][$i]);$j++)
-                   {
-                       if($having==0 && $filter['values'][$i][$j]!='')
-                       {
-                           $having_string.=" HAVING ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
-                           $where++;
-                       }
-                       else if($j==0)
-                       {
-                           $having_string.=" AND ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
-                       }
-                       else
-                       {
-                           $having_string.=" OR ".$filter['keys'][$i]." ".$filter['operator'][$i]." ".addslashes($filter['values'][$i][$j])." ";
-                       }
-
-                   }
-               }
-
-
            }
 
               if($where!=0)
@@ -508,68 +525,156 @@ class ProcessController extends ControllerBase
     
     }
 
-    public function resultTableAction($id){
+
+    public function getColumnsAction($db_table_name)
+    {
+        $this->view->disable();
+
+       $db=$this->getUserDB();
+
+       $sql="SELECT * FROM ".$this->db_name.".$db_table_name ORDER BY random() Limit 20";
+
+        $statement=$db->prepare( $sql);
+        $data_out=array();    
+
+                   if($error=$statement->execute())
+                   {
+                       
+                       foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $row)
+                       {
+                           foreach($row as $sub_key=>$sub_value)
+                           {
+                               if(gettype ($sub_value)=='string')
+                               {
+                                   $data_out[$sub_key][]="".$sub_value."";
+                               }
+                               elseif(gettype ($sub_value)=='double')
+                               {
+                                   $data_out[$sub_key][] = round($sub_value, 2, PHP_ROUND_HALF_DOWN);
+                               }
+                               elseif($sub_value=="")
+                               {
+                                   $data_out[$sub_key][]="0";
+                               }
 
 
-        $this->view->Disable();
+                           }
+                       }
+                   }
 
-        $array=$this->getResults($id);
+
+
+                   $number=0;
+                   echo '<div class="panel-group panel-accordion"  id="accordion">';
+                         foreach($data_out as $tab=>$values)
+                {     
+                    echo '<div class="panel panel-default" >
+                          <div class="panel-heading" >
+                            <h4>
+                              <a ';
+                    if ($number % 2 == 0) {
+                        echo ' style="background-color:F5F5F5" ';
+}
+                    $number++;
+                    echo ' class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#tab-'.preg_replace("/[^A-Za-z0-9 ]/", '', $tab).'">'.$tab.'
+                              </a>
+                            </h4>
+                          </div>
+                          <div id="tab-'.preg_replace("/[^A-Za-z0-9 ]/", '', $tab).'" class="panel-collapse collapse">
+                            <div class="panel-body"> 
+                            <table style="width:100%">';
+                              foreach($values as $value)
+                {               
+                        echo '  <tr>
+                            <td>'.$value.'</td>
+                          </tr>';
+                              }
+                            echo '</table> </div>
+                          </div>
+                        </div>';
+                        }
+                         echo '</div>';
+    }
+
+
+
+    public function createDashboardAction()
+    {
+
+    
+    }
+
+
+    public function resultTableAction($id,$type){
+
+
+       $this->view->Disable();
+
+       $array=$this->getResults($id);
+
+       $process = Process::findFirstById($id);
+       $parameters= json_decode($process->parameters,true);
+       $groups=explode(",",$parameters['rows']);
+       $columns=explode(",",$parameters['columns']);
 
         if(count($array)!=0)
         {
-            // start table
 
-            $html = '
+            if($type=="data_table")
+            {
+                // start table
+
+                $html = '
                 <div class="panel-content" style="overflow:auto;"><table id="resultTable" class="table table-hover"><thead>';
 
-            // header row
-
-            $html .= '<tr>';
-
-            foreach($array[0] as $key=>$value){
-
-                $html .= '<th>' . $key . '</th>';
-
-            }
-
-            $html .= '</tr></thead><tfoot>';
-
-            // header row
-
-            $html .= '<tr>';
-
-            foreach($array[0] as $key=>$value){
-
-                $html .= '<th>' . $key . '</th>';
-
-            }
-
-            $html .= '</tr></tfoot><tbody>';
-
-
-            // data rows
-
-            foreach( $array as $key=>$value){
+                // header row
 
                 $html .= '<tr>';
 
-                foreach($value as $key2=>$value2){
+                foreach($array[0] as $key=>$value){
 
-                    $html .= '<td>' . $value2 . '</td>';
+                    $html .= '<th>' . $key . '</th>';
 
                 }
 
-                $html .= '</tr>';
+                $html .= '</tr></thead><tfoot>';
 
-            }
+                // header row
 
-            // finish table and return it
+                $html .= '<tr>';
 
-            $html .= '</tbody></table></div>';
+                foreach($array[0] as $key=>$value){
 
-            echo $html;
+                    $html .= '<th>' . $key . '</th>';
 
-            echo '<script>
+                }
+
+                $html .= '</tr></tfoot><tbody>';
+
+
+                // data rows
+
+                foreach( $array as $key=>$value){
+
+                    $html .= '<tr>';
+
+                    foreach($value as $key2=>$value2){
+
+                        $html .= '<td>' . $value2 . '</td>';
+
+                    }
+
+                    $html .= '</tr>';
+
+                }
+
+                // finish table and return it
+
+                $html .= '</tbody></table></div>';
+
+                echo $html;
+
+                echo '<script>
                 $(\'#resultTable\').DataTable( {
 
                     initComplete: function () {
@@ -594,6 +699,86 @@ class ProcessController extends ControllerBase
                     }
                 } );
 </script>';
+
+            }
+
+            elseif($type=="column_chart")
+            {
+
+                $data_out=array();
+
+                foreach($array as $key=>$row)
+                {
+                    $str='$data_out';
+                    foreach($groups as $group)
+                    {
+                        $str .= "['".$row[$group]."']";
+                    }
+
+                    $str .="=array(";
+                    foreach($columns as $column)
+                    {
+                        $str .= "'".$column."' => '".$row[$column]."',";
+                    }
+
+                    $str= trim($str, ",").");";
+
+                    eval ($str);
+                }
+
+                echo '<div id="thischart" style="height: 800px;width:1200px"></div>';
+                $data_string="";
+                foreach( $data_out as $key=>$value){
+
+$data_string.= '{
+     name: \''.$key.'\',
+     data: [';
+
+foreach($value as $key2=>$value2){
+    $data_string.= '[\''.$key2.'\','.$value2[$columns[0]].'] ,';
+}
+$data_string.='
+]},';
+                }
+
+
+                echo '<script>
+$(function() {
+    
+    var datain=['.$data_string.'];
+    
+$(\'#thischart\').highcharts({
+            chart: {
+            type: \'column\',
+            spacingBottom: 50,
+            spacingTop: 50,
+            spacingLeft: 50,
+            spacingRight: 50,
+			zoomType: \'xy\'
+        },
+        title: {
+            text: ""
+        },
+        		  credits: {
+  enabled: false
+  },
+        xAxis: {
+                type: \'category\'    
+        },
+ series: datain
+
+});
+});
+
+
+
+
+
+
+</script>';
+           
+            
+            }
 
 
      

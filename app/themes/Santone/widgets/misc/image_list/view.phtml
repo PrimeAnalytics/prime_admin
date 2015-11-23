@@ -1,0 +1,44 @@
+<div id="widget_{{widget.id}}" class="{{parm['width']}}" >{{controls}}
+<style>
+#w_{{widget.id}} .ui-selecting { background: #FECA40; }
+  #w_{{widget.id}} .ui-selected { background: #F39814; color: white; }
+</style><div id="scroll_{{widget.id}}" style="max-height:400px; overflow: auto; overflow-x: hidden;">
+				<div id="w_{{widget.id}}" class="met_sidebar_block">
+				    
+				    {% for entry in parm['db'] %}
+				    
+			    <div class="met_comment_box">
+					<div class="met_comment clearfix">
+						<img src="{{entry['image']}}" alt="">
+						<div class="clearfix met_comment_descr">
+							<div class="met_comment_text">{{entry['comment']}}</div>
+						</div>
+					</div>
+				</div>
+				    
+				    
+{% endfor  %}
+				</div>
+			</div>
+			
+		
+  
+  <script>
+  $(function() {
+    $( "#w_{{widget.id}}" ).selectable({
+      stop: function() {
+        var link_set=[];
+        $( "div.ui-selected", this ).each(function() {
+            link_set.push($(this).data('link'));
+        });
+        
+     update_dashboard("{{parm['target_link']}}", link_set,{{widget.id}});
+        
+        
+      }
+    });
+            $("#scroll_{{widget.id}}").mCustomScrollbar({theme:"minimal-dark"});
+  });
+  </script>
+  
+{{ content() }}</div>

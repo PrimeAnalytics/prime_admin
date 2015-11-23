@@ -459,10 +459,11 @@
 
 
     $("#savePortlet").click(function () {
-        $.post("/theme_creator/portlet_save/{{portlet_id}}", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters(), function(data){
+        $.post("/theme_creator/portlet_save/{{portlet_id}}", { css: csslinks.getValue(), js: jslinks.getValue(), script: jseditor.getValue(), style: csseditor.getValue(), html: htmleditor.getValue(), form: getParameters()}, function(data){
+ 
             $("#modal_content").html(data);
             $("#myModal").modal("show");
-        } });
+        });
     });
 
 

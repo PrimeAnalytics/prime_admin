@@ -7,6 +7,6 @@
     
                         public function initialize()
                         {
-                            $this->form_struct ='[{"type":"parameters/width"},{"type":"parameters/input","name":"title","label":"Title"}]';
+                            $this->form_struct ='[{"type":"parameters/width", "value":""},{"type":"parameters/input","name":"title","label":"Title"}]';
                         }
                     }

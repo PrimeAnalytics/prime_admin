@@ -5,7 +5,7 @@
 
 <select id="w_<?php echo $widget->id; ?>" class="input form-control">
      <?php foreach ($parm['db'] as $entry) { ?>
-      <option value="<?php echo $entry['link_column']; ?>"><?php echo $entry['values']; ?></option>
+      <option value="<?php echo $entry['values']; ?>"><?php echo $entry['values']; ?></option>
     <?php } ?>
       
 </select>
@@ -13,9 +13,8 @@
 
         $("#w_<?php echo $widget->id; ?>").change(function() {
 
-            update_dashboard("<?php echo $parm['target_link']; ?>", this.value);
+            update_dashboard("<?php echo $parm['target_link']; ?>", this.value,<?php echo $widget->id; ?>);
   
         });
-
 
 </script><?php echo $this->getContent(); ?></div>

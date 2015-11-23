@@ -74,7 +74,7 @@ class FormController extends ControllerBase
             $arg=array();
             foreach ($value as $param_key => $param_val)
             {
-                if($param_key!='type')
+                if($param_key!='type' && $param_key!='category')
                 {
                     $arg[]=$param_val;
                 }

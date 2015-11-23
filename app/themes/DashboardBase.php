@@ -120,6 +120,99 @@ class DashboardBase extends Controller
         $dashboard = Dashboard::findFirstByid($id);    
         $organisation= Organisation::findFirstByid($dashboard->organisation_id);
 
+        echo '<style> @import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+.tags {
+  width: 100%;
+  height: 35px;
+  padding: 0.5em;
+margin-bottom: 1em;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+}
+.tags .tag {
+  display: block;
+  float: left;
+  background-color: rgba(52, 152, 219, 0.5);
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+.tags .tag.highlight {
+  background-color: rgba(231, 76, 60, 0.5);
+}
+.tags:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+</style>';
+
+
+
+echo "<script>
+    var app;
+    $(document).ready(function () {
+        return app.init();
+    });
+    app = {
+        can_delete: false,
+        can_delete_id: 0,
+        init: function () {
+            return this.bind_events();
+        },
+        bind_events: function () {
+            $(document).on('click', '.tags .tag', function (e) {
+                var index;
+                index = $(this).index() + 1;
+                return app.delete_tag(index);
+            });
+            return $(document).on('keyup', '.tags input', function (e) {
+                var key;
+                key = e.keyCode || e.which;
+                if (key === 13 || key === 188) {
+                } else if (key === 8) {
+                    if ($(this).val() === '') {
+                        return app.delete_tag();
+                    }
+                } else {
+                    app.can_delete = false;
+                    return $('.highlight').removeClass('highlight');
+                }
+            });
+        },
+        delete_tag: function (id) {
+            if (id == null) {
+                id = 0;
+            }
+            if (this.can_delete && id === this.can_delete_id) {
+
+                update_dashboard($('.tags .tag.highlight').data('id'), \"\"); 
+                $('.tags .tag.highlight').remove();
+                this.can_delete = false;
+                return this.can_delete_id = 0;
+            } else {
+                $('.tags .tag').removeClass('highlight');
+                this.can_delete = true;
+                if (!id) {
+                    $('.tags .tag:last-of-type').addClass('highlight');
+                    return this.can_delete_id = 0;
+                } else {
+                    $('.tags .tag:nth-of-type(' + id + ')').addClass('highlight');
+                    return this.can_delete_id = id;
+                }
+            }
+        },
+        add_tag: function (name,id) {
+            if (name !== '') {
+                return $('.tags input').before('<div class=\'tag\' data-id=\"'+id+'\">' + name + '</div>');
+            }
+        }
+    };
+
+</script>";
+
         echo '
 <style> .widget-control {float:right; margin: .4em;
   padding: .3em 1em .3em 1em;
@@ -224,7 +317,9 @@ opacity: 0.7;
 </style>';
         $portlets=$dashboard->Portlet;
         
-        echo ' <script>
+        echo ' 
+
+<script>
                        var links = '.json_encode($organisation->Links->toArray()).' ;
                        </script>';
 
@@ -242,16 +337,43 @@ opacity: 0.7;
             ';
                 
             
-            echo '<script>
+            echo '
+
+<script>
+function clear_filters()
+{
+$.each(links, function(index, key ) {
+
+            links[index].default_value = "";
+            
+}); 
+               $.each(links, function(index, key ) {
+                $.each(d_links, function(index_d, key_d ) {
+
+          if(links[index].name==d_links[index_d].name)
+          links[index].default_value= d_links[index_d].value;
+          });
+          });
+
+update_dashboard();
+};
             
             function update_dashboard(link_id, value,widget_id)
             {  
+            var filter_string="";
+            $(\'.tags .tag\').remove();
       
             $.each(links, function(index, key ) {
+
             if( links[index].id==link_id)
-
+            {
             links[index].default_value = value;
+            }
 
+            if(links[index].default_value != "")
+            {
+            app.add_tag(links[index].name,links[index].id);
+            }
             }); 
             ';
             
@@ -286,6 +408,9 @@ opacity: 0.7;
         $this->view->setVar("userimage", $this->user_image); 
         $this->view->setVar("username", $this->full_name); 
         $this->view->setVar("logout", "/session/end"); 
+
+        $this->view->setVar("filters", '<label>Filters:</label><div class=\'tags\'><input style="display:none" id="dashboard_filters"  ></input></div>'); 
+        
        
         $menu= $this->elements->getMenu();
         $this->view->setVar("menu", $menu); 

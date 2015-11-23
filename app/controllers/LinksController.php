@@ -74,12 +74,18 @@ class LinksController extends ControllerBase
                 $this->flash->error($message);
             }
 
-            $this->response->redirect("organisation/index/");
+            return $this->dispatcher->forward(array(
+    "controller" => "dashboard",
+    "action" => "index"
+));
         }
 
         $this->flash->success("Link was created successfully");
 
-        $this->response->redirect("organisation/index/".$links->organisation_id);
+        return $this->dispatcher->forward(array(
+    "controller" => "dashboard",
+    "action" => "index"
+));
 
     }
     

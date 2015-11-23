@@ -9,7 +9,7 @@
     <meta name="description" content="admin-themes-lab">
     <meta name="author" content="themes-lab">
     <link rel="shortcut icon" href="/assets/global/images/favicon.png" type="image/png">
-    <title>Prime Analytics &amp; Admin</title>
+    <title>Prime Analytics - Admin</title>
     <link href="/assets/global/css/style.css" rel="stylesheet">
     <link href="/assets/global/css/theme.css" rel="stylesheet">
     <link href="/assets/global/css/ui.css" rel="stylesheet">
@@ -30,7 +30,7 @@
       <link href="/assets/global/plugins/hover-effects/hover-effects.min.css" rel="stylesheet">
 
       <link href="/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen" />
-      <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet"></link>
+      <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet">
 
       <script src="/assets/plugins/bootstrap-select2/select2.js" type="text/javascript"></script>
 
@@ -40,33 +40,20 @@
 
       <link href="/assets/global/plugins/jquery-tageditor/jquery.tag-editor.css" rel="stylesheet">
 
+      <script src="/themes/Pages/assets/assets/plugins/nvd3/lib/d3.v3.js"></script>
+      <script src="/themes/Pages/assets/assets/plugins/nvd3/nv.d3.min.js"></script>
+      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/utils.js"></script>
+      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/tooltip.js"></script>
+      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/interactiveLayer.js"></script>
+      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/models/axis.js"></script>
+      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/models/line.js"></script>
+      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/models/lineWithFocusChart.js"></script>
+
 
       
 
   </head>
   <!-- LAYOUT: Apply "submenu-hover" class to body element to have sidebar submenu show on mouse hover -->
-  <!-- LAYOUT: Apply "sidebar-collapsed" class to body element to have collapsed sidebar -->
-  <!-- LAYOUT: Apply "sidebar-top" class to body element to have sidebar on top of the page -->
-  <!-- LAYOUT: Apply "sidebar-hover" class to body element to show sidebar only when your mouse is on left / right corner -->
-  <!-- LAYOUT: Apply "submenu-hover" class to body element to show sidebar submenu on mouse hover -->
-  <!-- LAYOUT: Apply "fixed-sidebar" class to body to have fixed sidebar -->
-  <!-- LAYOUT: Apply "fixed-topbar" class to body to have fixed topbar -->
-  <!-- LAYOUT: Apply "rtl" class to body to put the sidebar on the right side -->
-  <!-- LAYOUT: Apply "boxed" class to body to have your page with 1200px max width -->
-
-  <!-- THEME STYLE: Apply "theme-sdtl" for Sidebar Dark / Topbar Light -->
-  <!-- THEME STYLE: Apply  "theme sdtd" for Sidebar Dark / Topbar Dark -->
-  <!-- THEME STYLE: Apply "theme sltd" for Sidebar Light / Topbar Dark -->
-  <!-- THEME STYLE: Apply "theme sltl" for Sidebar Light / Topbar Light -->
-  
-  <!-- THEME COLOR: Apply "color-default" for dark color: #2B2E33 -->
-  <!-- THEME COLOR: Apply "color-primary" for primary color: #319DB5 -->
-  <!-- THEME COLOR: Apply "color-red" for red color: #C9625F -->
-  <!-- THEME COLOR: Apply "color-green" for green color: #18A689 -->
-  <!-- THEME COLOR: Apply "color-orange" for orange color: #B66D39 -->
-  <!-- THEME COLOR: Apply "color-purple" for purple color: #6E62B5 -->
-  <!-- THEME COLOR: Apply "color-blue" for blue color: #4A89DC -->
-  <!-- BEGIN BODY -->
   <body class="fixed-topbar fixed-sidebar theme-sdtl color-default dashboard" >
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -167,7 +154,7 @@
         </div>
         <!-- END TOPBAR -->
         <!-- BEGIN PAGE CONTENT -->
-        <div class="page-content page-thin" style="height:3000px">
+        <div class="page-content page-thin" >
                 <?php echo $this->getContent() ?>
           <div class="footer">
             <div class="copyright">

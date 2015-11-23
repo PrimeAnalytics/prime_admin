@@ -18,6 +18,12 @@ class ThemeLayout extends \Phalcon\Mvc\Model
     public $name;
 
     /**
+     *
+     * @var string
+     */
+    public $width;
+
+    /**
      * Initialize method for model.
      */
     public function initialize()

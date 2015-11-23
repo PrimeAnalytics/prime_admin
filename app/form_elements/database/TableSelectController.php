@@ -11,7 +11,7 @@ class TableSelectController extends FormElementBase
         $output=array();
 
         $output['html'][]='<div class="form-group">
-                                    <label>Select Database Table</label>
+                                    <label>Select Process</label>
                                         <input id="dbTable" name="parameters[db][table]" class="form-control" data-placeholder="Choose a table...">
                                         </input>
                                 </div>';

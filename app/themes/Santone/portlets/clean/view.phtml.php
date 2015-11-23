@@ -1,4 +1,4 @@
-<div id="portlet_<?php echo $portlet->id; ?>" class="<?php echo $parm['width']; ?>" > 
+<div id="portlet_<?php echo $portlet->id; ?>" class="<?php echo $parm['width']; ?>" >                  <div>
 							<div class="met_title">
 								<h2><?php echo $parm['title']; ?></h2>
 							</div>
@@ -14,4 +14,5 @@
                             <?php echo $region[2]; ?>
                             </div>
 							</div>
-						<?php echo $this->getContent(); ?></div>
+						</div>
+            <?php echo $this->getContent(); ?></div>

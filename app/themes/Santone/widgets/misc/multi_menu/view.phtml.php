@@ -1,9 +1,9 @@
-<div id="widget_<?php echo $widget->id; ?>"  class="<?php echo $parm['width']; ?>" > <?php echo $controls; ?>
+<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?>
 <style>
 #w_<?php echo $widget->id; ?> .ui-selecting { background: #FECA40; }
   #w_<?php echo $widget->id; ?> .ui-selected { background: #F39814; color: white; }
-</style><div>
-<nav style="max-height:400px; overflow: auto; overflow-x: hidden;">
+</style><div id="scroll_<?php echo $widget->id; ?>" style="max-height:400px; overflow: auto; overflow-x: hidden;">
+<nav  >
 				<ul id="w_<?php echo $widget->id; ?>" class="met_clean_list sf-js-enabled sf-arrows">
 				    
 				    <?php foreach ($parm['db'] as $entry) { ?>
@@ -27,6 +27,7 @@
         
       }
     });
+            $("#scroll_<?php echo $widget->id; ?>").mCustomScrollbar({theme:"minimal-dark"});
   });
   </script>
   

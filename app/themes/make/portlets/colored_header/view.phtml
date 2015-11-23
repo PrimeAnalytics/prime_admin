@@ -1,0 +1,27 @@
+<div id="portlet_{{portlet.id}}" class="{{parm['width']}}" >     
+            <div >
+              <div class="panel" >
+                <div class="panel-header" style="background-color:{{parm['color']}}">
+                  <h3>{{parm['title']}}</h3>
+                </div>
+                <div class="panel-content">
+                 <div class="row">
+                            {{region[0]}}
+                            </div>
+                            <div class="row">
+                            {{region[1]}}
+                            </div>
+                            <div class="row">
+                            <div class="col-md-8">
+                            {{region[2]}}
+                            </div>
+                            <div class="col-md-4">
+                            {{region[3]}}
+                            </div>
+                            </div>
+                            
+                 </div>
+              </div>
+            </div>
+            
+{{ content() }}</div>
