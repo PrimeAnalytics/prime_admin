@@ -140,7 +140,7 @@
                             <h3>Create/Edit Logins</h3>
                             <p>Some themes have multiple login skins and you can select your desired look and feel over here.</p>
                             <div class="grid-body no-border">
-                                <button type="button" class="btn btn-success btn-rounded pull-right" onclick="create_new_login()">Create New</button>
+                                <button type="button" class="btn btn-success btn-rounded pull-right" onclick="create_new_login('Default')">Create New</button>
 
                             </div>
                         </div>
@@ -159,14 +159,14 @@
                                     <?php foreach ($logins as $login) { ?>
                                     <tr>
                                         <td>
-                                            <?php echo $login->name; ?>
+                                            <?php echo $login->url; ?>
                                         </td>
                                         <td>
                                             <?php echo $login->type; ?>
                                         </td>
                                         <td>
-                                            <button class="btn btn-success btn-xs btn-small" onclick="edit_login_modal(<?php echo $login->id; ?>)">Edit</button>
-                                            <button class="btn btn-danger btn-xs btn-small" onclick="delete_modal('login',<?php echo $login->id; ?>)">Delete</button>
+                                            <button class="btn btn-success btn-xs btn-small" onclick="edit_login_modal('<?php echo $login->type; ?>','<?php echo $login->id; ?>')">Edit</button>
+                                            <button class="btn btn-danger btn-xs btn-small" onclick="delete_modal('login','<?php echo $login->id; ?>')">Delete</button>
                                         </td>
                                     </tr>
                                     <?php } ?>
@@ -302,6 +302,29 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+<script>
+
+    function create_new_login(dataType) {
+        $("#modal_content").load('/logins/' + dataType + '/new', function () {
+            $("#myModal").modal("show");
+        });
+    }
+
+    function edit_login_modal(dataType,id) {
+        $("#modal_content").load('/logins/' + dataType + '/edit/' + id, function () {
+            $("#myModal").modal("show");
+        });
+    }
+           function delete_modal(dataType,id)
+            {
+                $("#modal_content").load('/form/delete/'+dataType+'/'+id, function () {
+                    $("#myModal").modal("show");
+                });
+            }
+
+</script>
+
 
 <script>
 

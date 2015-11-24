@@ -7,6 +7,6 @@
     
                         public function initialize()
                         {
-                            $this->form_struct ='[{"type":"parameters/image_upload","name":"orgimg","label":"Organisation Image"}]';
+                            $this->form_struct ='[{"type":"parameters/image_upload","name":"orgimg","label":"Organisation Image","height":"31","width":"230"}]';
                         }
                     }

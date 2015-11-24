@@ -15,13 +15,19 @@ class Login extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $name;
+    public $type;
 
     /**
      *
      * @var string
      */
-    public $type;
+    public $theme;
+
+    /**
+     *
+     * @var string
+     */
+    public $url;
 
     /**
      *

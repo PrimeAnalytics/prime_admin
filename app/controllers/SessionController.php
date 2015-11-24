@@ -5,6 +5,7 @@ namespace PRIME\Controllers;
 use Phalcon\Tag as Tag;
 use PRIME\Models\Users;
 use PRIME\Models\Organisation;
+use PRIME\Models\Login;
 use PRIME\Models\PhysicalAddress;
 use PRIME\Models\OrgDatabase;
 
@@ -20,14 +21,17 @@ class SessionController extends ControllerBase
 
     public function indexAction()
     {
-        $organisations = Organisation::find();
-        foreach($organisations as $org)
+        $login = Login::findFirstByUrl($_SERVER['HTTP_HOST']);
+
+        if($login)
         {
-            if($org->url==$_SERVER['HTTP_HOST'])
-            {
-                return $this->forward('/logins/'.$org->theme.'/default/render/');
-                
-            }
+            return $this->dispatcher->forward(array(
+                'namespace' => 'PRIME\Themes\\'.$login->theme.'\Logins',
+                'controller' => $login->type,
+                'action' => 'render',
+                "params" => array($login->id)
+            ));
+            
         }
        
         
@@ -82,13 +86,6 @@ class SessionController extends ControllerBase
                 $user->created_at = new \Phalcon\Db\RawValue('now()');
                 $user->status = 'disable';
                 $user->organisation_id = $organisation->id;
-
-                if ($login->save() == false) {
-                    foreach ($login->getMessages() as $message) {
-                        $this->flash->error((string) $message);
-                    }
-                } 
-
                 
                 if ($user->save() == false) {
                     foreach ($user->getMessages() as $message) {
@@ -157,37 +154,72 @@ class SessionController extends ControllerBase
      * This actions receive the input from the login form
      *
      */
-    public function startAction()
+    public function startAction($external='false')
     {
-        if ($this->request->isPost()) {
-            $email = $this->request->getPost('email', 'email');
+        if($external=='true')
+        {
+            $this->view->disable();
+            if ($this->request->isPost()) {
+                $email = $this->request->getPost('email', 'email');
 
-            $password = $this->request->getPost('password');
-            $password = sha1($password);
+                $password = $this->request->getPost('password');
+                $password = sha1($password);
 
-            $user = Users::findFirst("email='$email' AND password='$password'");
-            if ($user != false) {
-                
-                if($user->status == 'enable' )
-                {
-                    $this->_registerSession($user);
+                $user = Users::findFirst("email='$email' AND password='$password'");
+                if ($user != false) {
                     
+                    if($user->status == 'enable' )
+                    {
+                        $this->_registerSession($user);
+                        echo 'success';
 
-                        return $this->forward('index/'.$user->role);
-
+                    }
+                    else
+                    {
+                        echo 'Your account is currently disabled';
+                    }
                 }
                 else
                 {
-                    $this->flash->error('Your account is currently disabled');
-                    return $this->forward('session/index');
+                    echo 'Wrong email/password';
                 }
             }
-            
-
-            $this->flash->error('Wrong email/password');
         }
+        else
+        {
 
-        return $this->forward('session/index');
+            if ($this->request->isPost()) {
+                $email = $this->request->getPost('email', 'email');
+
+                $password = $this->request->getPost('password');
+                $password = sha1($password);
+
+                $user = Users::findFirst("email='$email' AND password='$password'");
+                if ($user != false) {
+                    
+                    if($user->status == 'enable' )
+                    {
+                        $this->_registerSession($user);
+                        
+
+                        return $this->forward('index/'.$user->role);
+
+                    }
+                    else
+                    {
+                        $this->flash->error('Your account is currently disabled');
+                        return $this->forward('session/index');
+                    }
+                }
+                
+
+                $this->flash->error('Wrong email/password');
+            }
+
+            return $this->forward('session/index');
+        
+        }
+        
     }
 
     /**

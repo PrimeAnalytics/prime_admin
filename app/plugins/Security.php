@@ -72,9 +72,7 @@ class Security extends Phalcon\Mvc\User\Plugin
 			//Private area resources
 			$publicResources = array(
                 'logins' => array('*'),
-				'session' => array('index', 'register', 'start', 'end'),
-                'bucket_list' => array('*'),
-                'google' => array('*')
+				'session' => array('index', 'register', 'start', 'end')
 			);
 
 			foreach($publicResources as $resource => $actions){
@@ -123,6 +121,7 @@ class Security extends Phalcon\Mvc\User\Plugin
 	{
 		$auth = $this->session->get('auth');
 		if (!$auth){
+            $auth['role']='Guest';
 			$role = 'Guest';
 		} else {
 			$role = $auth['role'];
@@ -133,9 +132,8 @@ class Security extends Phalcon\Mvc\User\Plugin
 
 		$acl = $this->getAcl();
 
-        
 		$allowed = $acl->isAllowed($role, $controller, $action);
-        if ($role=='Admin' || $role=='User')
+        if ($role=='Admin' || $role=='User'||$role=='Guest')
         {
             return true;
         }

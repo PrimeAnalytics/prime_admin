@@ -21,12 +21,6 @@ class Organisation extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $url;
-
-    /**
-     *
-     * @var string
-     */
     public $theme;
 
     /**

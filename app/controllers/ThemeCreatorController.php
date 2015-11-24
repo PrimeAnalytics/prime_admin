@@ -422,7 +422,8 @@ class ThemeCreatorController extends ControllerBase
         fclose($fp);
 
 
-        $view='<head>'.$css.$style.'</head><body>'.$html.$js.$script.'{{ content() }}</body>';
+        $view='<!DOCTYPE html>
+<html><head>'.$css.$style.'</head><body>'.$html.$js.$script.'{{ content() }}</body>';
 
         $file_path=$path.strtolower($type)."/view.phtml";
         if(!file_exists(dirname($file_path)))

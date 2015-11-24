@@ -1,5 +1,6 @@
-<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?>
-<table id="w_<?php echo $widget->id; ?>" class="table table-hover table-condensed">
+<div id="widget_<?php echo $widget->id; ?>" class="panel-content pagination2 table-responsive <?php echo $parm['width']; ?> "  class="<?php echo $parm['width']; ?>" > <?php echo $controls; ?>
+<div class="panel-content pagination2 table-responsive">
+<table id="w_<?php echo $widget->id; ?>" class="table table-hover table-dynamic">
                         <thead>
                           <tr>
                               <?php if (($this->length($parm['db']) != 0)) { ?>
@@ -21,6 +22,8 @@
 <?php } ?>
                         </tbody>
                       </table>
+                      
+                      </div>
                          <script>
    var initTableWithSearch = function() {
         var table = $('#w_<?php echo $widget->id; ?>');
@@ -32,9 +35,6 @@
 var linking_column=<?php echo json_encode($linking_column) ?> ;
 
         var settings = {
-            "sDom": 'T<"clear">lfrtip',
-            "sPaginationType": "bootstrap",
-            "destroy": true,
             "bLengthChange": false,
             "bFilter": false,
             "bInfo": false,
@@ -46,6 +46,8 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
             "aButtons" : []
         }
         };
+        
+        
         
 
 

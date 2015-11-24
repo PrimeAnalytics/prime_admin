@@ -29,6 +29,8 @@
       <script src="/assets/global/plugins/jquery-block-ui/jquery.blockUI.min.js"></script> <!-- simulate synchronous behavior when using AJAX -->
       <link href="/assets/global/plugins/hover-effects/hover-effects.min.css" rel="stylesheet">
 
+      <link href="/assets/plugins/croppic/croppic.css" rel="stylesheet">
+
       <link href="/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen" />
       <link href="/assets/plugins/page-builder/css/style.css" rel="stylesheet">
 
@@ -40,17 +42,8 @@
 
       <link href="/assets/global/plugins/jquery-tageditor/jquery.tag-editor.css" rel="stylesheet">
 
-      <script src="/themes/Pages/assets/assets/plugins/nvd3/lib/d3.v3.js"></script>
-      <script src="/themes/Pages/assets/assets/plugins/nvd3/nv.d3.min.js"></script>
-      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/utils.js"></script>
-      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/tooltip.js"></script>
-      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/interactiveLayer.js"></script>
-      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/models/axis.js"></script>
-      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/models/line.js"></script>
-      <script src="/themes/Pages/assets/assets/plugins/nvd3/src/models/lineWithFocusChart.js"></script>
 
-
-      
+ 
 
   </head>
   <!-- LAYOUT: Apply "submenu-hover" class to body element to have sidebar submenu show on mouse hover -->
@@ -223,6 +216,8 @@
       <script src="/assets/global/plugins/jquery-tageditor/jquery.caret.min.js"></script>
       <script src="/assets/global/plugins/jquery-tageditor/jquery.tag-editor.min.js"></script>
       <script src="/assets/global/plugins/datatables/jquery.dataTables.min.js"></script> 
+
+      <script src="/assets/plugins/croppic/croppic.js"></script> <!-- Image Croping -->
 
     <!-- END PAGE SCRIPT -->
    

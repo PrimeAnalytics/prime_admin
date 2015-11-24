@@ -11,14 +11,16 @@ class LoginBase extends Controller
     public $organisation_id ="";
     private $view_dir;
     public $form_struct='';
+    public $theme='';
     
     function onConstruct()
     {
-        $this->login_type = __CLASS__;
+        $this->login_type = $this->router->getControllerName();;
         if ($this->session->has("auth")) {
             //Retrieve its value
             $auth = $this->session->get("auth");
             $this->organisation_id= $auth['organisation_id'];
+            $this->theme= $auth['theme'];
         }
 
     }
@@ -44,39 +46,39 @@ class LoginBase extends Controller
 
     public function editAction($id)
     {
+        $login = Login::findFirstByid($id); 
         $this->view->setViewsDir('../app/views/');
-        $this->view->pick('login/edit');
+        $this->view->pick('logins/edit');
 
-        $this->view->id = $login->id;
+        $this->view->setVar('form_type','/'.$login->type.'/save/'.$login->id);
+        $this->view->setVar('type',$login->type);
             
+        $formController = new \PRIME\Controllers\FormController();
+        $form_body= $formController->renderAction($this->form_struct);
+        $this->view->setVar("form_body", $form_body);
+
         $this->tag->setDefault("type", $login->type);
         $this->tag->setDefault("id", $login->id);
-        $this->tag->setDefault("name", $login->name);
-        $this->tag->setDefault("organisation_id", $login->organisation_id);
+        $this->tag->setDefault("url", $login->url);
 
     }
 
 
     public function renderAction($id)
     {
-        if ($this->session->has("auth")) {
-            //Retrieve its value
-            $auth = $this->session->get("auth");
-            $this->view->setViewsDir('../app/themes/'.$auth['theme'].'/logins/');
-        }
+        
         
         $login = Login::findFirstByid($id);    
-        $organisation= Organisation::findFirstByid($login->organisation_id);
+        $this->view->setViewsDir('../app/themes/'.$login->theme.'/logins/');
+        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_LAYOUT);
 
         $this->view->pick(strtolower($login->type."/view"));
-        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
 
         $parameters= (array)json_decode($login->parameters,true);
 
         $this->view->setVar("parm", $parameters); 
 
         $this->view->setVar("login", $login); 
-        $this->view->setVar("organisation", $organisation);
         
     }
 
@@ -84,10 +86,10 @@ class LoginBase extends Controller
     {
         $login = new Login();
 
-        $login->type = $this->dashboard_name;
-        $login->name = $this->request->getPost("column");
-        $login->organisation_id = $this->request->getPost("organisation_id");
-
+        $login->type = $this->login_type;
+        $login->theme = $this->theme;
+        $login->url = $this->request->getPost("url");
+        $login->organisation_id = $this->organisation_id;
         $login->parameters = json_encode($this->request->getPost("parameters"));
 
         if (!$login->save()) {
