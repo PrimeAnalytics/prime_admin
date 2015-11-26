@@ -4,7 +4,6 @@ use PRIME\Models\Process;
 use PRIME\Models\ProcessScheduled;
 use PRIME\Models\Organisation;
 use PRIME\Models\OrgDatabase;
-use \YaLinqo\Enumerable as E;
 
 class ProcessController extends ControllerBase
 {
@@ -189,6 +188,53 @@ class ProcessController extends ControllerBase
             
             echo json_encode($json);
             
+    }
+
+
+    public function searchAction()
+    {
+     //<form class="sansserif" action="view.php" method="post">
+     //       Name: <input type="text" id="hint" name="hint" />
+     //       <input type="submit" name="submit" value="View">
+     //   </form>
+
+     //   <script type="text/javascript"> 
+
+     //   $(function() {
+     //       $( "#hint" ).autocomplete({
+     //           source: function( request, response ) {
+     //               $.ajax({
+     //                   url: "gethint.php",
+     //                   dataType: "jsonp",
+     //                   data: {
+     //                       q: request.term
+     //                   },
+     //                   success: function( data ) {
+     //                       response( data );
+     //                   }
+     //               });
+     //           },
+     //       });
+     //   });     
+     //   </script>
+
+
+
+    //require_once ('config.php');
+
+    //$q=$_REQUEST["q"]; 
+    //$sql="SELECT `fname` FROM `Property` WHERE fname LIKE '%$q%'";
+    //$result = mysql_query($sql);
+
+    //$json=array();
+
+    //while($row = mysql_fetch_array($result)) {
+    //  array_push($json, $row['fname']);
+    //}
+
+    //echo json_encode($json);
+
+
     }
 
     public function getResults($id,$links=null,$override=null)

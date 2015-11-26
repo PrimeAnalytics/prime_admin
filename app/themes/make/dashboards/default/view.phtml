@@ -6,6 +6,9 @@
 <link href="/themes/Make/assets/admin/layout1/css/layout.css" rel="stylesheet">
 <link href="/assets/global/plugins/ion-slider/style.min.css" rel="stylesheet">
 
+
+
+
 </head><body><body class="fixed-topbar fixed-sidebar theme-sdtl color-default">
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -207,8 +210,9 @@
 <script src="https://code.highcharts.com/modules/treemap.js"></script>
 <script src="/themes/Pages/assets/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
 
-<script src="/assets/global/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/media/js/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js" type="text/javascript"></script>
+        <script src="/themes/Pages/assets/assets/plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js" type="text/javascript"></script>
     <script type="text/javascript" src="/themes/Pages/assets/assets/plugins/datatables-responsive/js/datatables.responsive.js"></script>
     
     <script type="text/javascript" src="/assets/plugins/listboxjs/listbox.js"></script>

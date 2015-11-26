@@ -13,32 +13,79 @@ class ImageUploadController extends FormElementBase
 <div class="form-group">
                                     <label>'.$label.'</label>
 <input name="parameters['.$name.']" type="hidden"></input>
-<div id="crop'.$name.'" style="height:'.$height.'px;width:'.$width.'px;position:relative;"></div>
-                                </div>
-
-				
+<div id="crop'.$name.'" class="img-container" style="height:300px;width:550px; position: relative;margin:0;" >
+<img src="/assets/global/images/logo/logo-white-sidebar.png"></img></div>
+<input type="file" id="cropbutton'.$name.'">
+<button type="button" id="save'.$name.'">Save</button>
+                                </div>			
 ';
 
 
         $output['js'][]= '
 
 
-		var croppicContainerModalOptions = {
-				uploadUrl:\'/form_elements/parameters/ImageUpload/uploadext\',
-				cropUrl:\'/form_elements/parameters/ImageUpload/crop\',
-				imgEyecandy:true,
-                modal:true,
-				loaderHtml:\'<div class="loader bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div> \',
-				onBeforeImgUpload: function(){ console.log(\'onBeforeImgUpload\') },
-				onAfterImgUpload: function(){ console.log(\'onAfterImgUpload\') },
-				onImgDrag: function(){ console.log(\'onImgDrag\') },
-				onImgZoom: function(){ console.log(\'onImgZoom\') },
-				onBeforeImgCrop: function(){ console.log(\'onBeforeImgCrop\') },
-				onAfterImgCrop:function(data){ $(\'[name="parameters['.$name.']"]\').val(data.url)},
-				onReset:function(){ console.log(\'onReset\') },
-				onError:function(errormessage){ console.log(\'onError:\'+errormessage) }
-		};
-		var cropContainerModal = new Croppic(\'crop'.$name.'\', croppicContainerModalOptions);
+var $image'.$name.' = $("#crop'.$name.' img");
+$image'.$name.'.cropper({aspectRatio: '.$width/$height.',dragMode:\'move\'});
+
+ // Import image
+  var $inputImage'.$name.' = $(\'#cropbutton'.$name.'\');
+  var URL'.$name.' = window.URL || window.webkitURL;
+  var blobURL'.$name.';
+
+  if (URL) {
+    $inputImage'.$name.'.change(function () {
+      var files = this.files;
+      var file;
+
+      if (!$image'.$name.'.data(\'cropper\')) {
+        return;
+      }
+
+      if (files && files.length) {
+        file = files[0];
+
+        if (/^image\/\w+$/.test(file.type)) {
+          blobURL'.$name.' = URL'.$name.'.createObjectURL(file);
+          $image'.$name.'.one(\'built.cropper\', function () {
+
+            // Revoke when load complete
+            URL'.$name.'.revokeObjectURL(blobURL'.$name.');
+          }).cropper(\'reset\').cropper(\'replace\', blobURL'.$name.');
+          $inputImage'.$name.'.val(\'\');
+        } else {
+          window.alert(\'Please choose an image file.\');
+        }
+      }
+    });
+  } else {
+    $inputImage'.$name.'.prop(\'disabled\', true).parent().addClass(\'disabled\');
+  }
+
+
+$("#save'.$name.'").on("click",function(){
+var canvas = $($image'.$name.').cropper(\'getCroppedCanvas\', {
+  width: '.$width.',
+  height:'.$height.'
+});
+
+var dataURL = canvas.toDataURL();
+
+
+$.ajax({
+  type: "POST",
+  url: \'/form_elements/parameters/ImageUpload/upload\',
+  data: { 
+     imgBase64: dataURL
+  },
+success: function(data) {
+data = JSON.parse(data);
+$(\'[name="parameters['.$name.']"]\').val(data.url);
+
+}
+})
+});
+
+		
 
 ';
 
@@ -59,7 +106,15 @@ class ImageUploadController extends FormElementBase
     public function uploadAction()
     {
 
-    foreach ($_FILES["images"]["error"] as $key => $error) {
+
+        $img = $_POST['imgBase64'];
+        $img = str_replace('data:image/png;base64,', '', $img);
+        $img = str_replace('data:image/jpeg;base64,', '', $img);
+        $img = str_replace(' ', '+', $img);
+        $data = base64_decode($img);
+
+        
+
     $files    = glob('./files/*');      // get all files in folder
     natsort($files);                         // sort
     $lastFile = pathinfo(array_pop($files)); // split $lastFile into parts
@@ -68,14 +123,17 @@ class ImageUploadController extends FormElementBase
     if(file_exists("./files/$newFile")) { // do not write file if it exists
         die("$newFile aready exists");
     }    
-    
-    if ($error == UPLOAD_ERR_OK) {
 
-        move_uploaded_file( $_FILES["images"]["tmp_name"][$key], "./files/" .$newFile.$_FILES['images']['name'][$key]);
-        echo "/files/".$newFile.$_FILES['images']['name'][$key];
-    }
+     file_put_contents("./files/" .$newFile."image.png",$data);
 
-    }
+
+     $response = array(
+                  "status" => 'success',
+                  "url" => "/files/".$newFile."image.png"
+                );
+
+        print json_encode($response);
+
     }
     
     

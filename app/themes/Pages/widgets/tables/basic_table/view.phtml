@@ -1,6 +1,5 @@
-<div id="widget_{{widget.id}}" class="panel-content pagination2 table-responsive {{parm['width']}} "  class="{{parm['width']}}" > {{controls}}
-<div class="panel-content pagination2 table-responsive">
-<table id="w_{{widget.id}}" class="table table-hover table-dynamic">
+<div id="widget_{{widget.id}}" class="{{parm['width']}}" >{{controls}}
+<table id="w_{{widget.id}}" class="table table-hover table-condensed">
                         <thead>
                           <tr>
                               {% if (parm['db']|length !=0) %}
@@ -22,18 +21,15 @@
 {% endfor  %}
                         </tbody>
                       </table>
-                      
-                      </div>
                          <script>
    var initTableWithSearch = function() {
         var table = $('#w_{{widget.id}}');
         
  <?php $linking_column=array(); ?>     
  {% for row in parm['db'] %}
-  <?php $linking_column[]=reset($row['series']); ?> 
+  <?php $linking_column[]=$row['link_column']; ?> 
 {% endfor  %}
 var linking_column=<?php echo json_encode($linking_column) ?> ;
-
 
         var settings = {
             "sDom": 'T<"clear">lfrtip',
@@ -42,6 +38,7 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
             "bLengthChange": false,
             "bFilter": false,
             "bInfo": false,
+            "scrollX": true,
             "scrollCollapse": true,
             "paging":         true,
                     "oTableTools": {
@@ -71,6 +68,7 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
         
     } );
    
+
     }
     
     initTableWithSearch();
@@ -78,7 +76,4 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
     
     
     
-    </script>
-    
-    
-    {{ content() }}</div>
+    </script>{{ content() }}</div>

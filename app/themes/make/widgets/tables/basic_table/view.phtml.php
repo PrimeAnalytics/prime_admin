@@ -34,11 +34,14 @@
 <?php } ?>
 var linking_column=<?php echo json_encode($linking_column) ?> ;
 
+
         var settings = {
+            "sDom": 'T<"clear">lfrtip',
+            "sPaginationType": "bootstrap",
+            "destroy": true,
             "bLengthChange": false,
             "bFilter": false,
             "bInfo": false,
-            "scrollX": true,
             "scrollCollapse": true,
             "paging":         true,
                     "oTableTools": {
@@ -46,8 +49,6 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
             "aButtons" : []
         }
         };
-        
-        
         
 
 
@@ -70,11 +71,6 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
         
     } );
    
-
-        // search box for table
-        $('#search-table<?php echo $widget->id; ?>').keyup(function() {
-            table.fnFilter($(this).val());
-        });
     }
     
     initTableWithSearch();
@@ -82,4 +78,7 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
     
     
     
-    </script><?php echo $this->getContent(); ?></div>
+    </script>
+    
+    
+    <?php echo $this->getContent(); ?></div>

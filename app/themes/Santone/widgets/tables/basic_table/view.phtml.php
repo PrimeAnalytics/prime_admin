@@ -1,47 +1,44 @@
-<div id="widget_{{widget.id}}" class="panel-content pagination2 table-responsive {{parm['width']}} "  class="{{parm['width']}}" > {{controls}}
-<div class="panel-content pagination2 table-responsive">
-<table id="w_{{widget.id}}" class="table table-hover table-dynamic">
+<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?>
+<table id="w_<?php echo $widget->id; ?>" class="table table-hover">
                         <thead>
                           <tr>
-                              {% if (parm['db']|length !=0) %}
+                              <?php if (($this->length($parm['db']) != 0)) { ?>
                               
-                    {% for key,item in parm['db'][0]['series'] %}
-                    <th>{{key}} </th>
-                    {% endfor  %}
-                    {% endif %}
+                    <?php foreach ($parm['db'][0]['series'] as $key => $item) { ?>
+                    <th><?php echo $key; ?> </th>
+                    <?php } ?>
+                    <?php } ?>
                           </tr>
                         </thead>
                         <tbody>
                           
-                             {% for row in parm['db'] %}
+                             <?php foreach ($parm['db'] as $row) { ?>
                              <tr>
-        {% for item in row['series'] %}
-<td class="v-align-middle">{{item}} </td>
-        {% endfor  %}
+        <?php foreach ($row['series'] as $item) { ?>
+<td class="v-align-middle"><?php echo $item; ?> </td>
+        <?php } ?>
 </tr>
-{% endfor  %}
+<?php } ?>
                         </tbody>
                       </table>
-                      
-                      </div>
                          <script>
    var initTableWithSearch = function() {
-        var table = $('#w_{{widget.id}}');
+        var table = $('#w_<?php echo $widget->id; ?>');
         
  <?php $linking_column=array(); ?>     
- {% for row in parm['db'] %}
-  <?php $linking_column[]=reset($row['series']); ?> 
-{% endfor  %}
+ <?php foreach ($parm['db'] as $row) { ?>
+  <?php $linking_column[]=$row['link_column']; ?> 
+<?php } ?>
 var linking_column=<?php echo json_encode($linking_column) ?> ;
-
 
         var settings = {
             "sDom": 'T<"clear">lfrtip',
-            "sPaginationType": "bootstrap",
             "destroy": true,
             "bLengthChange": false,
             "bFilter": false,
             "bInfo": false,
+            "scrollX": true,
+            "responsive": true,
             "scrollCollapse": true,
             "paging":         true,
                     "oTableTools": {
@@ -55,9 +52,9 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
     table.dataTable(settings);
         
 
-         $('#w_{{widget.id}} tbody').on( 'click', 'tr', function () {
+         $('#w_<?php echo $widget->id; ?> tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
-            var oTT = TableTools.fnGetInstance( 'w_{{widget.id}}' );
+            var oTT = TableTools.fnGetInstance( 'w_<?php echo $widget->id; ?>' );
     var aData = oTT.fnGetSelectedIndexes();
     var link_set=[];
     $.each( aData, function( key, value ) {
@@ -67,7 +64,7 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
     
     
     
-     update_dashboard("{{parm['target_link']}}", link_set,{{widget.id}});
+     update_dashboard("<?php echo $parm['target_link']; ?>", link_set,<?php echo $widget->id; ?>);
         
     } );
    
@@ -78,7 +75,4 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
     
     
     
-    </script>
-    
-    
-    {{ content() }}</div>
+    </script><?php echo $this->getContent(); ?></div>

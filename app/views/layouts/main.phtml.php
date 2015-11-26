@@ -29,6 +29,9 @@
       <script src="/assets/global/plugins/jquery-block-ui/jquery.blockUI.min.js"></script> <!-- simulate synchronous behavior when using AJAX -->
       <link href="/assets/global/plugins/hover-effects/hover-effects.min.css" rel="stylesheet">
 
+      
+      <link href="https://cdn.rawgit.com/fengyuanchen/cropper/v2.0.1/dist/cropper.min.css" rel="stylesheet">
+
       <link href="/assets/plugins/croppic/croppic.css" rel="stylesheet">
 
       <link href="/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen" />
@@ -216,6 +219,7 @@
       <script src="/assets/global/plugins/jquery-tageditor/jquery.caret.min.js"></script>
       <script src="/assets/global/plugins/jquery-tageditor/jquery.tag-editor.min.js"></script>
       <script src="/assets/global/plugins/datatables/jquery.dataTables.min.js"></script> 
+      <script src="https://cdn.rawgit.com/fengyuanchen/cropper/v2.0.1/dist/cropper.min.js"></script>
 
       <script src="/assets/plugins/croppic/croppic.js"></script> <!-- Image Croping -->
 
