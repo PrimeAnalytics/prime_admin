@@ -26,7 +26,7 @@
     
 
                 <div class="widget-progress-bar">
-                  <div id="scroll_<?php echo $widget->id; ?>" style="height:400px;">
+                  <div id="scroll_<?php echo $widget->id; ?>" style="height:<?php echo $parm['height']; ?>;">
                       <div id="w_<?php echo $widget->id; ?>">
                 <?php foreach ($parm['db'] as $entry) { ?>
                     <div class="item_<?php echo $widget->id; ?>" data-link="<?php echo $entry['label']; ?>" style="padding:10px">

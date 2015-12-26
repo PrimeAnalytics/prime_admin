@@ -2,6 +2,7 @@
 namespace PRIME\Controllers;
 use PRIME\Models\Organisation;
 use PRIME\Models\OrgDatabase;
+use PRIME\Models\Variables;
 
 class GetController extends ControllerBase
 {
@@ -99,7 +100,31 @@ class GetController extends ControllerBase
       
     }
 
-    public function DBTablesAction()
+    public function VariablesAction($return=true)
+    {
+        $this->view->disable();
+        $variables = Variables::findByorganisation_id($this->organisation_id);
+        
+        $json = array();
+        foreach($variables as $variable)
+        {
+            
+            $json[] = array(
+                    'id' => $variable->id,
+                               'text' => '{'.$variable->name.'}',
+                               'type'=> 'numeric'
+                              
+                             );
+        }
+        
+        if ($return == true) {
+            echo json_encode($json);
+        }
+
+        return $json;
+    }
+
+    public function DBTablesAction($return=true)
     {
         $this->view->disable();
         $db = $this->getUserDB();
@@ -121,14 +146,31 @@ class GetController extends ControllerBase
             }
         }                        
         
-        echo json_encode($json);
+        if ($return) {
+            echo json_encode($json);
+        }
+
+        return $json;
     }
 
 
-    public function autocompleteAction($for_input_type,$table)
+    public function autocompleteAction($for_input_type,$table=null)
     {
-        $data=$this->DBColumnsAction($table);
+        if($table==null)
+        {
+            $tables=$this->DBTablesAction(false);
+            $data=array();
+            foreach($tables as $tabl)
+            {
+                $data=array_merge($data,$this->DBColumnsAction($tabl['id']));
+            }
+        }
+        else
+        {
+            $data=$this->DBColumnsAction($table);
+            $data=array_merge($data,$this->VariablesAction(false));
 
+        }
         $output=array();
 
         foreach($data as $column)

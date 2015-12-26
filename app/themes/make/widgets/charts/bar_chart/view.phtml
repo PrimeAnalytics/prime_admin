@@ -15,8 +15,8 @@
             });
         });
 
-        // Fire a custom event
-        HighchartsAdapter.fireEvent(this, 'selectedpoints', { points: this.getSelectedPoints() });
+        var fireEvent = HighchartsAdapter.fireEvent;
+        fireEvent(this, 'selectedpoints', { points: this.getSelectedPoints() });
 
         return false; // Don't zoom
     }
@@ -38,7 +38,7 @@
                             
                            
                         });
-                            update_dashboard("{{parm['target_link']}}", temp,{{widget.id}});
+                            update_dashboard("{{parm['target_link']}}","=", temp,{{widget.id}});
 
     }
 
@@ -52,7 +52,8 @@
                 point.select(false);
             });
         }
-        HighchartsAdapter.fireEvent(this, 'selectedpoints', { points: this.getSelectedPoints() });
+    var fireEvent = HighchartsAdapter.fireEvent;
+        fireEvent(this, 'selectedpoints', { points: this.getSelectedPoints() });
     }
 
 

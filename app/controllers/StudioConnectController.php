@@ -108,6 +108,22 @@ class StudioConnectController extends ControllerBase
 
     }
 
+    public function DeleteProcessOperatorAction($id)
+    {
+
+        $process_operators = ProcessOperator::findFirstById($id);
+
+        if($process_operators->delete())
+        {
+            echo "The Operator Was Succesfully Removed";
+        }
+        else
+        {
+            echo "Oh No, Something Whent Wrong";
+        }
+
+    }
+
     public function getUserDB()
     {
         try{
@@ -150,62 +166,90 @@ class StudioConnectController extends ControllerBase
 
        $columnTypes=array();
 
-       $num_rows=50;
-       for($i=0;$i<$num_rows;$i++)
+       $num_rows=count($data);
+
+       $type_set=false;
+
+       foreach($data[0] as $key=>$column_name)
        {
-           foreach($data[$i] as $key=>$column_name)
+           $type=gettype($data[$i][$key]);
+           if($type!='string')
            {
-               $type=gettype($data[$i][$key]);
-
-               if('string'==gettype($data[$i][$key]))
-               {
-                   if(is_numeric ($data[$i][$key]))
-                   {
-                       if ((int) $data[$i][$key] == (double)$data['0'][$key]) 
-                       {
-                           $type="integer";
-                       }
-                       else
-                       {
-                           $type="double";
-                       }
-                   }
-                   else if(strtotime($data[$i][$key])!=false)
-                   {
-                       $type="date";
-
-                   }
-                   else
-                   { 
-                   }
-               }
-
-               $columnTypes[$key][$type]=true;
-
+               $type_set=true;
            }
        }
 
-       foreach($columnTypes as $key=>$value)
+       if(!$type_set)
        {
-       if (array_key_exists("string",$value))
-       {
-           $columnTypes[$key]="string";
+           for($i=0;$i<$num_rows;$i++)
+           {
+               foreach($data[$i] as $key=>$column_name)
+               {
+                   $type=gettype($data[$i][$key]);
+
+                   if('string'==gettype($data[$i][$key]))
+                   {
+                       if(is_numeric ($data[$i][$key]))
+                       {
+                           if ((int) $data[$i][$key] == (double)$data['0'][$key]) 
+                           {
+                               $type="integer";
+                           }
+                           else
+                           {
+                               $type="double";
+                           }
+                       }
+                       else if(strtotime($data[$i][$key])!=false)
+                       {
+                           $type="date";
+
+                       }
+                       else
+                       { 
+                       }
+                   }
+
+                   $columnTypes[$key][$type]=true;
+
+               }
+           }
+
+           foreach($columnTypes as $key=>$value)
+           {
+               if (array_key_exists("string",$value))
+               {
+                   $columnTypes[$key]="string";
+               }
+               elseif (array_key_exists("double",$value))
+               {
+                   $columnTypes[$key]="double";
+               }
+               elseif (array_key_exists("integer",$value))
+               {
+                   $columnTypes[$key]="integer";
+               }
+               elseif (array_key_exists("date",$value))
+               {
+                   $columnTypes[$key]="date";
+               }
+
+           }
        }
-       elseif (array_key_exists("double",$value))
+       else
        {
-           $columnTypes[$key]="double";
-       }
-       elseif (array_key_exists("integer",$value))
-       {
-           $columnTypes[$key]="integer";
-       }
-       elseif (array_key_exists("date",$value))
-       {
-           $columnTypes[$key]="date";
+           foreach($data[0] as $key=>$column_name)
+           {
+               $type=gettype($data[0][$key]);
+               $columnTypes[$key]=$type;
+           }
+       
        }
 
+      
 
-       }
+
+
            
            foreach($columnTypes as $key=>$type)
            {
@@ -311,8 +355,6 @@ class StudioConnectController extends ControllerBase
                 $rows[]="(".$temp.")";
             }
         }
-
-        array_shift($rows);
 
          $sql=$sql.implode (", " , $rows)." ON DUPLICATE KEY UPDATE ";
 

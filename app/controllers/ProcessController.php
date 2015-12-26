@@ -154,6 +154,7 @@ class ProcessController extends ControllerBase
         
         $array=$this->getResults($id);
 
+
         $headers=array();
         foreach($array[0] as $key=>$value){
             $temp=array();
@@ -237,7 +238,7 @@ class ProcessController extends ControllerBase
 
     }
 
-    public function getResults($id,$links=null,$override=null)
+    public function getResults($id,$links=array(),$variables=array(),$override=null)
     {
         $auth = $this->session->get("auth");
         $this->db_name=$auth['db_name'];
@@ -270,20 +271,15 @@ class ProcessController extends ControllerBase
        $having_string="";
 
 
-       if($links!=null)
+       if(!empty($links))
        {
 
                foreach($links as $link)
                {
-                   
-                   if($db_table_name==$link['table'])
-                   {
                        $filter['keys'][]=str_replace("|",",",$link['column']);
                        $filter['operator'][]=$link['operator'];
                        $filter['type'][]=$link['type'];
                        $filter['values'][]=(array)$link['default_value'];
-                       
-                   }
                }
 
 
@@ -373,6 +369,11 @@ class ProcessController extends ControllerBase
              
            $sql_totals="SELECT ".implode(" , ",$matches[1])." FROM ".$this->db_name.".$db_table_name $filter_string";
 
+           foreach($variables as $varname=>$value)
+           {
+               $sql_totals=str_ireplace('{'.$varname.'}',$value,$sql_totals);
+           }
+
              $statement=$db->prepare($sql_totals);
              if($error=$statement->execute())
              {
@@ -391,9 +392,15 @@ class ProcessController extends ControllerBase
          }
        }
 
-      
-
        $row_limit=1000;
+       if(array_key_exists ('limit',$parameters))
+       {
+           if(is_numeric ($parameters['limit'] ))
+           {
+               $row_limit=$parameters['limit'];
+           }
+       }
+
        $data_out=array();
 
        $selects=array();
@@ -468,7 +475,23 @@ class ProcessController extends ControllerBase
            }
 
            $group_string= ' GROUP BY '.implode(" , ",$groups);
-           $order_string= ' ORDER BY '.implode(" , ",$groups);
+
+           $order_string= '';
+           if(array_key_exists ('orderby',$parameters))
+           {
+               if($parameters['orderby']!="")
+               {
+                   $order_string= ' ORDER BY '.$parameters['orderby'];
+                   if(array_key_exists ('descending',$parameters))
+                   {
+                       if($parameters['descending'])
+                       {
+                           $order_string.=" DESC";
+                       }
+                   }
+               }
+           }
+           
        }
        else{
            $order_string="";
@@ -484,7 +507,12 @@ class ProcessController extends ControllerBase
        }
 
 
-      $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
+       $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
+
+       foreach($variables as $varname=>$value)
+       {
+           $sql=str_ireplace('{'.$varname.'}',$value,$sql);
+       }
      
        $statement=$db->prepare( $sql);
             
@@ -520,8 +548,6 @@ class ProcessController extends ControllerBase
                        return $data_out=null;
                    }
 
-                   
-                   
 
     }
 
@@ -644,8 +670,15 @@ class ProcessController extends ControllerBase
 
 
 
-    public function createDashboardAction()
+    public function processResultsAction($id)
     {
+
+        $this->view->disable();
+        
+        $array=$this->getResults($id);
+
+   
+        echo json_encode($array);
 
     
     }

@@ -31,7 +31,7 @@ class Organisation extends \Phalcon\Mvc\Model
         $this->hasMany('id', 'PRIME\Models\Dashboard', 'organisation_id', array('alias' => 'Dashboard'));
         $this->hasMany('id', 'PRIME\Models\ProcessScheduled', 'organisation_id', array('alias' => 'ProcessScheduled'));
         $this->hasMany('id', 'PRIME\Models\Process', 'organisation_id', array('alias' => 'Process'));
-        $this->hasMany('id', 'PRIME\Models\Links', 'organisation_id', array('alias' => 'Links'));
+        $this->hasMany('id', 'PRIME\Models\Variables', 'organisation_id', array('alias' => 'Variables'));
         $this->hasMany('id', 'PRIME\Models\Login', 'organisation_id', array('alias' => 'Login'));
         $this->hasMany('id', 'PRIME\Models\DataConnector', 'organisation_id', array('alias' => 'DataConnector'));
         $this->hasMany('id', 'PRIME\Models\OrgDatabase', 'organisation_id', array('alias' => 'OrgDatabase'));

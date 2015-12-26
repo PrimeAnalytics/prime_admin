@@ -38,7 +38,7 @@
                             
                            
                         });
-                            update_dashboard("<?php echo $parm['target_link']; ?>", temp,<?php echo $widget->id; ?>);
+                            update_dashboard("<?php echo $parm['target_link']; ?>", "=" ,temp,<?php echo $widget->id; ?>);
 
     }
 
@@ -60,6 +60,7 @@
 $('#w_<?php echo $widget->id; ?>').highcharts({
             chart: {
             type: 'column',
+            spacingBottom: 50,
             spacingTop: 50,
             events: {
                 selection: selectPointsByDrag,

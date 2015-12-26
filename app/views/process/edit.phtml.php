@@ -14,10 +14,30 @@
                                                 <input id="dbTable" class="form-control" data-search="true">
                                                 </input>
                                             </div>
-                                            <div id="tableColumns" style="overflow:hidden">
-                                               
+                                            <div class=" form-group">
+                                                <label>Order By:</label>
+                                                <div>
+                                                    <input id="orderbyInput" class="form-control" data-search="true">
+                                                    </input>
+                                                </div>
+                                                
                                             </div>
-                                        </div>
+                                            <div class=" form-group">
+                                                <input type="checkbox" id="descending" value="DESC">Descending</input>
+                                            </div>
+                                            <div class=" form-group">
+                                                <label>Limit:</label>
+                                                <div>
+                                                    <input id="limitInput" class="form-control" data-search="true">
+                                                    </input>
+                                                </div>
+
+                                            </div>
+
+                                                <div id="tableColumns" style="overflow:hidden">
+
+                                                </div>
+                                            </div>
                                     </div>
                                 </section>
                             </aside>
@@ -95,7 +115,20 @@
             url: "/get/autocomplete/columns/"+ table,
             type: "get",
             success: function (result) {
-                var data_temp=$("#columnsInput").val();
+
+                var data_temp=$("#orderbyInput").val();
+
+                $("#orderbyInput").parent().empty().html('<textarea id="orderbyInput" class="form-control" style="width:100%"></textarea>');
+                $("#orderbyInput").val(data_temp);
+                $("#orderbyInput").tagEditor({
+                    delimiter: ',',
+                    forceLowercase:false,
+                    placeholder: 'Add Parameters ...',
+                    maxLength:500,
+                    autocomplete: { source: JSON.parse(result,true), minLength: 1, delay: 0, html: true, position: { collision: 'flip' } }
+                });
+
+               data_temp=$("#columnsInput").val();
 
                 $("#columnsInput").parent().empty().html('<textarea id="columnsInput" class="form-control" style="width:100%"></textarea>');
                 $("#columnsInput").val(data_temp);
@@ -118,7 +151,8 @@
             url: "/get/autocomplete/rows/"+ table,
             type: "get",
             success: function (result) {
-                var data_temp=$("#rowsInput").val();
+
+               var data_temp=$("#rowsInput").val();
 
                 $("#rowsInput").parent().empty().html('<textarea id="rowsInput" class="form-control" style="width:100%"></textarea>');
                 $("#rowsInput").val(data_temp);
@@ -162,6 +196,9 @@
         data['table'] = $("#dbTable").select2('val');
         data['columns'] = $("#columnsInput").val();
         data['rows'] = $("#rowsInput").val();
+        data['orderby'] = $("#orderbyInput").val();
+        data['descending'] = $("#descending").parent('[class*="icheckbox"]').hasClass("checked");
+        data['limit'] = $("#limitInput").val();
 
 
         var request = $.ajax({
@@ -184,6 +221,12 @@
 
 
     jQuery(document).ready(function(){
+
+        $('#descending').iCheck({
+            labelHover: false,
+            cursor: true
+        }); 
+
         var parameters= <?php echo $process->parameters; ?>;
 
         $.getJSON("/get/DBTables", function (data) {
@@ -200,6 +243,14 @@
 
         $("#columnsInput").val(parameters.columns);
         $("#rowsInput").val(parameters.rows);
+
+        $("#orderbyInput").val(parameters.orderby);
+
+        if(parameters.descending)
+        {
+            $("#descending").iCheck('check');
+        }
+        $("#limitInput").val(parameters.limit);
 
     });
 

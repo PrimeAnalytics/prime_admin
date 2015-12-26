@@ -4,7 +4,7 @@ use PRIME\Models\Dashboard;
 use PRIME\Models\DashboardHasUsers;
 use PRIME\Models\Widget;
 use PRIME\Models\Portlet;
-use PRIME\Models\Links;
+use PRIME\Models\Variables;
 use PRIME\Models\Organisation;
 use PRIME\Models\ThemeLayout;
 
@@ -30,9 +30,9 @@ class DashboardController extends ControllerBase
         
         $this->view->setVar("dashboards", $data);  
 
-        $data = Links::find("organisation_id= ".$auth['organisation_id']);
+        $data = Variables::find("organisation_id= ".$auth['organisation_id']);
         
-        $this->view->setVar("links", $data); 
+        $this->view->setVar("variables", $data); 
     }
         
     public function getDashboardsAction()

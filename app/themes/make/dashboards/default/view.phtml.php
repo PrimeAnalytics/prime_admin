@@ -206,7 +206,7 @@
 
     <script src="/assets/global/plugins/ion-slider/ion.rangeSlider.min.js"></script> <!-- Range Input Slider -->
 
-<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="/assets/global/plugins/charts-highstock/js/highstock.min.js"></script>
 <script src="https://code.highcharts.com/modules/treemap.js"></script>
 <script src="/themes/Pages/assets/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
 

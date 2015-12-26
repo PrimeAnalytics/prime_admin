@@ -43,6 +43,7 @@ class WidgetBase extends Controller
     public function updateAction($id)
     {
        $links= $this->request->getPost("links");
+       $variables= $this->request->getPost("variables");
 
        $widget = Widget::findFirstByid($id);  
        $parameters= (array)json_decode($widget->parameters,true);
@@ -55,7 +56,6 @@ class WidgetBase extends Controller
            if($links!=null)
            {
 
-               
                foreach($links as &$link)
                {
                    if(!array_key_exists("default_value",$link))
@@ -67,9 +67,7 @@ class WidgetBase extends Controller
                }
            }
 
-           
-
-           $parameters=call_user_func(array($this, 'getData'.$this->data_format), $parameters,$links);
+           $parameters=call_user_func(array($this, 'getData'.$this->data_format), $parameters,$links,$variables);
 
        }
 
@@ -82,17 +80,17 @@ class WidgetBase extends Controller
        $this->view->pick(strtolower(end($type)."/view"));
 
        $controls= '<style>
-#widget_'.$widget->id.' {
-transition: 1s display;
-transition-delay:1s;
-}
-.widget-controls { display:none; background-color:rgba(255,255,255,0.8); }
+        #widget_'.$widget->id.' {
+        transition: 1s display;
+        transition-delay:1s;
+        }
+        .widget-controls { display:none; background-color:rgba(255,255,255,0.8); }
 
-#widget_'.$widget->id.':hover .widget-controls , #widget_'.$widget->id.'.hover .widget-controls { display:block; position: absolute; top:0px; right: 0px; z-index:2147483647; }
-</style>
+        #widget_'.$widget->id.':hover .widget-controls , #widget_'.$widget->id.'.hover .widget-controls { display:block; position: absolute; top:0px; right: 0px; z-index:2147483647; }
+        </style>
 
-<div class="widget-controls"><a class="widget-control"   onclick="reset_'.$widget->id.'()"><i class="fa fa-times"></i></a>
-    <a class="widget-control" onclick="update_'.$widget->id.'(\'set\')"><i class="fa fa-check-circle-o"></i></a></div>';
+        <div class="widget-controls"><a class="widget-control"   onclick="reset_'.$widget->id.'()"><i class="fa fa-times"></i></a>
+        <a class="widget-control" onclick="update_'.$widget->id.'(\'set\')"><i class="fa fa-check-circle-o"></i></a></div>';
 
        $this->view->setVar("controls", $controls); 
 
@@ -116,13 +114,13 @@ transition-delay:1s;
         var reset_'.$widget->id.' = function(){';
         if(array_key_exists ("target_link",$parameters))
         {
-         echo 'update_dashboard("'.$parameters['target_link'].'", "","");';
+            echo 'update_dashboard("'.$parameters['db']['table'].'","'.$parameters['target_link'].'", "","");';
         }
         echo '}; ';
 
         echo'
 var xhr_'.$widget->id.';
-var update_'.$widget->id.' = function(link){
+var update_'.$widget->id.' = function(){
 try {
 xhr_'.$widget->id.'.abort();
 }
@@ -132,23 +130,23 @@ catch(err) {
 $("#widget_'.$id.'").append("<div class=\"ajax-loader\"><div class=\'ajax-spinner-bars\'><div class=\'bar-1\'></div><div class=\'bar-2\'></div><div class=\'bar-3\'></div><div class=\'bar-4\'></div><div class=\'bar-5\'></div><div class=\'bar-6\'></div><div class=\'bar-7\'></div><div class=\'bar-8\'></div><div class=\'bar-9\'></div><div class=\'bar-10\'></div><div class=\'bar-11\'></div><div class=\'bar-12\'></div><div class=\'bar-13\'></div><div class=\'bar-14\'></div><div class=\'bar-15\'></div><div class=\'bar-16\'></div></div></div>");
 
 
-           xhr_'.$widget->id.' = $.post("/widgets/'.$widget->type.'/update/'.$id.'", { links: links }, function(data) {
+           xhr_'.$widget->id.' = $.post("/widgets/'.$widget->type.'/update/'.$id.'", { links: links , variables:variables}, function(data) {
                  $("#widget_'.$id.'").replaceWith(data);
             });
             
           }; ';
         
-        echo 'update_'.$widget->id.'(\'set\');
+        echo 'update_'.$widget->id.'();
 
         </script>';
 
  
     }
 
-    public function getDataByRow($parameters,$links=null)
+    public function getDataByRow($parameters,$links=null,$variables=null)
     {
         $processController = new \PRIME\Controllers\ProcessController();
-        $data=$processController->getResults($parameters["db"]['table'],$links);
+        $data=$processController->getResults($parameters["db"]['table'],$links,$variables);
 
         $dbTemp=$parameters["db"];
         $parameters["db"]=array();
@@ -179,10 +177,10 @@ $("#widget_'.$id.'").append("<div class=\"ajax-loader\"><div class=\'ajax-spinne
     
     }
 
-    public function getDataChart($parameters,$links=null)
+    public function getDataChart($parameters,$links=null,$variables=null)
     {
         $processController = new \PRIME\Controllers\ProcessController();
-        $data=$processController->getResults($parameters["db"]['table'],$links);
+        $data=$processController->getResults($parameters["db"]['table'],$links,$variables);
         $dbTemp=$parameters["db"];
 
         $data_layout=$parameters["db"];
@@ -200,10 +198,10 @@ $("#widget_'.$id.'").append("<div class=\"ajax-loader\"><div class=\'ajax-spinne
         return $parameters;
     }
 
-    public function getDataByColumn($parameters,$links=null)
+    public function getDataByColumn($parameters,$links=null,$variables=null)
     {
         $processController = new \PRIME\Controllers\ProcessController();
-        $data=$processController->getResults($parameters["db"]['table'],$links);
+        $data=$processController->getResults($parameters["db"]['table'],$links,$variables);
 
         $dbTemp=$parameters["db"];
         $parameters["db"]=array();

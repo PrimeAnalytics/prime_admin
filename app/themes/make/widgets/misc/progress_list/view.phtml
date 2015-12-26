@@ -26,7 +26,7 @@
     
 
                 <div class="widget-progress-bar">
-                  <div id="scroll_{{widget.id}}" style="height:400px;">
+                  <div id="scroll_{{widget.id}}" style="height:{{parm['height']}};">
                       <div id="w_{{widget.id}}">
                 {% for entry in parm['db'] %}
                     <div class="item_{{widget.id}}" data-link="{{entry['label']}}" style="padding:10px">

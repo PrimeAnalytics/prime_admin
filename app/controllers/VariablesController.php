@@ -1,10 +1,10 @@
 <?php
 namespace PRIME\Controllers;
-use PRIME\Models\Links;
+use PRIME\Models\Variables;
 use PRIME\Models\Organisation;
 use PRIME\Models\OrgDatabase;
 
-class LinksController extends ControllerBase
+class VariablesController extends ControllerBase
 {
     public $organisation_id ="";
     protected function initialize()
@@ -58,19 +58,16 @@ class LinksController extends ControllerBase
      */
     public function createAction()
     {
-        $links = new Links();
+        $variables = new Variables();
 
-        $links->name = $this->request->getPost("name");
-        $links->table = $this->request->getPost("table");
-        $links->column = $this->request->getPost("column");
-        $links->default_value = $this->request->getPost("default_value");
-        $links->operator = $this->request->getPost("operator");
-        $links->type = "where";
+        $variables->name = $this->request->getPost("name");
+        $variables->values = $this->request->getPost("values");
+        $variables->default_value = "";
 
-        $links->organisation_id = $this->request->getPost("organisation_id");
+        $variables->organisation_id = $this->request->getPost("organisation_id");
 
-        if (!$links->save()) {
-            foreach ($links->getMessages() as $message) {
+        if (!$variables->save()) {
+            foreach ($variables->getMessages() as $message) {
                 $this->flash->error($message);
             }
 
@@ -93,15 +90,13 @@ class LinksController extends ControllerBase
     public function editAction($id)
     {
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
-        $link = Links::findFirstByid($id);  
+        $variables = Variables::findFirstByid($id);  
         
-        $this->tag->setDefault("name", $link->name);
-        $this->tag->setDefault("id", $link->id);
-        $this->tag->setDefault("table", $link->table);
-        $this->tag->setDefault("column", $link->column);
-        $this->tag->setDefault("operator", $link->operator);
-        $this->tag->setDefault("default_value", $link->default_value);
-        $this->tag->setDefault("organisation_id", $link->organisation_id);
+        $this->tag->setDefault("name", $variables->name);
+        $this->tag->setDefault("id", $variables->id);
+        $this->tag->setDefault("values", $variables->values);
+        $this->tag->setDefault("default_value", $variables->default_value);
+        $this->tag->setDefault("organisation_id", $variables->organisation_id);
 
 
     }
@@ -109,18 +104,16 @@ class LinksController extends ControllerBase
 
     public function saveAction()
     {
-        $links = Links::findFirstByid($this->request->getPost("id")); 
+        $variables = Variables::findFirstByid($this->request->getPost("id")); 
 
-        $links->name = $this->request->getPost("name");
-        $links->table = $this->request->getPost("table");
-        $links->column = $this->request->getPost("column");
-        $links->default_value = $this->request->getPost("default_value");
-        $links->operator = $this->request->getPost("operator");
+        $variables->name = $this->request->getPost("name");
+        $variables->values = $this->request->getPost("values");
+        $variables->default_value = $this->request->getPost("default_value");
 
-        $links->organisation_id = $this->request->getPost("organisation_id");
+        $variables->organisation_id = $this->request->getPost("organisation_id");
 
-        if (!$links->save()) {
-            foreach ($links->getMessages() as $message) {
+        if (!$variables->save()) {
+            foreach ($variables->getMessages() as $message) {
                 $this->flash->error($message);
             }
 
@@ -145,11 +138,11 @@ class LinksController extends ControllerBase
     public function deleteAction()
     {
         $id = $this->request->getPost("id");
-        $links = Links::findFirstByid($id);
+        $variables = Variables::findFirstByid($id);
 
-        if (!$links->delete()) {
+        if (!$variables->delete()) {
 
-            foreach ($links->getMessages() as $message) {
+            foreach ($variables->getMessages() as $message) {
                 $this->flash->error($message);
             }
         }
@@ -210,15 +203,15 @@ class LinksController extends ControllerBase
     public function getListAction()
     {
     $this->view->disable();
-    $links = Links::findByorganisation_id($this->organisation_id);
+    $variables = Variables::findByorganisation_id($this->organisation_id);
     
     $json = array();
-    foreach($links as $link)
+    foreach($variables as $variable)
     {
         
         $json[] = array(
-                'id' => $link->id,
-                           'text' => $link->name
+                'id' => $variable->id,
+                           'text' => $variable->name
                          );
     }
     

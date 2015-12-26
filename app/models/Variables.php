@@ -2,7 +2,7 @@
 
 namespace PRIME\Models;
 
-class Links extends \Phalcon\Mvc\Model
+class Variables extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -21,31 +21,13 @@ class Links extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $table;
-
-    /**
-     *
-     * @var string
-     */
-    public $column;
-
-    /**
-     *
-     * @var string
-     */
-    public $type;
+    public $values;
 
     /**
      *
      * @var string
      */
     public $default_value;
-
-    /**
-     *
-     * @var string
-     */
-    public $operator;
 
     /**
      *
@@ -68,14 +50,14 @@ class Links extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'links';
+        return 'variables';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Links[]
+     * @return Variables[]
      */
     public static function find($parameters = null)
     {

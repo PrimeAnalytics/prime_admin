@@ -16,6 +16,11 @@
             <div class="tabs tabs-linetriangle">
                 <ul class="nav nav-tabs">
                     <li class="width-16p active">
+                        <a href="#settings" data-toggle="tab">
+                            <span class="text-center">Settings</span>
+                        </a>
+                    </li>
+                    <li class="width-16p">
                         <a href="#layout" data-toggle="tab">
                             <span class="text-center">Layout</span>
                         </a>
@@ -29,16 +34,36 @@
                     ?>
                 </ul>
                 <div class="tab-content clearfix" style="overflow:visible">
-                    <div class="tab-pane fade in active" id="layout">
-                        <?php
+                    <div class="tab-pane fade in active" id="settings">
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input class="form-control"></input>
+                            </div>
+                            <div class="form-group">
+                                <label>Icon</label>
+                                <input class="form-control"></input>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Filters</label>
+                                <textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                  
+                            </div>
+                        <div class="tab-pane fade" id="layout">
+                            <?php
                     foreach($portletList as $subfile)
                     {
                     $type= "c_".strtolower(str_replace(" ","_",$subfile)) ;
                     echo '<div data-type="'.$type.'" class="layout ui-draggable">'.$subfile.'</div>';
                     }
-                        ?>
-                    </div>
-                    <?php
+                            ?>
+                        </div>
+                        <?php
                 foreach($widgetList as $key=>$subfiles)
                 {
                   echo '<div class="tab-pane fade" id="'.$key.'">';
@@ -49,9 +74,9 @@
                 }
                 echo '</div>';
                 }
-                    ?>
+                        ?>
 
-                    <script>
+                        <script>
 
               function update_dropzone(){
               contents = $("#dashboard_iframe").contents();
@@ -122,9 +147,9 @@
               })};
 
 
-                    </script>
+                        </script>
 
-                </div>
+                    </div>
             </div>
         </div>
 

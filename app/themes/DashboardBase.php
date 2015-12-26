@@ -3,7 +3,7 @@ namespace PRIME\Themes;
 use \Phalcon\Db\Adapter\Pdo;
 use Phalcon\Mvc\Controller as Controller;
 use PRIME\Models\Dashboard;
-use PRIME\Models\Links;
+use PRIME\Models\Variables;
 use PRIME\Models\Widget;
 use PRIME\Models\Portlet;
 use PRIME\Models\Organisation;
@@ -30,9 +30,6 @@ class DashboardBase extends Controller
             $this->user_image= $auth['image_path'];
             $this->full_name= $auth['full_name'];
         }
-
-        
-
     }
 
     public function getDashboardsAction()
@@ -146,6 +143,9 @@ margin-bottom: 1em;
 .tags .tag.highlight {
   background-color: rgba(231, 76, 60, 0.5);
 }
+.tags .tag.invert {
+  background-color: rgba(0, 0, 0, 0.5);
+}
 .tags:after {
   content: "";
   clear: both;
@@ -208,19 +208,14 @@ margin-bottom: 1em;
                 }
             }
         },
-        add_tag: function (name,id) {
+        add_tag: function (name) {
             if (name !== '') {
-                return $('.tags input').before('<div class=\'tag\' data-id=\"'+id+'\">' + name + '</div>');
+                return $('.tags input').before('<div class=\'tag\' data-id=\"'+name+'\">' + name + '</div>');
             }
         }
     };
 
 </script>";
-
-
-
-
-
 
 
         echo '
@@ -328,8 +323,14 @@ opacity: 0.7;
         $portlets=$dashboard->Portlet;
         
         echo ' <script>
-                       var links = '.json_encode($organisation->Links->toArray()).' ;
+                       var links = [] ;
                        </script>';
+
+        echo '<script>
+
+            var variables="'.json_encode($organisation->Variables).'";
+
+             </script>';
 
 
         echo '<script>
@@ -364,25 +365,31 @@ opacity: 0.7;
             update_dashboard();
             };
             
-            function update_dashboard(link_id, value,widget_id)
+            function update_dashboard(table_in,column_in,operator_in,value_in,widget_id)
             {  
             
             var filter_string="";
             $(\'.tags .tag\').remove();
       
-            $.each(links, function(index, key ) {
-            if( links[index].id==link_id)
+            var exist=false;            
+
+            $.each(links, function(index, key) {
+            if( links[index].column==column_in && links[index].operator==operator_in && links[index].table==table_in)
             {
-            links[index].default_value = value;
+            links[index].default_value = value_in;
+            exist=true;
             }
             if(links[index].default_value != "")
             {
-            app.add_tag(links[index].name,links[index].id);
+            app.add_tag(links[index].table+"-"+links[index].column);
             }
 
             }); 
-
-            
+            if(!exist)
+            {
+            links.push({"table":table_in,"column":column_in,"operator":operator_in,"default_value":value_in,"type":"where"});
+            app.add_tag(table_in+"-"+column_in);
+            }            
 
             ';
             
@@ -393,7 +400,7 @@ opacity: 0.7;
                 echo 'if(widget_id!='.$widget->id.'){
 ';
             
-                echo " update_".$widget->id."(link_id); 
+                echo " update_".$widget->id."(table,column); 
             }
 ";
                 

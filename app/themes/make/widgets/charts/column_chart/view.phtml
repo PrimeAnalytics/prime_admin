@@ -38,7 +38,7 @@
                             
                            
                         });
-                            update_dashboard("{{parm['target_link']}}", temp,{{widget.id}});
+                            update_dashboard("{{parm['target_link']}}", "=" ,temp,{{widget.id}});
 
     }
 
@@ -60,6 +60,7 @@
 $('#w_{{widget.id}}').highcharts({
             chart: {
             type: 'column',
+            spacingBottom: 50,
             spacingTop: 50,
             events: {
                 selection: selectPointsByDrag,
