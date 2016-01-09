@@ -31,20 +31,6 @@
 
 <script>
 
-
-    var columnData = "[]";
-
-        $.getJSON("/get/autocomplete/columns/", function (data) {
-            columnData = data;
-
-            $("#tableColumn").autocomplete({
-                source: columnData
-            });
-        });
-
-
-
-
         var columnData = "[]";
 
         var table = '';
@@ -56,8 +42,6 @@
 
                     data_temp=$("#columnsInput").val();
 
-                    $("#tableColumn").parent().empty().html('<textarea name="values" id="tableColumn" class="form-control" style="width:100%"></textarea>');
-                    $("#tableColumn").val(data_temp);
                     $("#tableColumn").tagEditor({
                         delimiter: ',',
                         forceLowercase:false,
@@ -73,13 +57,7 @@
             });
 
 
-      
-
-
-
-
-
-
+     
 
     $(document).ready(function () {
 

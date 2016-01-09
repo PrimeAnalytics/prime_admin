@@ -55,7 +55,7 @@
             link_set.push($(this).data('link'));
         });
         
-     update_dashboard("<?php echo $parm['target_link']; ?>", link_set,<?php echo $widget->id; ?>);
+     update_dashboard("<?php echo $parm['db']['table']; ?>","<?php echo $parm['target_link']; ?>","=", link_set,<?php echo $widget->id; ?>);
         
         
       }

@@ -13,7 +13,7 @@
 
         $("#w_{{widget.id}}").change(function() {
 
-            update_dashboard("{{parm['target_link']}}", this.value,{{widget.id}});
+            update_dashboard("{{parm['link_table']}}","{{parm['target_link']}}","=", this.value,{{widget.id}});
   
         });
 

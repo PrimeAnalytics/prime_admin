@@ -1,5 +1,6 @@
 <?php
 
+
 namespace PRIME\Models;
 
 class ThemeWidget extends \Phalcon\Mvc\Model
@@ -10,24 +11,6 @@ class ThemeWidget extends \Phalcon\Mvc\Model
      * @var integer
      */
     public $id;
-
-    /**
-     *
-     * @var string
-     */
-    public $name;
-
-    /**
-     *
-     * @var string
-     */
-    public $data_format;
-
-    /**
-     *
-     * @var string
-     */
-    public $category;
 
     /**
      *
@@ -72,11 +55,29 @@ class ThemeWidget extends \Phalcon\Mvc\Model
     public $theme_layout_id;
 
     /**
+     *
+     * @var string
+     */
+    public $name;
+
+    /**
+     *
+     * @var string
+     */
+    public $category;
+
+    /**
+     *
+     * @var string
+     */
+    public $data_format;
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('theme_layout_id', 'PRIME\Models\ThemeLayout', 'id', array('alias' => 'ThemeLayout'));
+        $this->belongsTo('theme_layout_id', 'ThemeLayout', 'id', array('alias' => 'ThemeLayout'));
     }
 
     /**

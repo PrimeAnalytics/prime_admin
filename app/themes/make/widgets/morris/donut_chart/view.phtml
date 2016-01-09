@@ -17,6 +17,6 @@ Morris.Donut({
 {% endfor  %}
 ]}).on('click', function(i, row){
 
-     update_dashboard("{{parm['target_link']}}", row.label,{{widget.id}});
+     update_dashboard("{{parm['link_table']}}","{{parm['target_link']}}","=", row.label,{{widget.id}});
 });
 </script>{{ content() }}</div>

@@ -63,7 +63,7 @@
             link_set.push($(this).data('link'));
         });
         
-     update_dashboard("{{parm['target_link']}}", link_set,{{widget.id}});
+     update_dashboard("{{parm['link_table']}}","{{parm['target_link']}}","=", link_set,{{widget.id}});
         
         
       }

@@ -89,7 +89,6 @@ class DashboardBase extends Controller
 
             $this->view->setVar("dashboard_id", $dashboard->id);  
             $this->view->setVar("dashboard_type", $dashboard->type);
-            $this->view->setVar("links", $organisation->links);
             $this->view->setVar("organisation_id", $dashboard->organisation_id);
             
             $this->view->id = $dashboard->id;
@@ -208,7 +207,7 @@ margin-bottom: 1em;
                 }
             }
         },
-        add_tag: function (name) {
+        add_tag: function (table,column,value,type) {
             if (name !== '') {
                 return $('.tags input').before('<div class=\'tag\' data-id=\"'+name+'\">' + name + '</div>');
             }
@@ -328,10 +327,9 @@ opacity: 0.7;
 
         echo '<script>
 
-            var variables="'.json_encode($organisation->Variables).'";
+            var variables=\''.json_encode($organisation->Variables->ToArray()).'\';
 
              </script>';
-
 
         echo '<script>
                 var d_links = "'.$links.'";
@@ -374,7 +372,7 @@ opacity: 0.7;
             var exist=false;            
 
             $.each(links, function(index, key) {
-            if( links[index].column==column_in && links[index].operator==operator_in && links[index].table==table_in)
+            if( links[index].column==column_in && links[index].table==table_in)
             {
             links[index].default_value = value_in;
             exist=true;
@@ -400,7 +398,7 @@ opacity: 0.7;
                 echo 'if(widget_id!='.$widget->id.'){
 ';
             
-                echo " update_".$widget->id."(table,column); 
+                echo " update_".$widget->id."(table_in,column_in); 
             }
 ";
                 
@@ -428,9 +426,6 @@ opacity: 0.7;
         $menu= $this->elements->getMenu();
         $this->view->setVar("menu", $menu); 
 
-        $links = $organisation->Links;
-
-        $this->view->setVar("links", $links); 
      
         $portlets = Portlet::find(array(
                                         'dashboard_id ='.$dashboard->id,
@@ -440,7 +435,6 @@ opacity: 0.7;
         $this->view->setVar("dashboard", $dashboard); 
         $this->view->setVar("organisation", $organisation);
         
-        $this->view->setVar("links", $organisation->Links); 
 
                 if($type=="builder")
                 {

@@ -100,6 +100,46 @@ class GetController extends ControllerBase
       
     }
 
+    public function DBTableDataAction($db_table)
+    {
+        $this->view->disable();
+        $db = $this->getUserDB();
+        $statement = $db->prepare("select * from ".strtolower($this->db_name).".$db_table Limit 100000");
+        $statement->execute();
+        
+        $json = array();
+        
+        while($row = $statement->fetch(\PDO::FETCH_ASSOC))
+        {		
+            $json[] =$row;
+        }                                  
+
+            echo json_encode($json);
+
+        return $json;
+        
+    }
+
+    public function DBTableRecordCountAction($db_table)
+    {
+        $this->view->disable();
+        $db = $this->getUserDB();
+        $statement = $db->prepare("select count(*) from ".strtolower($this->db_name).".$db_table Limit 100000");
+        $statement->execute();
+        
+        $json = array();
+        
+        while($row = $statement->fetch(\PDO::FETCH_ASSOC))
+        {		
+            $json =$row['count(*)'];
+        }                                  
+
+        echo json_encode($json);
+
+        return $json;
+        
+    }
+
     public function VariablesAction($return=true)
     {
         $this->view->disable();

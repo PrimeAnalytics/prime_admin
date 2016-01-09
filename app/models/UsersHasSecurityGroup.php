@@ -2,14 +2,8 @@
 
 namespace PRIME\Models;
 
-class DashboardHasUsers extends \Phalcon\Mvc\Model
+class UsersHasSecurityGroup extends \Phalcon\Mvc\Model
 {
-
-    /**
-     *
-     * @var integer
-     */
-    public $dashboard_id;
 
     /**
      *
@@ -18,12 +12,18 @@ class DashboardHasUsers extends \Phalcon\Mvc\Model
     public $users_email;
 
     /**
+     *
+     * @var integer
+     */
+    public $security_group_id;
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('dashboard_id', 'PRIME\Models\Dashboard', 'id', array('alias' => 'Dashboard'));
-        $this->belongsTo('users_email', 'PRIME\Models\Users', 'email', array('alias' => 'Users'));
+        $this->belongsTo('security_group_id', 'SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
+        $this->belongsTo('users_email', 'Users', 'email', array('alias' => 'Users'));
     }
 
     /**
@@ -33,14 +33,14 @@ class DashboardHasUsers extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'dashboard_has_users';
+        return 'users_has_security_group';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return DashboardHasUsers[]
+     * @return UsersHasSecurityGroup[]
      */
     public static function find($parameters = null)
     {
@@ -51,7 +51,7 @@ class DashboardHasUsers extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return DashboardHasUsers
+     * @return UsersHasSecurityGroup
      */
     public static function findFirst($parameters = null)
     {

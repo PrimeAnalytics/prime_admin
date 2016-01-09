@@ -38,7 +38,7 @@
                             
                            
                         });
-                            update_dashboard("<?php echo $parm['target_link']; ?>", temp,<?php echo $widget->id; ?>);
+                            update_dashboard("<?php echo $parm['link_table']; ?>","<?php echo $parm['target_link']; ?>","=", temp,<?php echo $widget->id; ?>);
 
     }
 

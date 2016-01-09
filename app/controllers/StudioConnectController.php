@@ -273,18 +273,6 @@ class StudioConnectController extends ControllerBase
 
         $sql=substr($sql, 0, -2);
 
-        //if($primary_key=="auto")
-        //{
-        //    $sql=$sql."id INT PRIMARY KEY";
-        //}
-        //elseif($primary_key=="first")
-        //{
-        //    $sql=$sql."PRIMARY KEY (".reset($data['headings']).")";
-        //}
-        //else
-        //{
-        //    $sql=$sql."PRIMARY KEY (".$primary_key.")";
-        //}
         
           $sql=$sql.")";                
         

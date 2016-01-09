@@ -152,7 +152,20 @@ class ProcessController extends ControllerBase
     {
         $this->view->disable();
         
-        $array=$this->getResults($id);
+        $organisation= Organisation::findFirstByid($this->organisation_id);
+
+        $variables=$organisation->Variables->ToArray();
+
+        foreach($variables as &$variable)
+        {
+
+            $var=(array)explode(":",$variable['default_value']);
+
+                $variable['default_value']=$variable['default_value'].":".'{'.$variable['name'].'}';
+
+        }
+
+        $array=$this->getResults($id,array(),$organisation->Variables->ToArray());
 
 
         $headers=array();
@@ -252,7 +265,25 @@ class ProcessController extends ControllerBase
             if(is_numeric ($id))
             {
             $process = Process::findFirstById($id);
-            $parameters= json_decode($process->parameters,true);
+
+            $parameters=$process->parameters;
+
+            foreach($variables as $value)
+            {
+                if($value['default_value'] != null)
+                {
+                    $parameters=str_ireplace('{'.$value['name'].'}',$value['default_value'],$parameters);
+                }
+                else
+                {
+                    $values=explode(',',$value['values']);
+                    $parameters=str_ireplace('{'.$value['name'].'}',reset($values),$parameters);
+                }
+
+            }
+
+            $parameters= (array)json_decode($parameters,true);
+
             }
             else
             {
@@ -276,10 +307,13 @@ class ProcessController extends ControllerBase
 
                foreach($links as $link)
                {
+                   if($db_table_name==$link['table'])
+                   {
                        $filter['keys'][]=str_replace("|",",",$link['column']);
                        $filter['operator'][]=$link['operator'];
                        $filter['type'][]=$link['type'];
                        $filter['values'][]=(array)$link['default_value'];
+                   }
                }
 
 
@@ -368,11 +402,6 @@ class ProcessController extends ControllerBase
          {
              
            $sql_totals="SELECT ".implode(" , ",$matches[1])." FROM ".$this->db_name.".$db_table_name $filter_string";
-
-           foreach($variables as $varname=>$value)
-           {
-               $sql_totals=str_ireplace('{'.$varname.'}',$value,$sql_totals);
-           }
 
              $statement=$db->prepare($sql_totals);
              if($error=$statement->execute())
@@ -507,12 +536,7 @@ class ProcessController extends ControllerBase
        }
 
 
-       $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
-
-       foreach($variables as $varname=>$value)
-       {
-           $sql=str_ireplace('{'.$varname.'}',$value,$sql);
-       }
+        $sql="SELECT $select_string FROM ".$this->db_name.".$db_table_name $filter_string $group_string $having_string $order_string Limit $row_limit";
      
        $statement=$db->prepare( $sql);
             
@@ -674,10 +698,11 @@ class ProcessController extends ControllerBase
     {
 
         $this->view->disable();
-        
-        $array=$this->getResults($id);
 
-   
+        $organisation= Organisation::findFirstByid($this->organisation_id);
+
+        $array=$this->getResults($id,array(),$organisation->Variables->ToArray());
+        
         echo json_encode($array);
 
     
@@ -688,8 +713,9 @@ class ProcessController extends ControllerBase
 
 
        $this->view->Disable();
+       $organisation= Organisation::findFirstByid($this->organisation_id);
 
-       $array=$this->getResults($id);
+       $array=$this->getResults($id,array(),$organisation->Variables->ToArray());
 
        $process = Process::findFirstById($id);
        $parameters= json_decode($process->parameters,true);

@@ -27,6 +27,12 @@ class ProcessOperator extends \Phalcon\Mvc\Model
      *
      * @var string
      */
+    public $category;
+
+    /**
+     *
+     * @var string
+     */
     public $form;
 
     /**
@@ -61,7 +67,7 @@ class ProcessOperator extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var string
+     * @var integer
      */
     public $organisation_id;
 
@@ -70,7 +76,7 @@ class ProcessOperator extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
+        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**

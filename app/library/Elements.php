@@ -31,6 +31,11 @@ class Elements extends Phalcon\Mvc\User\Component
                 'action' => 'index',
                 'icon' =>'fa-users'
             ),
+            'security_group' => array(
+                'caption' => 'Access Control',
+                'action' => 'index',
+                'icon' =>'fa-users'
+            ),
             'theme_creator' => array(
                 'caption' => 'Theme Creator',
                 'action' => 'index',
@@ -97,7 +102,9 @@ class Elements extends Phalcon\Mvc\User\Component
         $email = $auth['email'];
         
         $user = Users::findFirstByemail($email);
-        $user_dashboards = $user->getdashboard(array('order' => 'weight'));
+
+        $user->SecurityGroup;
+        $user_dashboards = array();;
         
         foreach($user_dashboards as $dashboard)
         {    

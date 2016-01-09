@@ -10,7 +10,7 @@ $("#w_{{widget.id}}").select2();
 
         $("#w_{{widget.id}}").change(function() {
         
-            update_dashboard("{{parm['target_link']}}", $("#w_{{widget.id}}").select2("val"),{{widget.id}});
+            update_dashboard("{{parm['link_table']}}","{{parm['target_link']}}","=", $("#w_{{widget.id}}").select2("val"),{{widget.id}});
   
         });
 

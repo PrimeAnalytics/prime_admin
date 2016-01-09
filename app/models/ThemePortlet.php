@@ -15,12 +15,6 @@ class ThemePortlet extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $name;
-
-    /**
-     *
-     * @var string
-     */
     public $html;
 
     /**
@@ -60,11 +54,17 @@ class ThemePortlet extends \Phalcon\Mvc\Model
     public $theme_layout_id;
 
     /**
+     *
+     * @var string
+     */
+    public $name;
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('theme_layout_id', 'PRIME\Models\ThemeLayout', 'id', array('alias' => 'ThemeLayout'));
+        $this->belongsTo('theme_layout_id', 'ThemeLayout', 'id', array('alias' => 'ThemeLayout'));
     }
 
     /**

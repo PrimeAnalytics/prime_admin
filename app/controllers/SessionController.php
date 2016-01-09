@@ -6,7 +6,6 @@ use Phalcon\Tag as Tag;
 use PRIME\Models\Users;
 use PRIME\Models\Organisation;
 use PRIME\Models\Login;
-use PRIME\Models\PhysicalAddress;
 use PRIME\Models\OrgDatabase;
 
 

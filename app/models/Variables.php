@@ -25,22 +25,24 @@ class Variables extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var string
-     */
-    public $default_value;
-
-    /**
-     *
      * @var integer
      */
     public $organisation_id;
+
+    /**
+     *
+     * @var string
+     */
+    public $default_value;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
+        $this->hasMany('id', 'SecurityGroupHasVariables', 'variables_id', array('alias' => 'SecurityGroupHasVariables'));
+        $this->hasMany('id', 'VariablesHasSecurityGroup', 'variables_id', array('alias' => 'VariablesHasSecurityGroup'));
+        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**
@@ -68,7 +70,7 @@ class Variables extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Links
+     * @return Variables
      */
     public static function findFirst($parameters = null)
     {

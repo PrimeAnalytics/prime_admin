@@ -55,7 +55,7 @@ var mapData = [
         
             google.maps.event.addListener(marker, "click",  function() {
                 
-                update_dashboard("{{parm['target_link']}}", this.title,{{widget.id}});
+                update_dashboard("{{parm['link_table']}}","{{parm['target_link']}}","=", this.title,{{widget.id}});
                      
                         });
             

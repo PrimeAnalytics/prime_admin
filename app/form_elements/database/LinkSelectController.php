@@ -9,17 +9,36 @@ class LinkSelectController extends FormElementBase
     {
         $output=array();
 
-        $output['html'][]='<div class="form-group">
+
+
+        $output['html'][]='<div class="">
+<div class="form-group">
+                                    <label>Select Table</label>
+                                        <input id="linkTable" name="parameters[link_table]" class="form-control" data-placeholder="Choose a table...">
+                                        </input>
+                                </div></div>
+<div class="">
+<div class="form-group">
                                     <label class="form-label">Target Link</label>
 <textarea id="target-link" name="parameters[target_link]" class="form-control" style="width:100%"></textarea>
-                         </div>';
+                         </div></div>';
 
         $output['js'][]=  '
+
+$.getJSON("/Get/DBTables", function (data) {
+            $("#linkTable").select2({
+                data: data
+            });
+       
+        });
+
+$(\'#linkTable\').on(\'change\', function() {
+var table =$("#linkTable").val();
 
         var columnData = "[]";
 
             var request = $.ajax({
-                url: "/get/autocomplete/columns/",
+                url: "/get/autocomplete/columns/"+table,
                 type: "get",
                 success: function (result) {
 
@@ -38,6 +57,10 @@ class LinkSelectController extends FormElementBase
 
                 }
             });
+
+});
+
+
 
 ';
 

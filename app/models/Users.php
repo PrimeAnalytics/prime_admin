@@ -95,8 +95,8 @@ class Users extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasManyToMany('email', 'PRIME\Models\DashboardHasUsers', 'users_email','dashboard_id','PRIME\Models\Dashboard','id',array('alias' => 'Dashboard'));
-        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
+        $this->hasManyToMany('email', 'PRIME\Models\UsersHasSecurityGroup', 'users_email','security_group_id','PRIME\Models\SecurityGroup','id',array('alias' => 'SecurityGroup'));
+        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**

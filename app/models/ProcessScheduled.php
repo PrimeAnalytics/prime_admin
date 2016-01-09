@@ -40,7 +40,8 @@ class ProcessScheduled extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
+        $this->hasMany('id', 'SecurityGroupHasProcessScheduled', 'process_scheduled_id', array('alias' => 'SecurityGroupHasProcessScheduled'));
+        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**
@@ -57,7 +58,7 @@ class ProcessScheduled extends \Phalcon\Mvc\Model
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Process[]
+     * @return ProcessScheduled[]
      */
     public static function find($parameters = null)
     {
@@ -68,7 +69,7 @@ class ProcessScheduled extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Process
+     * @return ProcessScheduled
      */
     public static function findFirst($parameters = null)
     {

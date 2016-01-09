@@ -36,12 +36,9 @@
                  temp.push(value.x);
                 {% endif  %}
                             
-                            
-                            
-                            
                            
                         });
-                            update_dashboard("{{parm['target_link']}}", temp,{{widget.id}});
+                            update_dashboard("{{parm['link_table']}}","{{parm['target_link']}}","=", temp,{{widget.id}});
 
     }
 
@@ -55,6 +52,7 @@
                 point.select(false);
             });
         }
+        HighchartsAdapter.fireEvent(this, 'selectedpoints', { points: this.getSelectedPoints() });
     }
 
 
@@ -75,7 +73,7 @@ $('#w_{{widget.id}}').highcharts({
         },
         plotOptions: {
             series: {
-                allowPointSelect: true
+                allowPointSelect: true,
             }
         },
  title: {
@@ -124,18 +122,6 @@ $('#w_{{widget.id}}').highcharts({
 
 });
 
-$('#preview_{{widget.id}}').on('click', function(){
-    
-            var chart = $('#w_{{widget.id}}').highcharts(),
-            selectedPoints = chart.getSelectedPoints();
-
-                            var temp=[];
-                        $.each(selectedPoints, function (i, value) {
-                            temp.push(value.x);
-                        });
-                            update_dashboard("{{parm['target_link']}}", temp,{{widget.id}});
-    
-});
 
 
 </script>{{ content() }}</div>

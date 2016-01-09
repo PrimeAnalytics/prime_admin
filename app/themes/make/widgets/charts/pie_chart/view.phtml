@@ -37,7 +37,7 @@ $('#w_{{widget.id}}').highcharts({
                         $.each(w{{widget.id}}_selectedPoints, function (i, value) {
                             temp.push(value.name);
                         });
-                            update_dashboard("{{parm['target_link']}}", temp,{{widget.id}});
+                            update_dashboard("{{parm['link_table']}}","{{parm['target_link']}}","=", temp,{{widget.id}});
                         }
                         
                     }

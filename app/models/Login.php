@@ -1,5 +1,6 @@
 <?php
 
+
 namespace PRIME\Models;
 
 class Login extends \Phalcon\Mvc\Model
@@ -21,7 +22,13 @@ class Login extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $theme;
+    public $parameters;
+
+    /**
+     *
+     * @var integer
+     */
+    public $organisation_id;
 
     /**
      *
@@ -33,20 +40,14 @@ class Login extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $parameters;
-
-    /**
-     *
-     * @var integer
-     */
-    public $organisation_id;
+    public $theme;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
+        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**
@@ -63,7 +64,7 @@ class Login extends \Phalcon\Mvc\Model
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Links[]
+     * @return Login[]
      */
     public static function find($parameters = null)
     {
@@ -74,7 +75,7 @@ class Login extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Links
+     * @return Login
      */
     public static function findFirst($parameters = null)
     {

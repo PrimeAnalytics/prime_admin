@@ -183,7 +183,7 @@
         });
     }
 
-    function create_new_link() {
+    function create_new_variable() {
         $("#modal_content").load('/variables/new/', function () {
             $("#myModal").modal("show");
         });

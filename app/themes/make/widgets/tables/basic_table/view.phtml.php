@@ -67,7 +67,7 @@ var linking_column=<?php echo json_encode($linking_column) ?> ;
     
     
     
-     update_dashboard("<?php echo $parm['target_link']; ?>","=", link_set,<?php echo $widget->id; ?>);
+     update_dashboard("<?php echo $parm['link_table']; ?>","<?php echo $parm['target_link']; ?>","=", link_set,<?php echo $widget->id; ?>);
         
     } );
    

@@ -31,22 +31,22 @@ class Widget extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var integer
-     */
-    public $portlet_id;
-
-    /**
-     *
      * @var string
      */
     public $parameters;
+
+    /**
+     *
+     * @var integer
+     */
+    public $portlet_id;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('portlet_id', 'PRIME\Models\Portlet', 'id', array('alias' => 'Portlet'));
+        $this->belongsTo('portlet_id', 'Portlet', 'id', array('alias' => 'Portlet'));
     }
 
     /**

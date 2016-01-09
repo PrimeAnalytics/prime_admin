@@ -15,12 +15,6 @@ class ThemeLogin extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $name;
-
-    /**
-     *
-     * @var string
-     */
     public $html;
 
     /**
@@ -60,11 +54,17 @@ class ThemeLogin extends \Phalcon\Mvc\Model
     public $theme_layout_id;
 
     /**
+     *
+     * @var string
+     */
+    public $name;
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('theme_layout_id', 'PRIME\Models\ThemeLayout', 'id', array('alias' => 'ThemeLayout'));
+        $this->belongsTo('theme_layout_id', 'ThemeLayout', 'id', array('alias' => 'ThemeLayout'));
     }
 
     /**
@@ -81,7 +81,7 @@ class ThemeLogin extends \Phalcon\Mvc\Model
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return ThemeDashboard[]
+     * @return ThemeLogin[]
      */
     public static function find($parameters = null)
     {
@@ -92,7 +92,7 @@ class ThemeLogin extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return ThemeDashboard
+     * @return ThemeLogin
      */
     public static function findFirst($parameters = null)
     {

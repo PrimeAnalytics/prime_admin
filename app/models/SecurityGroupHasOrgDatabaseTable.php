@@ -2,45 +2,34 @@
 
 namespace PRIME\Models;
 
-class VirtualMachine extends \Phalcon\Mvc\Model
+class SecurityGroupHasOrgDatabaseTable extends \Phalcon\Mvc\Model
 {
 
     /**
      *
      * @var integer
      */
-    public $id;
-
-    /**
-     *
-     * @var string
-     */
-    public $name;
-
-    /**
-     *
-     * @var string
-     */
-    public $external_id;
-
-    /**
-     *
-     * @var string
-     */
-    public $storage;
+    public $security_group_id;
 
     /**
      *
      * @var integer
      */
-    public $organisation_id;
+    public $org_database_table_id;
+
+    /**
+     *
+     * @var string
+     */
+    public $read_write;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
+        $this->belongsTo('org_database_table_id', 'OrgDatabaseTable', 'id', array('alias' => 'OrgDatabaseTable'));
+        $this->belongsTo('security_group_id', 'SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
     }
 
     /**
@@ -50,14 +39,14 @@ class VirtualMachine extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'virtual_machine';
+        return 'security_group_has_org_database_table';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return VirtualMachine[]
+     * @return SecurityGroupHasOrgDatabaseTable[]
      */
     public static function find($parameters = null)
     {
@@ -68,7 +57,7 @@ class VirtualMachine extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return VirtualMachine
+     * @return SecurityGroupHasOrgDatabaseTable
      */
     public static function findFirst($parameters = null)
     {

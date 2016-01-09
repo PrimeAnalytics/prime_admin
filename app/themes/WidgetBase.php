@@ -43,10 +43,24 @@ class WidgetBase extends Controller
     public function updateAction($id)
     {
        $links= $this->request->getPost("links");
-       $variables= $this->request->getPost("variables");
+       $variables= (array)json_decode($this->request->getPost("variables"),true);
 
        $widget = Widget::findFirstByid($id);  
-       $parameters= (array)json_decode($widget->parameters,true);
+
+       $parameters=$widget->parameters;
+       foreach($variables as $value)
+       {
+           if($value['default_value'] != null)
+           {
+               $sql_totals=str_ireplace('{'.$value['name'].'}',$value['default_value'],$parameters);
+           }
+           else
+           {
+               $values=explode(',',$value['values']);
+               $sql_totals=str_ireplace('{'.$value['name'].'}',reset($values),$parameters);
+           }
+       }
+       $parameters= (array)json_decode($parameters,true);
 
        if(array_key_exists("db",$parameters))
        {
@@ -114,7 +128,7 @@ class WidgetBase extends Controller
         var reset_'.$widget->id.' = function(){';
         if(array_key_exists ("target_link",$parameters))
         {
-            echo 'update_dashboard("'.$parameters['db']['table'].'","'.$parameters['target_link'].'", "","");';
+            echo 'update_dashboard("'.$parameters['link_table'].'","'.$parameters['target_link'].'", "","","");';
         }
         echo '}; ';
 
