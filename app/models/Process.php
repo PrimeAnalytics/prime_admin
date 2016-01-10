@@ -40,8 +40,8 @@ class Process extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'SecurityGroupHasProcess', 'process_id', array('alias' => 'SecurityGroupHasProcess'));
-        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
+        $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasProcess', 'process_id','security_group_id','PRIME\Models\SecurityGroup','id',array('alias' => 'SecurityGroup'));
+        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**

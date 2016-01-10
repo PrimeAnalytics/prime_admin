@@ -28,8 +28,8 @@ class SecurityGroupHasProcess extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('process_id', 'Process', 'id', array('alias' => 'Process'));
-        $this->belongsTo('security_group_id', 'SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
+        $this->belongsTo('process_id', 'PRIME\Models\Process', 'id', array('alias' => 'Process'));
+        $this->belongsTo('security_group_id', 'PRIME\Models\SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
     }
 
     /**

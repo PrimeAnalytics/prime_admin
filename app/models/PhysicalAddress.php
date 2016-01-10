@@ -40,7 +40,7 @@ class PhysicalAddress extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
+        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**

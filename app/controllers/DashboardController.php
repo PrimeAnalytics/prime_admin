@@ -1,12 +1,12 @@
 <?php
 namespace PRIME\Controllers;
 use PRIME\Models\Dashboard;
-use PRIME\Models\DashboardHasUsers;
 use PRIME\Models\Widget;
 use PRIME\Models\Portlet;
 use PRIME\Models\Variables;
 use PRIME\Models\Organisation;
 use PRIME\Models\ThemeLayout;
+use PRIME\Models\ThemeDashboard;
 
 
 class DashboardController extends ControllerBase

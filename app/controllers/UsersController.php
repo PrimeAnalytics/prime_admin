@@ -2,8 +2,8 @@
  
 namespace PRIME\Controllers;
 use PRIME\Models\Users;
-use PRIME\Models\Dashboard;
-use PRIME\Models\DashboardHasUsers;
+use PRIME\Models\SecurityGroup;
+use PRIME\Models\UsersHasSecurityGroup;
 
 class UsersController extends ControllerBase
 {
@@ -72,42 +72,42 @@ class UsersController extends ControllerBase
             $this->tag->setDefault("organisation_id", $user->organisation_id);
             
             
-            $userdata = $user->dashboard;
-            $this->view->setVar("user_dashboards", $userdata);
+            $userdata = $user->SecurityGroup;
+            $this->view->setVar("user_security_groups", $userdata);
             
-            $data = Dashboard::find("organisation_id=".$user->organisation_id);
+            $data = SecurityGroup::find("organisation_id=".$user->organisation_id);
 
             $data=$data->toArray();
 
-            foreach($userdata->toArray() as $dashboard)
+            foreach($userdata->toArray() as $security_group)
             {
-                if(($key = array_search($dashboard, $data)) !== false) {
+                if(($key = array_search($security_group, $data)) !== false) {
                     unset($data[$key]);
                 }
             }
             $object = json_decode(json_encode($data), FALSE);
            
-            $this->view->setVar("dashboards", $object); 
+            $this->view->setVar("security_groups", $object); 
             $this->view->setVar("user", $user); 
                  
         }
     }
     
     
-    public function enable_dashboardAction($dashboard_id,$users_email)
+    public function enable_security_groupAction($security_group_id,$users_email)
     {
 
-        $dashboard_has_user = new DashboardHasUsers();
+        $user_has_security_group = new UsersHasSecurityGroup();
 
-        $dashboard_has_user->dashboard_id = $dashboard_id;
-        $dashboard_has_user->users_email = $users_email;
+        $user_has_security_group->security_group_id = $security_group_id;
+        $user_has_security_group->users_email = $users_email;
         
 
-        if (!$dashboard_has_user->save()) {
+        if (!$user_has_security_group->save()) {
 
         }
 
-        $this->flash->success("Dashboard was successfully enabled");
+        $this->flash->success("User was succesfully added to Security Group");
         return $this->dispatcher->forward(array(
                                                 "namespace" => "PRIME\Controllers",
                                                 "controller" => "users",
@@ -117,16 +117,16 @@ class UsersController extends ControllerBase
     }
     
     
-    public function disable_dashboardAction($dashboard_id,$users_email)
+    public function disable_security_groupAction($security_group_id,$users_email)
     {
-        $dashboard_has_user = DashboardHasUsers::findFirst(array("dashboard_id= $dashboard_id","users_email= $users_email"));
+        $user_has_security_group = UsersHasSecurityGroup::findFirst(array("security_group_id= $security_group_id","users_email= $users_email"));
         
 
-        if (!$dashboard_has_user->delete()) {
+        if (!$user_has_security_group->delete()) {
 
         }
 
-        $this->flash->success("Dashboard was successfully disabled");
+        $this->flash->success("User was succesfully removed from Security Group");
         return $this->dispatcher->forward(array(
     "namespace" => "PRIME\Controllers",
     "controller" => "users",

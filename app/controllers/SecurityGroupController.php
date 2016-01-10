@@ -3,6 +3,9 @@
 namespace PRIME\Controllers;
 use PRIME\Models\SecurityGroup;
 use PRIME\Models\Dashboard;
+use PRIME\Models\Variables;
+use PRIME\Models\Users;
+use PRIME\Models\OrgDatabase;
 use PRIME\Models\OrgDatabaseTable;
 use PRIME\Models\Process;
 use PRIME\Models\ProcessScheduled;
@@ -72,38 +75,128 @@ class SecurityGroupController extends ControllerBase
             $this->tag->setDefault("organisation_id", $security_group->organisation_id);
             
             
-            $data = $security_group->dashboard;
-            $this->view->setVar("dashboards", $data);
+            $data = $security_group->Dashboard;
+            $this->view->setVar("dashboards_write", $data);
+            $this->view->setVar("dashboards_read", array());
 
-            $data = $security_group->process;
-            $this->view->setVar("processes", $data);
+            $dataAll = Dashboard::find("organisation_id=".$security_group->organisation_id);
 
-            $data = $security_group->process_scheduled;
-            $this->view->setVar("processes_scheduled", $data);
-
-            $data = $security_group->org_database_table;
-            $this->view->setVar("org_database_tables", $data);
-
-            $data = $security_group->variables;
-            $this->view->setVar("variables", $data);
-
-            $data = $security_group->users;
-            $this->view->setVar("users", $data);
-            
-            $data = Dashboard::find("organisation_id=".$user->organisation_id);
 
             $data=$data->toArray();
 
-            foreach($userdata->toArray() as $dashboard)
+
+            foreach($dataAll->toArray() as $item)
             {
-                if(($key = array_search($dashboard, $data)) !== false) {
-                    unset($data[$key]);
+                if(($key = array_search($item, $data)) !== false) {
+                    unset($dataAll[$key]);
                 }
             }
-            $object = json_decode(json_encode($data), FALSE);
-           
-            $this->view->setVar("dashboards", $object); 
-            $this->view->setVar("user", $user); 
+
+            $this->view->setVar("dashboards_disable", $dataAll); 
+
+
+            $data = $security_group->Process;
+            $this->view->setVar("processes_write", $data);
+            $this->view->setVar("processes_read", array());
+
+            $dataAll = Process::find("organisation_id=".$security_group->organisation_id);
+
+            $data=$data->toArray();
+
+            foreach($dataAll->toArray() as $item)
+            {
+                if(($key = array_search($item, $data)) !== false) {
+                    unset($dataAll[$key]);
+                }
+            }
+
+            $this->view->setVar("processes_disable", $dataAll); 
+
+
+            $data = $security_group->ProcessScheduled;
+            $this->view->setVar("processes_scheduled_write", $data);
+            $this->view->setVar("processes_scheduled_read", array());
+
+            $dataAll = ProcessScheduled::find("organisation_id=".$security_group->organisation_id);
+
+            $data=$data->toArray();
+
+            foreach($dataAll->toArray() as $item)
+            {
+                if(($key = array_search($item, $data)) !== false) {
+                    unset($dataAll[$key]);
+                }
+            }
+
+            $this->view->setVar("processes_scheduled_disable", $dataAll); 
+
+
+
+            $data = $security_group->OrgDatabaseTable;
+            $this->view->setVar("org_database_tables_write", $data);
+            $this->view->setVar("org_database_tables_read", array());
+
+            $database = OrgDatabase::findFirstByOrganisationId($security_group->organisation_id);
+            $dataAll = OrgDatabaseTable::find("org_database_id=".$database->id);
+
+            $data=$data->toArray();
+
+            foreach($dataAll->toArray() as $item)
+            {
+                if(($key = array_search($item, $data)) !== false) {
+                    unset($dataAll[$key]);
+                }
+            }
+
+            $this->view->setVar("org_database_tables_disable", $dataAll); 
+
+
+
+            $data = $security_group->Variables;
+            $this->view->setVar("variables_write", $data);
+            $this->view->setVar("variables_read", array());
+
+            $dataAll = Variables::find("organisation_id=".$security_group->organisation_id);
+
+            $data=$data->toArray();
+
+            foreach($dataAll->toArray() as $item)
+            {
+                if(($key = array_search($item, $data)) !== false) {
+                    unset($dataAll[$key]);
+                }
+            }
+
+            $this->view->setVar("variables_disable", $dataAll); 
+            
+
+
+            $data = $security_group->Users;
+            $this->view->setVar("users_write", $data);
+            $this->view->setVar("users_read", array());
+
+            $dataAll = Users::find("organisation_id=".$security_group->organisation_id);
+
+            $dataAllSet = json_decode(json_encode($dataAll->toArray()),FALSE);
+
+            $data=$data->toArray();
+            
+
+            foreach($dataAll->toArray() as $item)
+            {
+                if(($key = array_search($item, $data)) !== false) {
+                    unset($dataAllSet[$key]);
+
+                }
+            }
+
+
+            $this->view->setVar("users_disable", $dataAllSet); 
+            
+
+
+
+            $this->view->setVar("security_group", $security_group->id); 
                  
         }
     }

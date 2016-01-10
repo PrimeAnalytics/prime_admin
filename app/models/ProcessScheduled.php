@@ -21,6 +21,12 @@ class ProcessScheduled extends \Phalcon\Mvc\Model
      *
      * @var string
      */
+    public $description;
+
+    /**
+     *
+     * @var string
+     */
     public $parameters;
 
     /**
@@ -40,8 +46,8 @@ class ProcessScheduled extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'SecurityGroupHasProcessScheduled', 'process_scheduled_id', array('alias' => 'SecurityGroupHasProcessScheduled'));
-        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
+        $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasProcessScheduled', 'process_scheduled_id','security_group_id','PRIME\Models\SecurityGroup','id',array('alias' => 'SecurityGroup'));
+        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**

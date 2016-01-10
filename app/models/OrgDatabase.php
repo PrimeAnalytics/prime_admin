@@ -46,8 +46,8 @@ class OrgDatabase extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'OrgDatabaseTable', 'org_database_id', array('alias' => 'OrgDatabaseTable'));
-        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
+        $this->hasMany('id', 'PRIME\Models\OrgDatabaseTable', 'org_database_id', array('alias' => 'OrgDatabaseTable'));
+        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**

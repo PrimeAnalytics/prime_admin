@@ -22,8 +22,8 @@ class UsersHasSecurityGroup extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('security_group_id', 'SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
-        $this->belongsTo('users_email', 'Users', 'email', array('alias' => 'Users'));
+        $this->belongsTo('security_group_id', 'PRIME\Models\SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
+        $this->belongsTo('users_email', 'PRIME\Models\Users', 'email', array('alias' => 'Users'));
     }
 
     /**

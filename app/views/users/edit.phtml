@@ -7,7 +7,7 @@
 
         <ul class="nav nav-tabs nav-primary">
             <li class="active"><a href="#tab2_1" data-toggle="tab"><i class="icon-home"></i> Basic Information</a></li>
-            <li class=""><a href="#tab2_2" data-toggle="tab"><i class="icon-user"></i> Dashboards</a></li>
+            <li class=""><a href="#tab2_2" data-toggle="tab"><i class="icon-user"></i> Security Groups</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade active in" id="tab2_1">
@@ -92,48 +92,48 @@
 
             </div>
             <div class="tab-pane fade " id="tab2_2">
-                <h3>User's <strong>Dashboards</strong></h3>
+                <h3>User's <strong>Security Groups</strong></h3>
                 <table class="table table-hover table-condensed">
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Icon</th>
-                            <th>Weight</th>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Description</th>
                             <th style="width:20%">Actions</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($user_dashboards as $dashboard) { ?>
+                        <?php foreach ($user_security_groups as $security_group) { ?>
                         <tr>
                             <td>
-                                <?php echo $dashboard->title ?>
+                                <?php echo $security_group->id ?>
                             </td>
                             <td>
-                                <?php echo $dashboard->icon ?>
+                                <?php echo $security_group->name ?>
                             </td>
                             <td>
-                                <?php echo $dashboard->weight ?>
+                                <?php echo $security_group->description ?>
                             </td>
                             <td>
-                                <?php echo $this->tag->linkTo(array("Users/disable_dashboard/" . $dashboard->id."/".$email, "Disable",'class'=>"btn btn-warning btn-xs btn-small")); ?>
+                                <?php echo $this->tag->linkTo(array("Users/disable_security_group/" . $security_group->id."/".$email, "Remove",'class'=>"btn btn-warning btn-xs btn-small")); ?>
                             </td>
                         </tr>
                         <?php } ?>
 
-                        <?php foreach ($dashboards as $dashboard) { ?>
+                        <?php foreach ($security_groups as $security_group) { ?>
                         <tr>
                             <td>
-                                <?php echo $dashboard->title ?>
+                                <?php echo $security_group->id ?>
                             </td>
                             <td>
-                                <?php echo $dashboard->icon ?>
+                                <?php echo $security_group->name ?>
                             </td>
                             <td>
-                                <?php echo $dashboard->weight ?>
+                                <?php echo $security_group->description ?>
                             </td>
                             <td>
-                                <?php echo $this->tag->linkTo(array("Users/enable_dashboard/" . $dashboard->id."/".$email, "Enable",'class'=>"btn btn-success btn-xs btn-small")); ?>
+                                <?php echo $this->tag->linkTo(array("Users/enable_security_group/" . $security_group->id."/".$email, "Add",'class'=>"btn btn-success btn-xs btn-small")); ?>
                             </td>
                         </tr>
                         <?php } ?>

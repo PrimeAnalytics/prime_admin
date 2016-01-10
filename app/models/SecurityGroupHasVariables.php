@@ -28,8 +28,8 @@ class SecurityGroupHasVariables extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('security_group_id', 'SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
-        $this->belongsTo('variables_id', 'Variables', 'id', array('alias' => 'Variables'));
+        $this->belongsTo('security_group_id', 'PRIME\Models\SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
+        $this->belongsTo('variables_id', 'PRIME\Models\Variables', 'id', array('alias' => 'Variables'));
     }
 
     /**

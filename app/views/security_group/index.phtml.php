@@ -24,7 +24,8 @@
                                         <div class="media">
                                             <img src="/assets/global/images/avatars/avatar11_big.png" alt="avatar 3" width="40" class="sender-img">
                                             <div class="media-body">
-                                                <div class="sender"><?php echo $security_group->name; ?></div>
+                                               
+                                                <div class="sender" data-id="<?php echo $security_group->id; ?>"><?php echo $security_group->name; ?></div>
                                                 <div class="subject"><span class="subject-text"><?php echo $security_group->description; ?></span></div>
                                             </div>
                                         </div>
@@ -61,10 +62,9 @@
 <script>
 
     $('.emails-list').on('click', '.message-item', function () {
-        var emailSender = $(this).find('.sender').text();
-        var emailSubject = $(this).find('.subject-text').text();
+        var id = $(this).find('.sender').data("id");
 
-        $('.email-content').load('/security_group/edit/' + emailSubject);
+        $('.email-content').load('/security_group/edit/' + id);
     });
 
     $('.emails-list .message-item:first-of-type').trigger('click');

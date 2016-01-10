@@ -28,8 +28,8 @@ class OrgDatabaseTable extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'SecurityGroupHasOrgDatabaseTable', 'org_database_table_id', array('alias' => 'SecurityGroupHasOrgDatabaseTable'));
-        $this->belongsTo('org_database_id', 'OrgDatabase', 'id', array('alias' => 'OrgDatabase'));
+        $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasOrgDatabaseTable', 'org_database_table_id','security_group_id','PRIME\Models\SecurityGroup','id',array('alias' => 'SecurityGroup'));
+        $this->belongsTo('org_database_id', 'PRIME\Models\OrgDatabase', 'id', array('alias' => 'OrgDatabase'));
     }
 
     /**

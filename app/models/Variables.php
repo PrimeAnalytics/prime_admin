@@ -40,8 +40,7 @@ class Variables extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'SecurityGroupHasVariables', 'variables_id', array('alias' => 'SecurityGroupHasVariables'));
-        $this->hasMany('id', 'VariablesHasSecurityGroup', 'variables_id', array('alias' => 'VariablesHasSecurityGroup'));
+        $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasVariables', 'variables_id','security_group_id','PRIME\Models\SecurityGroup','id',array('alias' => 'SecurityGroup'));
         $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
     }
 

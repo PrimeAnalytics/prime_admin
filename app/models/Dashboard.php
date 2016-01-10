@@ -52,9 +52,10 @@ class Dashboard extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Portlet', 'dashboard_id', array('alias' => 'Portlet'));
-        $this->hasMany('id', 'SecurityGroupHasDashboard', 'dashboard_id', array('alias' => 'SecurityGroupHasDashboard'));
-        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
+        $this->hasMany('id', 'PRIME\Models\Portlet', 'dashboard_id', array('alias' => 'Portlet'));
+        $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasDashboard', 'dashboard_id','security_group_id','PRIME\Models\SecurityGroup','id',array('alias' => 'SecurityGroup'));
+
+        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**

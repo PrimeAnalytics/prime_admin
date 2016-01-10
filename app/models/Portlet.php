@@ -46,8 +46,8 @@ class Portlet extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Widget', 'portlet_id', array('alias' => 'Widget'));
-        $this->belongsTo('dashboard_id', 'Dashboard', 'id', array('alias' => 'Dashboard'));
+        $this->hasMany('id', 'PRIME\Models\Widget', 'portlet_id', array('alias' => 'Widget'));
+        $this->belongsTo('dashboard_id', 'PRIME\Models\Dashboard', 'id', array('alias' => 'Dashboard'));
     }
 
     /**

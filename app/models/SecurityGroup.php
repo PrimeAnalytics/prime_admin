@@ -39,9 +39,9 @@ class SecurityGroup extends \Phalcon\Mvc\Model
         $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasProcess', 'security_group_id','process_id','PRIME\Models\Process','id',array('alias' => 'Process'));
         $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasProcessScheduled', 'security_group_id','process_scheduled_id','PRIME\Models\ProcessScheduled','id',array('alias' => 'ProcessScheduled'));
         $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasVariables', 'security_group_id','variables_id','PRIME\Models\Variables','id',array('alias' => 'Variables'));
-        $this->hasManyToMany('id', 'PRIME\Models\UsersHasSecurityGroup', 'security_group_id','users_email','PRIME\Models\Users','id',array('alias' => 'Users'));
+        $this->hasManyToMany('id', 'PRIME\Models\UsersHasSecurityGroup', 'security_group_id','users_email','PRIME\Models\Users','email',array('alias' => 'Users'));
 
-        $this->belongsTo('organisation_id', 'Organisation', 'id', array('alias' => 'Organisation'));
+        $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
     }
 
     /**

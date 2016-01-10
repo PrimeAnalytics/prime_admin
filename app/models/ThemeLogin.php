@@ -64,7 +64,7 @@ class ThemeLogin extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('theme_layout_id', 'ThemeLayout', 'id', array('alias' => 'ThemeLayout'));
+        $this->belongsTo('theme_layout_id', 'PRIME\Models\ThemeLayout', 'id', array('alias' => 'ThemeLayout'));
     }
 
     /**

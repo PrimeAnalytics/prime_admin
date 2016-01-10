@@ -28,8 +28,8 @@ class SecurityGroupHasOrgDatabaseTable extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('org_database_table_id', 'OrgDatabaseTable', 'id', array('alias' => 'OrgDatabaseTable'));
-        $this->belongsTo('security_group_id', 'SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
+        $this->belongsTo('org_database_table_id', 'PRIME\Models\OrgDatabaseTable', 'id', array('alias' => 'OrgDatabaseTable'));
+        $this->belongsTo('security_group_id', 'PRIME\Models\SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
     }
 
     /**

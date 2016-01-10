@@ -28,8 +28,8 @@ class SecurityGroupHasProcessScheduled extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('process_scheduled_id', 'ProcessScheduled', 'id', array('alias' => 'ProcessScheduled'));
-        $this->belongsTo('security_group_id', 'SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
+        $this->belongsTo('process_scheduled_id', 'PRIME\Models\ProcessScheduled', 'id', array('alias' => 'ProcessScheduled'));
+        $this->belongsTo('security_group_id', 'PRIME\Models\SecurityGroup', 'id', array('alias' => 'SecurityGroup'));
     }
 
     /**

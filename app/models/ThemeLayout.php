@@ -28,10 +28,10 @@ class ThemeLayout extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'ThemeDashboard', 'theme_layout_id', array('alias' => 'ThemeDashboard'));
-        $this->hasMany('id', 'ThemeLogin', 'theme_layout_id', array('alias' => 'ThemeLogin'));
-        $this->hasMany('id', 'ThemePortlet', 'theme_layout_id', array('alias' => 'ThemePortlet'));
-        $this->hasMany('id', 'ThemeWidget', 'theme_layout_id', array('alias' => 'ThemeWidget'));
+        $this->hasMany('id', 'PRIME\Models\ThemeDashboard', 'theme_layout_id', array('alias' => 'ThemeDashboard'));
+        $this->hasMany('id', 'PRIME\Models\ThemeLogin', 'theme_layout_id', array('alias' => 'ThemeLogin'));
+        $this->hasMany('id', 'PRIME\Models\ThemePortlet', 'theme_layout_id', array('alias' => 'ThemePortlet'));
+        $this->hasMany('id', 'PRIME\Models\ThemeWidget', 'theme_layout_id', array('alias' => 'ThemeWidget'));
     }
 
     /**

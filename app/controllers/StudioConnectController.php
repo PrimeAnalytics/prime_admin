@@ -2,6 +2,7 @@
 namespace PRIME\Controllers;
 use PRIME\Models\Organisation;
 use PRIME\Models\ProcessOperator;
+use PRIME\Models\ProcessScheduled;
 use PRIME\Models\OrgDatabase;
 
 class StudioConnectController extends ControllerBase
@@ -148,6 +149,47 @@ class StudioConnectController extends ControllerBase
         
     }
 
+
+    public function ProcessScheduledListAction()
+    {
+        $scheduled_processes = ProcessScheduled::findByorganisation_id($this->organisation_id);
+        $temp=array();
+        foreach($scheduled_processes as $scheduled_process)
+        {
+            $temp[]=array("id"=>$scheduled_process->id,"name"=>$scheduled_process->name,"description"=>$scheduled_process->description);
+        }
+
+        echo json_encode($temp);
+    
+    }
+
+    public function GetProcessScheduledAction($id)
+    {
+        
+        $scheduled_processes = ProcessScheduled::findFirstById($id);
+
+
+        echo json_encode($scheduled_processes);
+    }
+
+
+    public function SaveProcessScheduledAction($id)
+    {
+        
+        $scheduled_processes = ProcessScheduled::findFirstById($id);
+        $scheduled_processes->storage = $this->request->getPost("storage");
+
+        if($scheduled_processes->save())
+        {
+            echo "The Process Was Succesfully Saved";
+        }
+        else
+        {
+            echo "Oh No, Something Whent Wrong";
+        }
+
+  
+    }
 
 
     public function writeDatabase($table,$data,$queryType="update")
