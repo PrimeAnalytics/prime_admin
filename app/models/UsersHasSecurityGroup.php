@@ -11,6 +11,13 @@ class UsersHasSecurityGroup extends \Phalcon\Mvc\Model
      */
     public $users_email;
 
+
+    /**
+     *
+     * @var string
+     */
+    public $read_write;
+
     /**
      *
      * @var integer

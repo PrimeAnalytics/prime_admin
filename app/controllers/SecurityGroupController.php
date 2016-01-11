@@ -74,63 +74,19 @@ class SecurityGroupController extends ControllerBase
             $this->tag->setDefault("id", $security_group->id);
             $this->tag->setDefault("organisation_id", $security_group->organisation_id);
             
+            $types=array();
 
-            $this->editType("dashboard",$security_group);
+            $types[]=$this->editType("dashboard",$security_group);
+            $types[]=$this->editType("process",$security_group);
             
-            $this->editType("process_scheduled",$security_group);
-            $this->editType("process",$security_group);
-            ////$this->editType("org_database_table",$security_group);
-            $this->editType("variables",$security_group);
-            ////$this->editType("users",$security_group);
-
-
-
-            $data_write=array();
-            $data_read=array();
-            $data_disable=array();
-            $data_security=$security_group->HasOrgDatabaseTable;
-
-            $database = OrgDatabase::findFirst("organisation_id=".$security_group->organisation_id);
-            $data_all = OrgDatabaseTable::find("org_database_id=".$database->id);
-
-            foreach($data_all as $item_all)
-            {
-                $has_item=false;
-                $id_string ="org_database_table_id";
-                foreach ($data_security as $item) {
-                    if($item_all->id == $item->$id_string)
-                    {
-                        $has_item=true;
-                        if($item->read_write=="true")
-                        {
-                            $data_write[]=$item_all;
-                            break;
-                        }
-                        else
-                        {
-                            $data_read[]=$item_all;
-                            break;
-                        }
-                    }
-                }
-                if(!$has_item)
-                {
-                    $data_disable[]=$item_all;
-                }
-            }
-
-
-            $this->view->setVar("org_database_table_write", $data_write);
-            $this->view->setVar("org_database_table_read", $data_read);
-            $this->view->setVar("org_database_table_disable", $data_disable);
-
-
-
-
-
+            $types[]=$this->editType("process_scheduled",$security_group);
             
+            $types[]=$this->editType("org_database_table",$security_group);
+            $types[]=$this->editType("variables",$security_group);
+            $types[]=$this->editType("users",$security_group);
 
-
+            $this->view->setVar("types", $types); 
+            
             $this->view->setVar("security_group", $security_group->id); 
                  
         }
@@ -145,15 +101,37 @@ class SecurityGroupController extends ControllerBase
         $data_read=array();
         $data_disable=array();
         eval('$data_security=$security_group->Has'.$type_camel.';');
+        
+        if($type=="org_database_table")
+        {
 
-        eval('$data_all = PRIME\Models\\'.$type_camel.'::find("organisation_id='.$security_group->organisation_id.'");');
+            $database = OrgDatabase::findFirst("organisation_id=".$security_group->organisation_id);
+            $data_all = OrgDatabaseTable::find("org_database_id=".$database->id);
+        }
+        else
+        {
+            eval('$data_all = PRIME\Models\\'.$type_camel.'::find("organisation_id='.$security_group->organisation_id.'");');
+        }
+
+
+        if($type=="users")
+        {
+            $id_string_left="email";
+            $id_string_right =$type."_email";
+        }
+        else
+        {
+            $id_string_left="id";
+            $id_string_right =$type."_id";
+        }
 
         foreach($data_all as $item_all)
         {
             $has_item=false;
-            $id_string =$type."_id";
+
+            
             foreach ($data_security as $item) {
-                if($item_all->id == $item->$id_string)
+                if($item_all->$id_string_left == $item->$id_string_right)
                 {
                     $has_item=true;
                     if($item->read_write=="true")
@@ -174,10 +152,29 @@ class SecurityGroupController extends ControllerBase
             }
         }
 
+        $item=array();
+        $item['name']=$type;
+        if($type=="users")
+        {
+            $item['id']="email";
+            $item['title']="full_name";
+        }
+        elseif($type=="dashboard")
+        {
+            $item['id']="id";
+            $item['title']="title";
+        }
+        else
+        {
+            $item['id']="id";
+            $item['title']="name";
+        }
+        
+        $item['write']=$data_write;
+        $item['read']=$data_read;
+        $item['disable']=$data_disable;
 
-        $this->view->setVar($type."_write", $data_write);
-        $this->view->setVar($type."_read", $data_read);
-        $this->view->setVar($type."_disable", $data_disable);
+        return $item;
     }
 
 
@@ -186,7 +183,16 @@ class SecurityGroupController extends ControllerBase
         $type_camel = str_replace('_',"",ucwords ($type,"_"));
         if($action=="read"||$action=="write")
         {
-            eval('$item = new PRIME\Models\SecurityGroupHas'.$type_camel.'();');
+
+            if($type=="users")
+            {
+                eval('$item = new PRIME\Models\\'.$type_camel.'HasSecurityGroup();');
+            }
+            else
+            {
+                eval('$item = new PRIME\Models\SecurityGroupHas'.$type_camel.'();');
+            }
+            
 
         $item->security_group_id = $security_group_id;
         if($action=="read")
@@ -198,7 +204,16 @@ class SecurityGroupController extends ControllerBase
             $item->read_write = 'true';
         }
 
-        eval('$item->'.$type.'_id = '.$id.';');
+        if($type=="users")
+        {
+            $id_string =$type."_email";
+        }
+        else
+        {
+            $id_string =$type."_id";
+        }
+
+        eval('$item->'.$id_string.' = "'.$id.'" ;');
 
         
         if (!$item->save()) {
@@ -212,14 +227,23 @@ class SecurityGroupController extends ControllerBase
         }
         else
         {
-            eval('$entry=PRIME\Models\SecurityGroupHas'.$type_camel.'::findFirst(array("security_group_id= '.$security_group_id.'","'.$type.'_id = '.$id.'"));');
+
+            if($type=="users")
+            {
+                eval('$entry=PRIME\Models\\'.$type_camel.'HasSecurityGroup::findFirst(array("security_group_id= '.$security_group_id.'","'.$type.'_email = '.$id.'"));');
+            }
+            else
+            {
+                eval('$entry=PRIME\Models\SecurityGroupHas'.$type_camel.'::findFirst(array("security_group_id= '.$security_group_id.'","'.$type.'_id = '.$id.'"));');
+            }
+           
 
 
         if (!$entry->delete()) {
 
         }
 
-        $this->flash->success($type." was succesfully removed from Security Group");
+        $this->flash->success(ucfirst ($type)." was succesfully removed from Security Group");
         
         }
 
