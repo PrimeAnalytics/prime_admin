@@ -7,10 +7,16 @@
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="form-label">Process Name</label>
                     <?php echo $this->tag->textField(array("name", "class" => "form-control")) ?>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label">Process Description</label>
+                    <?php echo $this->tag->textArea(array("description", "class" => "form-control")) ?>
                 </div>
             </div>
         </div>

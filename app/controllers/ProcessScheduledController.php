@@ -34,26 +34,33 @@ class ProcessScheduledController extends ControllerBase
     /**
      * Creates a new dashboard
      */
-    public function createAction()
+    public function createAction($isStudio=false)
     {
         $process_scheduled = new ProcessScheduled();
 
         $process_scheduled->name = $this->request->getPost("name");
+        $process_scheduled->description = $this->request->getPost("description");
         $process_scheduled->parameters=json_encode($this->request->getPost("parameters"),true);
-        $process_scheduled->organisation_id = $this->request->getPost("organisation_id");
+        $process_scheduled->organisation_id = $this->organisation_id;
 
         if (!$process_scheduled->save()) {
             foreach ($process_scheduled->getMessages() as $message) {
                 $this->flash->error($message);
             }
 
-            $this->response->redirect("process/index/");
+            $this->response->redirect("process/index#tab2_1");
         }
+        if($isStudio)
+        {
+            $this->view->Disable();
+            echo $process_scheduled->id;
+        }
+        else
+        {
+            $this->flash->success("Scheduled Process was created successfully");
 
-        $this->flash->success("Scheduled Process was created successfully");
-
-        $this->response->redirect("process_scheduled/edit/".$process_scheduled->id);
-
+            $this->response->redirect("process/index#tab2_1");
+        }
     }
     
 

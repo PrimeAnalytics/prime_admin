@@ -41,6 +41,15 @@ class SecurityGroup extends \Phalcon\Mvc\Model
         $this->hasManyToMany('id', 'PRIME\Models\SecurityGroupHasVariables', 'security_group_id','variables_id','PRIME\Models\Variables','id',array('alias' => 'Variables'));
         $this->hasManyToMany('id', 'PRIME\Models\UsersHasSecurityGroup', 'security_group_id','users_email','PRIME\Models\Users','email',array('alias' => 'Users'));
 
+
+        $this->hasMany('id', 'PRIME\Models\SecurityGroupHasOrgDatabaseTable', 'security_group_id',array('alias' => 'HasOrgDatabaseTable'));
+        $this->hasMany('id', 'PRIME\Models\SecurityGroupHasProcess', 'security_group_id',array('alias' => 'HasProcess'));
+        $this->hasMany('id', 'PRIME\Models\SecurityGroupHasProcessScheduled', 'security_group_id',array('alias' => 'HasProcessScheduled'));
+        $this->hasMany('id', 'PRIME\Models\SecurityGroupHasVariables', 'security_group_id',array('alias' => 'HasVariables'));
+        $this->hasMany('id', 'PRIME\Models\UsersHasSecurityGroup', 'security_group_id',array('alias' => 'HasUsers'));
+
+        $this->hasMany('id', 'PRIME\Models\SecurityGroupHasDashboard', 'security_group_id',array('alias' => 'HasDashboard'));
+
         $this->belongsTo('organisation_id', 'PRIME\Models\Organisation', 'id', array('alias' => 'Organisation'));
     }
 

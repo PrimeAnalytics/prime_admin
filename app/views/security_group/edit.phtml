@@ -61,13 +61,13 @@
                         <tr>
                             <th>Id</th>
                             <th>Title</th>
-                            <th style="width:20%">Actions</th>
+                            <th style="width:30%">Actions</th>
 
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                         foreach ($dashboards_read as $dashboard) {
+                         foreach ($dashboard_read as $dashboard) {
 ?>
                         <tr>
                             <td>
@@ -84,7 +84,7 @@
                         <?php } ?>
 
                         <?php
-                         foreach ($dashboards_write as $dashboard) {
+                         foreach ($dashboard_write as $dashboard) {
                         ?>
                         <tr>
                             <td>
@@ -101,7 +101,7 @@
                         <?php } ?>
 
                         <?php
-                         foreach ($dashboards_disable as $dashboard) {
+                         foreach ($dashboard_disable as $dashboard) {
                         ?>
                         <tr>
                             <td>
@@ -129,12 +129,12 @@
                         <tr>
                             <th>Id</th>
                             <th>Name</th>
-                            <th style="width:20%">Actions</th>
+                            <th style="width:30%">Actions</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($processes_write as $process) { ?>
+                        <?php foreach ($process_write as $process) { ?>
                         <tr>
                             <td>
                                 <?php echo $process->id ?>
@@ -148,7 +148,7 @@
                             </td>
                         </tr>
                         <?php } ?>
-                        <?php foreach ($processes_read as $process) { ?>
+                        <?php foreach ($process_read as $process) { ?>
                         <tr>
                             <td>
                                 <?php echo $process->id ?>
@@ -162,7 +162,7 @@
                             </td>
                         </tr>
                         <?php } ?>
-                        <?php foreach ($processes_disable as $process) { ?>
+                        <?php foreach ($process_disable as $process) { ?>
                         <tr>
                             <td>
                                 <?php echo $process->id ?>
@@ -190,12 +190,12 @@
                             <th>Id</th>
                             <th>Name</th>
                             <th>Description</th>
-                            <th style="width:20%">Actions</th>
+                            <th style="width:30%">Actions</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($processes_scheduled_write as $process_scheduled) { ?>
+                        <?php foreach ($process_scheduled_write as $process_scheduled) { ?>
                         <tr>
                             <td>
                                 <?php echo $process_scheduled->id ?>
@@ -204,12 +204,15 @@
                                 <?php echo $process_scheduled->name ?>
                             </td>
                             <td>
-                            <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/processes_scheduled/read/" . $process_scheduled->id, "Read",'class'=>"btn btn-warning btn-xs btn-small")); ?>
-                            <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/processes_scheduled/disable/" . $process_scheduled->id, "Disable",'class'=>"btn btn-default btn-xs btn-small")); ?>
+                                <?php echo $process_scheduled->description ?>
+                            </td>
+                            <td>
+                            <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/process_scheduled/read/" . $process_scheduled->id, "Read",'class'=>"btn btn-warning btn-xs btn-small")); ?>
+                            <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/process_scheduled/disable/" . $process_scheduled->id, "Disable",'class'=>"btn btn-default btn-xs btn-small")); ?>
                             </td>
                         </tr>
                         <?php } ?>
-                        <?php foreach ($processes_scheduled_read as $process_scheduled) { ?>
+                        <?php foreach ($process_scheduled_read as $process_scheduled) { ?>
                         <tr>
                             <td>
                                 <?php echo $process_scheduled->id ?>
@@ -218,12 +221,15 @@
                                 <?php echo $process_scheduled->name ?>
                             </td>
                             <td>
-                                <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/processes_scheduled/write/" . $process_scheduled->id, "Read/Write",'class'=>"btn btn-danger btn-xs btn-small")); ?>
-                                <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/processes_scheduled/disable/" . $process_scheduled->id, "Disable",'class'=>"btn btn-default btn-xs btn-small")); ?>
+                                <?php echo $process_scheduled->description ?>
+                            </td>
+                            <td>
+                                <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/process_scheduled/write/" . $process_scheduled->id, "Read/Write",'class'=>"btn btn-danger btn-xs btn-small")); ?>
+                                <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/process_scheduled/disable/" . $process_scheduled->id, "Disable",'class'=>"btn btn-default btn-xs btn-small")); ?>
                             </td>
                         </tr>
                         <?php } ?>
-                        <?php foreach ($processes_scheduled_disable as $process_scheduled) { ?>
+                        <?php foreach ($process_scheduled_disable as $process_scheduled) { ?>
                         <tr>
                             <td>
                                 <?php echo $process_scheduled->id ?>
@@ -232,8 +238,11 @@
                                 <?php echo $process_scheduled->name ?>
                             </td>
                             <td>
-                                <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/processes_scheduled/write/" .$process_scheduled->id, "Read/Write",'class'=>"btn btn-danger btn-xs btn-small")); ?>
-                                <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/processes_scheduled/read/" . $process_scheduled->id, "Read",'class'=>"btn btn-warning btn-xs btn-small")); ?>
+                                <?php echo $process_scheduled->description ?>
+                            </td>
+                            <td>
+                                <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/process_scheduled/write/" .$process_scheduled->id, "Read/Write",'class'=>"btn btn-danger btn-xs btn-small")); ?>
+                                <?php echo $this->tag->linkTo(array("security_group/set/".$security_group."/process_scheduled/read/" . $process_scheduled->id, "Read",'class'=>"btn btn-warning btn-xs btn-small")); ?>
                             </td>
                         </tr>
                         <?php } ?>
@@ -251,12 +260,12 @@
                         <tr>
                             <th>Id</th>
                             <th>Name</th>
-                            <th style="width:20%">Actions</th>
+                            <th style="width:30%">Actions</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($org_database_tables_write as $org_database_table) { ?>
+                        <?php foreach ($org_database_table_write as $org_database_table) { ?>
                         <tr>
                             <td>
                                 <?php echo $org_database_table->id ?>
@@ -271,7 +280,7 @@
                         </tr>
                         <?php } ?>
 
-                        <?php foreach ($org_database_tables_read as $org_database_table) { ?>
+                        <?php foreach ($org_database_table_read as $org_database_table) { ?>
                         <tr>
                             <td>
                                 <?php echo $org_database_table->id ?>
@@ -286,7 +295,7 @@
                         </tr>
                         <?php } ?>
 
-                        <?php foreach ($org_database_tables_disable as $org_database_table) { ?>
+                        <?php foreach ($org_database_table_disable as $org_database_table) { ?>
                         <tr>
                             <td>
                                 <?php echo $org_database_table->id ?>
@@ -315,7 +324,7 @@
                         <tr>
                             <th>Email</th>
                             <th>Full Name</th>
-                            <th style="width:20%">Actions</th>
+                            <th style="width:30%">Actions</th>
 
                         </tr>
                     </thead>
@@ -376,7 +385,7 @@
                             <th>Id</th>
                             <th>Name</th>
                             <th>Value</th>
-                            <th style="width:20%">Actions</th>
+                            <th style="width:30%">Actions</th>
 
                         </tr>
                     </thead>
