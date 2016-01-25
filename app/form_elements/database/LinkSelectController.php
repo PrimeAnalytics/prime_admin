@@ -11,7 +11,23 @@ class LinkSelectController extends FormElementBase
 
 
 
-        $output['html'][]='<div class="">
+        $output['html'][]='
+<div class="">
+<div class="form-group">
+                                    <label>Link Type</label>
+                                        <select id="linkType" name="parameters[link_type]" class="form-control" data-placeholder="Select Link Type">
+                                        <option value="database">Database Column</option>
+                                        <option value="variable">Variable Set</option>
+                                        </select>
+                                </div></div>
+<div class="VariableLinkBody">
+<div class="form-group">
+                                    <label>Select Variable</label>
+                                        <input id="linkVariable" name="parameters[target_link]" class="form-control" data-placeholder="Choose a table...">
+                                        </input>
+                                </div></div>
+
+<div class="DatabaseLinkBody">
 <div class="form-group">
                                     <label>Select Table</label>
                                         <input id="linkTable" name="parameters[link_table]" class="form-control" data-placeholder="Choose a table...">
@@ -24,6 +40,31 @@ class LinkSelectController extends FormElementBase
                          </div></div>';
 
         $output['js'][]=  '
+
+$(".DatabaseLinkBody").hide();
+$(".VariableLinkBody").hide();
+
+$(\'#linkType\').on(\'change\', function() {
+if($(this).val()=="variable")
+{
+$(".VariableLinkBody").show();
+$(".DatabaseLinkBody").hide();
+}
+elseif($(this).val()=="database")
+{
+$(".DatabaseLinkBody").show();
+$(".VariableLinkBody").hide();
+}
+});
+
+
+
+
+$.getJSON("/Variables/getList", function (data) {
+            $("#linkVariable").select2({
+                data: data
+            });   
+        });
 
 $.getJSON("/Get/DBTables", function (data) {
             $("#linkTable").select2({

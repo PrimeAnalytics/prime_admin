@@ -31,10 +31,20 @@ class Elements extends Phalcon\Mvc\User\Component
                 'action' => 'index',
                 'icon' =>'fa-users'
             ),
+            'computer' => array(
+                'caption' => 'Computers',
+                'action' => 'index',
+                'icon' =>'fa-desktop'
+            ),
             'security_group' => array(
                 'caption' => 'Access Control',
                 'action' => 'index',
-                'icon' =>'fa-users'
+                'icon' =>'fa-lock'
+            ),
+            'database_explorer' => array(
+                'caption' => 'Database Explorer',
+                'action' => 'index',
+                'icon' =>'fa-database'
             ),
             'theme_creator' => array(
                 'caption' => 'Theme Creator',

@@ -28,7 +28,14 @@ class StudioConnectController extends ControllerBase
         $temp=array();
         foreach($process_operators as $operator)
         {
-            $temp[]=array("id"=>$operator->id,"name"=>$operator->name,"category"=>$operator->category);
+            $assemblies=array();
+            $files = glob('uploads/'.$operator->id.'/*.{dll,png}', GLOB_BRACE);
+            foreach($files as $file) {
+                $assemblies[]= array('filename'=>basename($file),'md5'=>md5_file($file));
+            }
+            
+            
+            $temp[]=array("id"=>$operator->id,"name"=>$operator->name,"category"=>$operator->category,"files"=>$assemblies, "description"=>$operator->description);
         }
 
         echo json_encode($temp);
@@ -40,8 +47,20 @@ class StudioConnectController extends ControllerBase
 
         $process_operators = ProcessOperator::findByorganisation_id($this->organisation_id);
 
+        $process_operators= $process_operators->ToArray();
+        foreach($process_operators as &$operator)
+        {
+            
+            $assemblies=array();
+            $files = glob('uploads/'.$operator['id'].'/*.{dll,png}', GLOB_BRACE);
+            foreach($files as $file) {
+                $assemblies[]= array('filename'=>basename($file),'md5'=>md5_file($file));
+            }
+            $operator['files']=$assemblies;
 
-        echo json_encode($process_operators->ToArray());
+        }
+
+        echo json_encode($process_operators);
 
     }
 
@@ -72,16 +91,86 @@ class StudioConnectController extends ControllerBase
         $process_operators->accessibility= $this->request->getPost("accessibility");
         $process_operators->icon= $this->request->getPost("icon");
 
+        $responce = array();
+
         if($process_operators->save())
         {
-            echo "The Operator Was Succesfully Uploaded";
+            $responce['title']= "Success";
+        $responce['message']= "The Operator Was Succesfully Uploaded";
+        $responce['id']=$process_operators->id;
+
         }
         else
         {
-            echo "Oh No, Something Whent Wrong";
+            $responce['title']= "Error";
+            $responce['message']= "Oh No, Something Whent Wrong";
+            $responce['id']="";
         }
 
+        echo json_encode($responce);
+
     }
+
+    public function GetComputerSetupAction($key)
+    {
+    
+    }
+
+
+    public function uploadAssemblyAction($id)
+    {
+
+        $target_dir = "uploads/".$id."/";
+
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+            
+        }
+
+        foreach($_FILES as $file)
+        {
+            $target_file = $target_dir . basename($file["name"]);
+
+            if(file_exists($target_file)) {
+                chmod($target_file,0755); 
+                unlink($target_file);
+            }
+
+            move_uploaded_file($file["tmp_name"], $target_file);
+            echo $target_file."/r/n";
+        }
+        
+    
+    }
+
+
+    public function uploadIconAction($id)
+    {
+
+        $target_dir = "uploads/".$id."/";
+
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+            
+        }
+
+        foreach($_FILES as $file)
+        {
+            $target_file = $target_dir . "icon.png";
+
+            if(file_exists($target_file)) {
+                chmod($target_file,0755); 
+                unlink($target_file);
+            }
+
+            move_uploaded_file($file["tmp_name"], $target_file);
+            echo $target_file."/r/n";
+        }
+        
+        
+    }
+
+
 
     public function SaveProcessOperatorAction($id)
     {
@@ -98,14 +187,22 @@ class StudioConnectController extends ControllerBase
         $process_operators->accessibility= $this->request->getPost("accessibility");
         $process_operators->icon= $this->request->getPost("icon");
 
+        $responce = array();
+
         if($process_operators->save())
         {
-            echo "The Operator Was Succesfully Uploaded";
+            $responce['title']= "Success";
+            $responce['message']= "The Operator Was Succesfully Saved";
+
         }
         else
         {
-            echo "Oh No, Something Whent Wrong";
+            $responce['title']= "Error";
+            $responce['message']= "Oh No, Something Whent Wrong";
+
         }
+
+        echo json_encode($responce);
 
     }
 
@@ -114,15 +211,18 @@ class StudioConnectController extends ControllerBase
 
         $process_operators = ProcessOperator::findFirstById($id);
 
+        $responce = array();
         if($process_operators->delete())
         {
-            echo "The Operator Was Succesfully Removed";
+            $responce['title']= "Success";
+            $responce['message']= "The Operator Was Succesfully Deleted";
         }
         else
         {
-            echo "Oh No, Something Whent Wrong";
+            $responce['title']= "Error";
+            $responce['message']= "Oh No, Something Whent Wrong";
         }
-
+        echo json_encode($responce);
     }
 
     public function getUserDB()
@@ -179,16 +279,50 @@ class StudioConnectController extends ControllerBase
         $scheduled_processes = ProcessScheduled::findFirstById($id);
         $scheduled_processes->storage = $this->request->getPost("storage");
 
+
+        $responce = array();
+
         if($scheduled_processes->save())
         {
-            echo "The Process Was Succesfully Saved";
+            $responce['title']= "Success";
+            $responce['message']= "The Process Was Succesfully Saved";
+
         }
         else
         {
-            echo "Oh No, Something Whent Wrong";
+            $responce['title']= "Error";
+            $responce['message']= "Oh No, Something Whent Wrong";
+
         }
 
+        echo json_encode($responce);
+
   
+    }
+
+    public function DeleteProcessScheduledAction($id)
+    {
+        
+        $scheduled_processes = ProcessScheduled::findFirstById($id);
+
+        $responce = array();
+
+        if($scheduled_processes->delete())
+        {
+            $responce['title']= "Success";
+            $responce['message']= "The Process Was Succesfully Deleted";
+
+        }
+        else
+        {
+            $responce['title']= "Error";
+            $responce['message']= "Oh No, Something Whent Wrong";
+
+        }
+
+        echo json_encode($responce);
+
+        
     }
 
 
