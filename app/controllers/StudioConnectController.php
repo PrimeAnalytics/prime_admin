@@ -4,6 +4,7 @@ use PRIME\Models\Organisation;
 use PRIME\Models\ProcessOperator;
 use PRIME\Models\ProcessScheduled;
 use PRIME\Models\OrgDatabase;
+use PRIME\Models\Computer;
 
 class StudioConnectController extends ControllerBase
 {
@@ -113,7 +114,31 @@ class StudioConnectController extends ControllerBase
 
     public function GetComputerSetupAction($key)
     {
-    
+        $computer = Computer::findFirstByKey($key);
+        echo $computer->data;
+    }
+
+    public function SaveComputerSetupAction($key)
+    {
+        $computer = Computer::findFirstByKey($key);
+        $computer->data= $this->request->getPost("data");
+
+        $responce = array();
+
+        if($computer->save())
+        {
+            $responce['title']= "Success";
+            $responce['message']= "The Computer Config Was Succesfully Saved";
+
+        }
+        else
+        {
+            $responce['title']= "Error";
+            $responce['message']= "Oh No, Something Whent Wrong";
+
+        }
+
+        echo json_encode($responce);
     }
 
 
@@ -163,13 +188,84 @@ class StudioConnectController extends ControllerBase
                 unlink($target_file);
             }
 
-            move_uploaded_file($file["tmp_name"], $target_file);
-            echo $target_file."/r/n";
-        }
-        
-        
-    }
+           $image_temp= $this->resize_image($file["tmp_name"],48,48,false);
+           
 
+           $responce = array();
+
+           if(imagepng($image_temp, $target_file, 1))
+           {
+               $responce['title']= "Success";
+               $responce['message']= "The Image Was Successfully Uploaded";
+
+           }
+           else
+           {
+               $responce['title']= "Error";
+               $responce['message']= "Oh No, Something Whent Wrong";
+
+           }
+
+           echo json_encode($responce);
+        }
+
+
+
+
+        }
+
+
+
+    function resize_image($file, $w, $h, $crop=FALSE) {
+        list($width, $height) = \getimagesize($file);
+
+        $r = $width / $height;
+        if ($crop) {
+            if ($width > $height) {
+                $width = ceil($width-($width*abs($r-$w/$h)));
+            } else {
+                $height = ceil($height-($height*abs($r-$w/$h)));
+            }
+            $newwidth = $w;
+            $newheight = $h;
+        } else {
+            if ($w/$h > $r) {
+                $newwidth = $h*$r;
+                $newheight = $h;
+            } else {
+                $newheight = $w/$r;
+                $newwidth = $w;
+            }
+        }
+
+        $what = getimagesize($file);
+
+        switch(strtolower($what['mime']))
+        {
+            case 'image/png':
+                $src = \imagecreatefrompng($file);
+                break;
+            case 'image/jpeg':
+                $src = \imagecreatefromjpeg($file);
+                break;
+            case 'image/gif':
+                $src = \imagecreatefromgif($file);
+                break;
+            default: die('image type not supported');
+        }
+
+
+        $newImg = imagecreatetruecolor($newwidth, $newheight);
+        imagealphablending($newImg, false);
+        imagesavealpha($newImg,true);
+        $transparent = imagecolorallocatealpha($newImg, 255, 255, 255, 127);
+        imagefilledrectangle($newImg, 0, 0, $newwidth, $newheight, $transparent);
+        imagecopyresampled($newImg, $src, 0, 0, 0, 0, $newwidth, $newheight,
+                             $width, $height);
+
+
+        return $newImg;
+    }
 
 
     public function SaveProcessOperatorAction($id)

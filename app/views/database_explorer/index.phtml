@@ -23,7 +23,8 @@
                                         <div class="media">
                                             <img src="/assets/global/images/avatars/avatar11_big.png" alt="avatar 3" width="40" class="sender-img">
                                             <div class="media-body">
-                                                <div class="sender">{{table['table_name']}}</div>
+                                                <div class="sender">{{table['table_name']}} </div>
+                                                
                                      
                                             </div>
                                         </div>
@@ -58,6 +59,7 @@
 
 
 <script>
+
 
     $('.emails-list').on('click', '.message-item', function () {
         var emailSender = $(this).find('.sender').text();
