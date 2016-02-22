@@ -30,6 +30,60 @@ class ProcessScheduledController extends ControllerBase
         $this->tag->setDefault("organisation_id", $this->organisation_id);
     }
 
+    public function GetProcessInputColumnsAction($id)
+    {
+        $this->view->Disable();
+        $process_scheduled = ProcessScheduled::findFirstById($id);
+        $storage = json_decode($process_scheduled->storage);
+
+        $columns =array();
+
+        $data= $storage->InputTable;
+       
+        $row = reset($data);
+        foreach($row as $key=>$cell)
+        {
+            $columns[]=$key;
+        }
+     
+
+
+        echo json_encode($columns);
+        
+    }
+
+    public function GetProcessAction($id)
+    {
+        $this->view->Disable();
+        $process_scheduled = ProcessScheduled::findFirstById($id);
+        json_decode($process_scheduled->storage);
+    }
+
+
+    public function ExecuteProcessAction($id)
+    {
+        $this->view->Disable();
+        $process_scheduled = ProcessScheduled::findFirstById($id);
+        $data =$this->request->getPost();
+        foreach($data as $key=>$entry)
+        {
+            echo $key.":".$entry;
+        }
+                                                                
+        $data_string = json_encode($data);                                                                                   
+        
+        $ch = curl_init('http://api.local/rest/users');                                                                      
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
+            'Content-Type: application/json',                                                                                
+            'Content-Length: ' . strlen($data_string))                                                                       
+        );                                                                                                                   
+        
+        $result = curl_exec($ch);
+
+    }
 
     /**
      * Creates a new dashboard

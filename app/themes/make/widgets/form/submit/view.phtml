@@ -1,0 +1,27 @@
+<div id="widget_{{widget.id}}"   > {{controls}}<div>
+
+</br></br>
+<button id="w_{{widget.id}}" onclick="getSubmit()" class="form-control">
+Submit
+</button
+</div><script>
+
+function getSubmit()
+{
+    alert("Successfully Posted Data");
+var result ={}; 
+
+{% for par,key in  parm['process_parms'] %}
+
+result.{{par}} = submit_{{key}}(false);
+
+
+{% endfor %}
+
+$.post("/ProcessScheduled/ExecuteProcess/{{parm['process_id']}}",result,function(data, status){
+        alert("Data: " + data + "\nStatus: " + status);
+    });
+
+}
+
+</script>{{ content() }}</div>

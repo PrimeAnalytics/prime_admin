@@ -20,52 +20,37 @@ class LinkSelectController extends FormElementBase
                                         <option value="variable">Variable Set</option>
                                         </select>
                                 </div></div>
-<div class="VariableLinkBody">
-<div class="form-group">
-                                    <label>Select Variable</label>
-                                        <input id="linkVariable" name="parameters[target_link]" class="form-control" data-placeholder="Choose a table...">
-                                        </input>
-                                </div></div>
+<div id="DatabaseLinkBody">
+</div>
 
-<div class="DatabaseLinkBody">
 <div class="form-group">
-                                    <label>Select Table</label>
-                                        <input id="linkTable" name="parameters[link_table]" class="form-control" data-placeholder="Choose a table...">
-                                        </input>
-                                </div></div>
-<div class="">
-<div class="form-group">
-                                    <label class="form-label">Target Link</label>
-<textarea id="target-link" name="parameters[target_link]" class="form-control" style="width:100%"></textarea>
-                         </div></div>';
+                                    
+<div id="target-link-body">                    
+</div>
+                                </div>
+';
 
         $output['js'][]=  '
 
-$(".DatabaseLinkBody").hide();
-$(".VariableLinkBody").hide();
 
 $(\'#linkType\').on(\'change\', function() {
 if($(this).val()=="variable")
 {
-$(".VariableLinkBody").show();
-$(".DatabaseLinkBody").hide();
-}
-elseif($(this).val()=="database")
-{
-$(".DatabaseLinkBody").show();
-$(".VariableLinkBody").hide();
-}
-});
 
-
-
-
+$("#DatabaseLinkBody").html("");
+$("#target-link-body").html("<label>Select Variable</label> <input id=\"linkVariable\" name=\"parameters[target_link]\" class=\"form-control\" data-placeholder=\"Choose a variable...\"></input>");
 $.getJSON("/Variables/getList", function (data) {
             $("#linkVariable").select2({
-                data: data
+                data: data,
+                multiple:true
             });   
         });
 
+}
+else if($(this).val()=="database")
+{
+$("#DatabaseLinkBody").html("<div class=\"form-group\"><label>Select Table</label><input id=\"linkTable\" name=\"parameters[link_table]\" class=\"form-control\" data-placeholder=\"Choose a table...\"></input></div>");
+           
 $.getJSON("/Get/DBTables", function (data) {
             $("#linkTable").select2({
                 data: data
@@ -73,7 +58,24 @@ $.getJSON("/Get/DBTables", function (data) {
        
         });
 
+changeToDb();
+
+$("#target-link-body").html("");
+
+}
+});
+
+
+
+
+function changeToDb()
+{
+
 $(\'#linkTable\').on(\'change\', function() {
+
+
+$("#target-link-body").html("<label>Select Database Column</label><textarea id=\"target-link\" name=\"parameters[target_link]\" class=\"form-control\" style=\"width:100%\"></textarea>");
+
 var table =$("#linkTable").val();
 
         var columnData = "[]";
@@ -100,8 +102,7 @@ var table =$("#linkTable").val();
             });
 
 });
-
-
+}
 
 ';
 

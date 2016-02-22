@@ -1,4 +1,4 @@
-<div id="widget_{{widget.id}}" class="{{parm['width']}}" >{{controls}}<div id="w_{{widget.id}}" style="width:100% min-width: 600px; height: {{parm['height']}}px; margin: 0 auto"></div>
+<div id="widget_{{widget.id}}"  >{{controls}}<div id="w_{{widget.id}}" style="width:100% min-width: 600px; height: {{parm['height']}}px; margin: 0 auto"></div>
 <script>
 w{{widget.id}}_selectedPoints = [];
 $('#w_{{widget.id}}').highcharts({
@@ -33,7 +33,8 @@ $('#w_{{widget.id}}').highcharts({
                         $.each(w{{widget.id}}_selectedPoints, function (i, value) {
                             temp.push(value.name);
                         });
-                            update_dashboard("{{parm['db']['table']}}","{{parm['target_link']}}","=", temp,{{widget.id}});
+                        update_dashboard("{{parm['link_table']}}","{{parm['target_link']}}","=",temp,{{widget.id}});
+                
                         }
                         
                     }

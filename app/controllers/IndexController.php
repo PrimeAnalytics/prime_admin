@@ -66,13 +66,24 @@ class IndexController extends ControllerBase
         $auth = $this->session->get('auth');
         
         $email = $auth['email'];
-        
+
+
         $user = Users::findFirstByemail($email);
-        $user_dashboards = $user->dashboard;
-        
+
+        $security_groups = $user->SecurityGroup;
+
+        $user_dashboards = array();
+
+        foreach($security_groups as $security_group)
+        {
+            $dashboards = $security_group->Dashboard;
+            $user_dashboards =array_merge ($user_dashboards,$dashboards->ToArray());
+        }
+ 
         if( $user_dashboards)     
         {
-            $this->response->redirect("dashboards/".$user_dashboards[0]->type."/render/".$user_dashboards[0]->id."/dashboard");
+            $dashboard=$user_dashboards[0];
+            $this->response->redirect("/dashboards/".$dashboard['type']."/render/".$dashboard['id']."/dashboard");
         }
 
     }

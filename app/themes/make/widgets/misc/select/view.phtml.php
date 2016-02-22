@@ -1,4 +1,5 @@
-<div id="widget_<?php echo $widget->id; ?>"  class="<?php echo $parm['width']; ?>" > <?php echo $controls; ?><div>
+<div id="widget_<?php echo $widget->id; ?>"   > <?php echo $controls; ?><div>
+    
 <h3>
   <?php echo $parm['title']; ?>
 </h3>
@@ -9,12 +10,19 @@
     <?php } ?>
       
 </select>
+
+
 </div><script>
 
         $("#w_<?php echo $widget->id; ?>").change(function() {
 
-            update_dashboard("<?php echo $parm['target_link']; ?>", this.value,<?php echo $widget->id; ?>);
+            update_dashboard("<?php echo $parm['link_table']; ?>","<?php echo $parm['target_link']; ?>","=", this.value,<?php echo $widget->id; ?>);
   
         });
+        
+        function submit_<?php echo $widget->id; ?>(multiple)
+        {
+            return $("#w_<?php echo $widget->id; ?>").val();
+        }
 
 </script><?php echo $this->getContent(); ?></div>

@@ -23,7 +23,7 @@ $('#w_<?php echo $widget->id; ?>').highcharts({
                             temp.push(value.name);
                         });
                         
-                             update_dashboard("<?php echo $parm['target_link']; ?>", temp,<?php echo $widget->id; ?>);
+                             update_dashboard("<?php echo $parm['link_table']; ?>","<?php echo $parm['target_link']; ?>","=", temp,<?php echo $widget->id; ?>);
                     },
                     unselect: function (event) {
                         var index = w<?php echo $widget->id; ?>_selectedPoints.indexOf(this);
@@ -33,7 +33,8 @@ $('#w_<?php echo $widget->id; ?>').highcharts({
                         $.each(w<?php echo $widget->id; ?>_selectedPoints, function (i, value) {
                             temp.push(value.name);
                         });
-                            update_dashboard("<?php echo $parm['target_link']; ?>", temp,<?php echo $widget->id; ?>);
+                        update_dashboard("<?php echo $parm['link_table']; ?>","<?php echo $parm['target_link']; ?>","=",temp,<?php echo $widget->id; ?>);
+                
                         }
                         
                     }

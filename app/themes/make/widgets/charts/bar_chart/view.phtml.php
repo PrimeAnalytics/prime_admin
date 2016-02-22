@@ -1,4 +1,4 @@
-<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?>
+<div id="widget_<?php echo $widget->id; ?>"  ><?php echo $controls; ?>
 <div id="w_<?php echo $widget->id; ?>" style="width:100% min-width: 600px; height:1000px; margin: 0 auto"></div>
 <script>
 
@@ -38,7 +38,7 @@
                             
                            
                         });
-                            update_dashboard("<?php echo $parm['target_link']; ?>","=", temp,<?php echo $widget->id; ?>);
+                            update_dashboard("<?php echo $parm['link_table']; ?>","<?php echo $parm['target_link']; ?>","=", temp,<?php echo $widget->id; ?>);
 
     }
 

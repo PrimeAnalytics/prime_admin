@@ -1,4 +1,4 @@
-<div id="portlet_<?php echo $portlet->id; ?>" class="<?php echo $parm['width']; ?>" >     
+<div id="portlet_<?php echo $portlet->id; ?>"  >     
             <div >
               <div class="panel" style="background-color:<?php echo $parm['color']; ?>">
                 <div class="panel-header">

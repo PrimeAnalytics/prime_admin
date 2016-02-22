@@ -1,5 +1,5 @@
-<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?>
-<div id="w_<?php echo $widget->id; ?>" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div>
+<div id="widget_<?php echo $widget->id; ?>"  ><?php echo $controls; ?>
+<div id="w_<?php echo $widget->id; ?>" style="width:100% min-width: 600px; height: 100%; margin: 0 auto"></div>
 <script>
 
 

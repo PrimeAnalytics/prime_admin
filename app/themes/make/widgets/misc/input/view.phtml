@@ -1,0 +1,15 @@
+<div id="widget_{{widget.id}}"   > {{controls}}<div>
+<h3>
+  {{parm['title']}}
+</h3>
+
+<input id="w_{{widget.id}}" class="input form-control">
+</input>
+</div><script>
+        
+        function submit_{{widget.id}}(multiple)
+        {
+            return $("#w_{{widget.id}}").val();
+        }
+
+</script>{{ content() }}</div>

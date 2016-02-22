@@ -113,37 +113,11 @@
         <div class="page-content">
 <?php echo $filters; ?>
               
-            
-          <div class="row">
-              <?php echo $region[0]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[1]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[2]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[3]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[4]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[5]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[6]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[7]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[8]; ?>
-          </div>
-                    <div class="row">
-              <?php echo $region[9]; ?>
-          </div>
+          <div class="row"><?php echo $region[0]; ?></div>
+          
+          
+
+
           
           
           <div class="footer">

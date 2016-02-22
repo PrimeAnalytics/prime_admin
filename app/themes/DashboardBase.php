@@ -116,6 +116,7 @@ class DashboardBase extends Controller
         $dashboard = Dashboard::findFirstByid($id);    
         $organisation= Organisation::findFirstByid($dashboard->organisation_id);
 
+        
 
 
 
@@ -150,6 +151,7 @@ margin-bottom: 1em;
   clear: both;
   display: table;
 }
+
 </style>';
 
 
@@ -191,7 +193,7 @@ margin-bottom: 1em;
             }
             if (this.can_delete && id === this.can_delete_id) {
 
-                update_dashboard($('.tags .tag.highlight').data('id'), \"\"); 
+                update_dashboard($('.tags .tag.highlight').data('table'),$('.tags .tag.highlight').data('column'), \"\", \"\", \"\"); 
                 $('.tags .tag.highlight').remove();
                 this.can_delete = false;
                 return this.can_delete_id = 0;
@@ -207,9 +209,9 @@ margin-bottom: 1em;
                 }
             }
         },
-        add_tag: function (table,column,value,type) {
-            if (name !== '') {
-                return $('.tags input').before('<div class=\'tag\' data-id=\"'+name+'\">' + name + '</div>');
+        add_tag: function (table,column,value) {
+            if (table !== '' && value !== '' && column !== '') {
+                return $('.tags input').before('<div class=\'tag\' data-table=\"'+table+'\" data-column=\"'+column+'\">' + table + '-' +column + '</div>');
             }
         }
     };
@@ -231,7 +233,7 @@ margin-bottom: 1em;
   right: 0;
   bottom: 0;
 background: white;
-opacity: 0.7;
+opacity: 0.5;
   margin: auto; /* presto! */
 }
 .ajax-spinner-bars {
@@ -327,7 +329,7 @@ opacity: 0.7;
 
         echo '<script>
 
-            var variables=\''.json_encode($organisation->Variables->ToArray()).'\';
+            var variables= '.json_encode($organisation->Variables->ToArray(),true).';
 
              </script>';
 
@@ -369,25 +371,47 @@ opacity: 0.7;
             var filter_string="";
             $(\'.tags .tag\').remove();
       
-            var exist=false;            
+            var exist=false;  
+
+            var column_array = column_in.split(\',\');
+
+            $.each(column_array, function(column_index, column_key) {
 
             $.each(links, function(index, key) {
-            if( links[index].column==column_in && links[index].table==table_in)
+
+
+            if( links[index].column==column_array[column_index] && links[index].table==table_in)
             {
             links[index].default_value = value_in;
             exist=true;
             }
             if(links[index].default_value != "")
             {
-            app.add_tag(links[index].table+"-"+links[index].column);
+            app.add_tag(links[index].table,links[index].column,links[index].default_value);
             }
 
             }); 
+
+            values="";
+
+            $.each(variables, function(variable_index, variable_key) {
+
+            if(variables[variable_index].name  ==  column_array[column_index])
+                {
+                values=variables[variable_index].values;
+                }
+
+            });
+
+
+
             if(!exist)
             {
-            links.push({"table":table_in,"column":column_in,"operator":operator_in,"default_value":value_in,"type":"where"});
-            app.add_tag(table_in+"-"+column_in);
-            }            
+   
+            links.push({"table":table_in,"column":column_array[column_index],"operator":operator_in,"default_value":value_in,"type":"where","values":values});
+            app.add_tag(table_in,column_array[column_index],value_in);
+            } 
+            });
 
             ';
             
@@ -434,48 +458,156 @@ opacity: 0.7;
         
         $this->view->setVar("dashboard", $dashboard); 
         $this->view->setVar("organisation", $organisation);
-        
 
-                if($type=="builder")
-                {
-                    $this->builderStyle();
+        echo \Phalcon\Tag::javascriptInclude('assets/global/plugins/jquery-2.1.3.js');
+        echo \Phalcon\Tag::javascriptInclude('assets/global/plugins/jquery-ui/jquery-ui-1.11.2.min.js');
+
+        echo ' <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/assets/plugins/gridstack/gridstack.css"/>
+    <link rel="stylesheet" href="/assets/plugins/gridstack/gridstack-extra.css"/>
+
+
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+    <script src="/assets/plugins/gridstack/gridstack.js"></script>';
+
+
+        
+        if($type=="builder")
+        {   
+            $this->builderStyle();
+        }
 
                     for($i=0;$i<10;$i++)
                     {
-                        $region[$i]='<div id="dashboard_row_'.$i.'" data-row="'.$i.'" class="dropzone-dashboard">
+                        $region[$i]='<div id="dashboard_row_'.$i.'" data-row="'.$i.'" class="dropzone-dashboard grid-stack grid-stack-12" >';
+   
+  
+
+                        
+                        $region[$i] .= '
+
                           </div>';
+
+                        echo '
+  <script type="text/javascript">
+        $(function () {
+            var options = {
+                float: false,
+                cellHeight: 20,
+                verticalMargin: 5
+            };
+            $("#dashboard_row_'.$i.'").gridstack(options);
+
+            $("#dashboard_row_'.$i.'").each(function () {
+                var grid = $(this).data("gridstack");
+
+
+                
+';
+
+                   foreach ($portlets as $portlet) {
+            
+                            if($portlet->row == $i)
+                            {
+                                $x=1;
+                                $y=1;
+                                $height=1;
+                                $width=1;
+
+                                if( array_key_exists("layout",$parameters))
+                                {
+                                    foreach($parameters["layout"] as $layout)
+                                    {
+                                        if( $layout["thisId"]==$portlet->id && $layout["regionId"]==$i && $layout["thisType"]=="portlet" && $layout["parentId"]==$id)
+                                        {
+                                            $x=$layout["x"];
+                                            $y=$layout["y"];
+                                            $height=$layout["h"];
+                                            $width=$layout["w"];
+                                            continue;
+                                        }
+                                    }
+                                }
+
+                                echo 'var el = grid.add_widget($("<div><div class=\"grid-stack-item-content builder-portlet\" data-type=\"'.$portlet->type.'\" data-id=\"'.$portlet->id.'\"><div id=\"portlet_'.$portlet->id.'\"></div></div></div>"),
+                        '.$x.', '.$y.', '.$width.', '.$height.');
+                    el.attr(\'data-this-id\', "'.$portlet->id.'");
+                    el.attr(\'data-parent-id\', "'.$id.'");
+                    el.attr(\'data-region-id\', "'.$i.'");
+                    el.attr(\'data-this-type\', "portlet");
+
+                 ';
+                            }
+                        }
+
+
+                   if($type!="builder")
+                   {
+                       echo '
+
+                    grid.movable(\'.grid-stack-item\', false);
+                    grid.resizable(\'.grid-stack-item\', false);
+                    ';
+                   }
+echo '
+}, this);
+
+
+            });
+
+
+
+    </script> ';
                     }
-                }
-                else
-                {
-        
-                    for($i=0;$i<10;$i++)
-                    {
-                        $region[$i]='<div id="dashboard_row_'.$i.'" data-row="'.$i.'">
-                          </div>';
-                    }
-        
-                }
+
+
+                    echo'<script>
+$(\'.grid-stack\').on(\'dragstop\', function (event, ui) {
+    var grid = this;
+    var element = event.target;
+});
+
+$(\'.grid-stack\').on(\'resizestop\', function (event, ui) {
+    var grid = this;
+    var element = event.target;
+var items =[];
+$(\'.grid-stack-item.ui-draggable\').each(function () {
+var $this = $(this);
+items.push({
+thisId: $this.data(\'this-id\'),
+parentId: $this.data(\'parent-id\'),
+regionId: $this.data(\'region-id\'),
+thisType: $this.data(\'this-type\'),
+x: $this.attr(\'data-gs-x\'),
+y: $this.attr(\'data-gs-y\'),
+w: $this.attr(\'data-gs-width\'),
+h: $this.attr(\'data-gs-height\')
+});
+});
+
+$.post( "/dashboard/SaveLayout/'.$id.'",{"data":items}, function(data) {
+});
+});
+</script>';
+
+
 
                 $this->view->setVar("region", $region); 
-
             
             foreach ($portlets as $portlet) {
                 echo '<script>
-            $.post("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(data) {';
-                if($type=="builder"){
-                    echo '$("#dashboard_row_'.$portlet->row.'").append("<div class=\'builder-portlet\' data-type=\"'.$portlet->type.'\" data-id=\"'.$portlet->id.'\" ><div id=\'portlet_'.$portlet->id.'\'><div><div>");';
-                    }
-                    else
-                {
-                    echo '$("#dashboard_row_'.$portlet->row.'").append("<div id=\'portlet_'.$portlet->id.'\'><div>");';
-                }
-                echo'$("#portlet_'.$portlet->id.'").replaceWith(data);';
+            $.post("/portlets/'.$portlet->type.'/render/'.$portlet->id.'/'.$type.'", function(data) { $("#portlet_'.$portlet->id.'").replaceWith(data); ';
                 if($type=="builder"){
                     echo 'parent.update_dropzone(); 
-                          parent.iframe_load();';
+                         
+
+
+ parent.iframe_load();
+';
                  }
-            echo "}); </script>";
+                echo "}); </script>";
             };
     
 
@@ -562,9 +694,10 @@ opacity: 0.7;
 
 </style>';
 
-        echo \Phalcon\Tag::javascriptInclude('assets/global/plugins/jquery-2.1.3.js');
-        echo \Phalcon\Tag::javascriptInclude('assets/global/plugins/jquery-ui/jquery-ui-1.11.2.min.js');
+
         echo \Phalcon\Tag::javascriptInclude('assets/global/plugins/jquery-ui/jquery-ui-droppable-iframe-fix.js');
+        echo \Phalcon\Tag::stylesheetLink("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.all.css");
+
     
     }
 

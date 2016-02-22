@@ -38,7 +38,9 @@ class PortletBase extends Controller
             $this->view->setViewsDir('../app/themes/'.$auth['theme'].'/portlets/');
         }
         
-        $portlet = Portlet::findFirstByid($id);            
+        $portlet = Portlet::findFirstByid($id);   
+        $dashboard = Dashboard::findFirstByid($portlet->dashboard_id); 
+        $dashparm =json_decode($dashboard->parameters,true);
         $this->view->pick(strtolower($portlet->type."/view"));
         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
 
@@ -49,45 +51,108 @@ class PortletBase extends Controller
         $this->view->setVar("portlet", $portlet); 
         
         $region=array();
+        $widgets = Widget::find(array(
+                                  'portlet_id ='.$portlet->id,
+                                  "order" => "column"
+                              ));
 
 
-        if($type=="builder")
-        {
             for($i=0;$i<10;$i++)
             {
-                $region[$i]='<div id="portlet_'.$id.'_row_'.$i.'" data-portlet-id="'.$id.'" data-row="'.$i.'" class="dropzone-portlet">
+                $region[$i]='<div id="portlet_'.$id.'_row_'.$i.'" data-portlet-id="'.$id.'" data-row="'.$i.'" class="dropzone-portlet grid-stack grid-stack-12">';
+                
+
+                $region[$i] .= '
+
                           </div>';
+
+                echo '
+  <script type="text/javascript">
+        $(function () {
+            var options = {
+                float: false,
+                cellHeight: 40,
+                verticalMargin: 5
+            };
+            $("#portlet_'.$id.'_row_'.$i.'").gridstack(options);
+
+            $("#portlet_'.$id.'_row_'.$i.'").each(function () {
+                var grid = $(this).data("gridstack");
+
+
+                
+';
+
+                foreach ($widgets as $widget) {
+                    
+                    if($widget->row == $i)
+                    {
+                        $x=1;
+                        $y=1;
+                        $height=4;
+                        $width=6;
+
+                        if( array_key_exists("layout",$dashparm))
+                        {
+                            foreach($dashparm["layout"] as $layout)
+                            {
+                                if( $layout["thisId"]==$widget->id && $layout["regionId"]==$i && $layout["thisType"]=="widget" && $layout["parentId"]==$id)
+                                {
+                                    $x=$layout["x"];
+                                    $y=$layout["y"];
+                                    $height=$layout["h"];
+                                    $width=$layout["w"];
+                                    continue;
+                                }
+                            }
+                        }
+                        
+                        echo 'var el = grid.add_widget($("<div><div class=\'grid-stack-item-content builder-widget\' data-type=\"'.$widget->type.'\" data-id=\"'.$widget->id.'\" ><div id=\'widget_temp_'.$widget->id.'\'></div></div></div>"),
+                        '.$x.', '.$y.', '.$width.', '.$height.');
+                    el.attr(\'data-this-id\', "'.$widget->id.'");
+                    el.attr(\'data-parent-id\', "'.$id.'");
+                    el.attr(\'data-region-id\', "'.$i.'");
+                    el.attr(\'data-this-type\', "widget");
+                 ';
+                    }
+                }
+
+
+                if($type!="builder")
+                {
+                    echo '
+
+                    grid.movable(\'.grid-stack-item\', false);
+                    grid.resizable(\'.grid-stack-item\', false);
+                    ';
+                }
+                echo '
+}, this);
+
+
+            });
+
+
+
+    </script> ';
             }
-        }
-        else
-        {
-        
-         for($i=0;$i<10;$i++)
-            {
-                $region[$i]='<div id="portlet_'.$id.'_row_'.$i.'" data-portlet-id="'.$id.'" data-row="'.$i.'">
-                          </div>';
-            }
-        
-        }
+
+
 
         $this->view->setVar("region", $region); 
 
-                $widgets = Widget::find(array(
-                                        'portlet_id ='.$portlet->id,
-                                        "order" => "column"
-                                    ));
+          
 
                     foreach ($widgets as $widget) {
                         echo '<script> 
             $.post("/widgets/'.$widget->type.'/render/'.$widget->id.'/'.$type.'", function(data) {';
                 if($type=="builder"){
-                    echo '$("#portlet_'.$id.'_row_'.$widget->row.'").append("<div class=\'builder-widget\' data-type=\"'.$widget->type.'\" data-id=\"'.$widget->id.'\" ><div id=\'widget_temp_'.$widget->id.'\'><div></div>");
-                $("#widget_temp_'.$widget->id.'").replaceWith(data);';
+                echo' $("#widget_temp_'.$widget->id.'").replaceWith(data);';
                 echo 'parent.update_dropzone(); 
                         parent.iframe_load();';
                         }
                 else{
-                    echo '$("#portlet_'.$id.'_row_'.$widget->row.'").append("<div id=\'widget_temp_'.$widget->id.'\'><div>");
+                    echo '
                 $("#widget_temp_'.$widget->id.'").replaceWith(data);';
 
                 }

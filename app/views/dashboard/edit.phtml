@@ -1,9 +1,5 @@
 <?php echo $this->getContent(); ?>
 
-    <script>
-    var links =<?php echo json_encode($links)?>;
-    </script>
-
 
 
     <div class="page-content page-builder">
@@ -36,20 +32,17 @@
                 <div class="tab-content clearfix" style="overflow:visible">
                     <div class="tab-pane fade in active" id="settings">
                         
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Title</label>
                                 <input class="form-control"></input>
                             </div>
+                           
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Icon</label>
                                 <input class="form-control"></input>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label>Filters</label>
-                                <textarea class="form-control"></textarea>
                             </div>
                         </div>
                   
@@ -79,7 +72,7 @@
                         <script>
 
               function update_dropzone(){
-              contents = $("#dashboard_iframe").contents();
+                  contents = $("#dashboard_iframe").contents();
 
               contents.find('.widget_drag').draggable({
               iframeFix: true,
@@ -129,7 +122,9 @@
               function portlet_edit(id){
               $("#modal_content").load("/portlet/edit/" + id, function () {
               $("#myModal").modal("show");
-              })};
+              })
+              };
+
 
               function portlet_delete(id){
               $("#modal_content").load("/portlet/delete/" + id, function () {
@@ -184,6 +179,8 @@
         <li class="remove"><a href="#" data-action="remove"><i class="icon-ban c-gray"></i> Remove</a></li>
     </ul>
 </div>
+
+
     
 
 <script>
@@ -202,7 +199,12 @@
         $("#dashboard_iframe").load(function () {
         var $this = $(this);
         var contents = $this.contents();
-        // here, catch the droppable div and create a droppable widget
+            // here, catch the droppable div and create a droppable widget
+
+
+
+
+
 
         contents.find('.dropzone-dashboard').droppable({
             iframeFix: true,

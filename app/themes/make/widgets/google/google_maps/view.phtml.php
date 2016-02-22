@@ -1,4 +1,4 @@
-<div id="widget_<?php echo $widget->id; ?>"  class="<?php echo $parm['width']; ?>" > <?php echo $controls; ?><div>
+<div id="widget_<?php echo $widget->id; ?>"   > <?php echo $controls; ?><div>
 
 <div id="w_<?php echo $widget->id; ?>" style="margin-top:30px; height:<?php echo $parm['height']; ?>;width:100%;">
     
@@ -55,7 +55,7 @@ var mapData = [
         
             google.maps.event.addListener(marker, "click",  function() {
                 
-                update_dashboard("<?php echo $parm['target_link']; ?>", this.title,<?php echo $widget->id; ?>);
+                update_dashboard("<?php echo $parm['link_table']; ?>","<?php echo $parm['target_link']; ?>","=", this.title,<?php echo $widget->id; ?>);
                      
                         });
             

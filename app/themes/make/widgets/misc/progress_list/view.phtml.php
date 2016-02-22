@@ -1,4 +1,4 @@
-<div id="widget_<?php echo $widget->id; ?>"  class="<?php echo $parm['width']; ?>" > <?php echo $controls; ?><style>
+<div id="widget_<?php echo $widget->id; ?>"   > <?php echo $controls; ?><style>
 #w_<?php echo $widget->id; ?> .ui-selecting.item_<?php echo $widget->id; ?> { background: #FECA40; }
   #w_<?php echo $widget->id; ?> .ui-selected.item_<?php echo $widget->id; ?> { background: #F39814; color: white; }
 </style>
@@ -55,7 +55,7 @@
             link_set.push($(this).data('link'));
         });
         
-     update_dashboard("<?php echo $parm['db']['table']; ?>","<?php echo $parm['target_link']; ?>","=", link_set,<?php echo $widget->id; ?>);
+     update_dashboard("<?php echo $parm['link_table']; ?>","<?php echo $parm['target_link']; ?>","=", link_set,<?php echo $widget->id; ?>);
         
         
       }

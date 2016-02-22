@@ -838,7 +838,7 @@ class ThemeCreatorController extends ControllerBase
 
                         if($temp['name']=='id')
                         {
-                            $countainer[0]='<div id="portlet_{{portlet.id}}" class="{{parm[\'width\']}}">';
+                            $countainer[0]='<div id="portlet_{{portlet.id}}" >';
                             $countainer[1]='</div>';
                             $html_save=$html;
                             $break=true;
@@ -852,7 +852,7 @@ class ThemeCreatorController extends ControllerBase
             }
             if(!$break)
             {
-                $temp="<".$type.' id="portlet_{{portlet.id}}" class="{{parm[\'width\']}}" ';
+                $temp="<".$type.' id="portlet_{{portlet.id}}"  ';
                 foreach($attributes as $attribute)
                 {
                     
@@ -869,7 +869,7 @@ class ThemeCreatorController extends ControllerBase
         else
         {
             $html_save=$html;
-            $countainer[0]='<div id="portlet_{{portlet.id}}"  class="{{parm[\'width\']}}">';
+            $countainer[0]='<div id="portlet_{{portlet.id}}"  >';
             $countainer[1]='</div>';
 
         }
@@ -882,7 +882,6 @@ class ThemeCreatorController extends ControllerBase
         $portlet->script=$script;
         $portlet->form=$form;
 
-        $form='[{"type":"parameters/width", "value":"'.$theme_layout->width.'"},'.substr($form, 1);
 
         $type=$portlet->name;
         $type=str_replace(" ","_",strtolower($type));
@@ -1093,7 +1092,7 @@ class ThemeCreatorController extends ControllerBase
 
                       if($temp['name']=='id')
                       {
-                          $countainer[0]='<div id="widget_{{widget.id}}" class="{{parm[\'width\']}}" >{{controls}}';
+                          $countainer[0]='<div id="widget_{{widget.id}}"  >{{controls}}';
                           $countainer[1]='</div>';
                           $html_save=$html;
                           $break=true;
@@ -1115,7 +1114,7 @@ class ThemeCreatorController extends ControllerBase
                 {
                     if($attribute['name']=="class")
                     {
-                        $temp=$temp.$attribute['name'].'="'.$attribute['value'].' {{parm[\'width\']}} " ';
+                        $temp=$temp.$attribute['name'].'="'.$attribute['value'].'  " ';
 
                         $has_class=false;
                     }
@@ -1124,7 +1123,7 @@ class ThemeCreatorController extends ControllerBase
 
                 if(!$has_class)
                 {
-                    $temp.= ' class="{{parm[\'width\']}}" ';
+                    $temp.= '  ';
                 }
 
                 $countainer[0]=$temp."> {{controls}}";
@@ -1136,7 +1135,7 @@ class ThemeCreatorController extends ControllerBase
         else
         {
             $html_save=$html;
-            $countainer[0]='<div id="widget_{{widget.id}}" class="{{parm[\'width\']}}" >{{controls}}';
+            $countainer[0]='<div id="widget_{{widget.id}}"  >{{controls}}';
             $countainer[1]='</div>';
 
         }
@@ -1150,15 +1149,6 @@ class ThemeCreatorController extends ControllerBase
         $widget->form=$form;
         $widget->data_format=$data_format;
 
-        if($form!="[]")
-        {
-            $form=",".substr($form, 1);
-        }
-        else
-        {
-            $form=substr($form, 1);
-        }
-        $form='[{"type":"parameters/width", "value":"'.$theme_layout->width.'"}'.$form;
 
         $type=$widget->name;
         $type=str_replace(" ","_",strtolower($type));

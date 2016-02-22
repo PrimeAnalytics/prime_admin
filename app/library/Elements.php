@@ -6,6 +6,8 @@
  * Helps to build UI elements for the application
  */
 use PRIME\Models\Users;
+use PRIME\Models\SecurityGroup;
+use PRIME\Models\Dashboards;
 
 class Elements extends Phalcon\Mvc\User\Component
 {
@@ -113,15 +115,23 @@ class Elements extends Phalcon\Mvc\User\Component
         
         $user = Users::findFirstByemail($email);
 
-        $user->SecurityGroup;
-        $user_dashboards = array();;
+        $security_groups = $user->SecurityGroup;
+
+        $user_dashboards = array();
+
+        foreach($security_groups as $security_group)
+        {
+           $dashboards = $security_group->Dashboard;
+           $user_dashboards =array_merge ($user_dashboards,$dashboards->ToArray());
+        }
+
         
         foreach($user_dashboards as $dashboard)
         {    
             $newMenuLink =  array (
-            'link' => "/dashboards/".$dashboard->type."/render/".$dashboard->id."/dashboard",
-            'title' => $dashboard->title,
-            'icon' => $dashboard->icon,
+            'link' => "/dashboards/".$dashboard['type']."/render/".$dashboard['id']."/dashboard",
+            'title' => $dashboard['title'],
+            'icon' => $dashboard['icon'],
             'selected' => 'false'
             );
             

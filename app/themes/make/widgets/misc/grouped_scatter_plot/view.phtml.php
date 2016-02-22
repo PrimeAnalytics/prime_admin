@@ -1,4 +1,4 @@
-<div id="widget_<?php echo $widget->id; ?>" class="<?php echo $parm['width']; ?>" ><?php echo $controls; ?><div id="w_<?php echo $widget->id; ?>" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div><?php
+<div id="widget_<?php echo $widget->id; ?>"  ><?php echo $controls; ?><div id="w_<?php echo $widget->id; ?>" style="width:100% min-width: 600px; height: 450px; margin: 0 auto"></div><?php
 
     $dataOut=array();
     foreach($parm['db'] as $row)

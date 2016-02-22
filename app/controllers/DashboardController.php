@@ -60,55 +60,29 @@ class DashboardController extends ControllerBase
         }
     }
 
-    /**
-     * Saves a dashboard edited
-     *
-     */
-    public function saveAction()
+
+    public function SaveLayoutAction($id)
     {
-        $id = $this->request->getPost("id");
+        $this->view->Disable();
 
         $dashboard = Dashboard::findFirstByid($id);
         if (!$dashboard) {
-            $this->flash->error("dashboard does not exist " . $id);
-
-            return $this->dispatcher->forward(array(
-                "controller" => "dashboard",
-                "action" => "edit",
-                "params" => array($dashboard->id)
-            ));
+            return;
         }
+        $parm =json_decode($dashboard->parameters,true);
 
-        $dashboard->title = $this->request->getPost("title");
-        $dashboard->icon = $this->request->getPost("icon");
-        $dashboard->style = $this->request->getPost("style");
-        $dashboard->weight = $this->request->getPost("weight");
-        $dashboard->organisation_id = $this->request->getPost("organisation_id");
-        $dashboard->links = $this->request->getPost("links");
+        $parm["layout"] = $this->request->getPost("data");
         
+        $dashboard->parameters =json_encode($parm,true);
 
         if (!$dashboard->save()) {
 
-            foreach ($dashboard->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-            return $this->dispatcher->forward(array(
-                "controller" => "dashboard",
-                "action" => "edit",
-                "params" => array($dashboard->id)
-            ));
+            return;
         }
 
-        $this->flash->success("dashboard was updated successfully");
-
-        return $this->dispatcher->forward(array(
-            "controller" => "dashboard",
-            "action" => "edit",
-            "params" => array($dashboard->id)
-        ));
-
     }
+
+
     
 
     /**
@@ -183,6 +157,32 @@ class DashboardController extends ControllerBase
         $dashboards=$theme_layout->ThemeDashboard;
 
         return $dashboards;
+    }
+
+
+    public function GetWidgetsListAction($id)
+    {
+        $this->view->Disable();
+
+        $dashboard = Dashboard::findFirstByid($id);   
+        
+        $json = array();
+            $portlets=$dashboard->Portlet;
+            foreach($portlets as $portlet)
+            {
+                $widgets=$portlet->Widget;
+                foreach($widgets as $widget)
+                {
+                    $json[] = array(
+                            'id' => $widget->id,
+                                       'text' => $widget->id
+                                     );
+                }
+            }
+
+        
+        echo json_encode($json);
+
     }
 
 }

@@ -1,4 +1,4 @@
-<div id="widget_<?php echo $widget->id; ?>"  class="<?php echo $parm['width']; ?>" > <?php echo $controls; ?>
+<div id="widget_<?php echo $widget->id; ?>"   > <?php echo $controls; ?>
 <div>
 <div id="w_<?php echo $widget->id; ?>" style="background-color:#333;width:100%;height:<?php echo $parm['height']; ?>"></div>
 </div>    <script>

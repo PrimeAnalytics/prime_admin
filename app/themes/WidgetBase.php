@@ -40,24 +40,30 @@ class WidgetBase extends Controller
         
     }
 
-    public function updateAction($id)
+    public function updateAction($id,$previewType="dashboard")
     {
        $links= $this->request->getPost("links");
-       $variables= (array)json_decode($this->request->getPost("variables"),true);
 
        $widget = Widget::findFirstByid($id);  
 
        $parameters=$widget->parameters;
-       foreach($variables as $value)
+       if($links!=null)
        {
-           if($value['default_value'] != null)
+           foreach($links as $value)
            {
-               $sql_totals=str_ireplace('{'.$value['name'].'}',$value['default_value'],$parameters);
-           }
-           else
-           {
-               $values=explode(',',$value['values']);
-               $sql_totals=str_ireplace('{'.$value['name'].'}',reset($values),$parameters);
+               if($value['table']=="variable_in")
+               {
+                   if($value['default_value'] != null)
+                   {
+                       $sql_totals=str_ireplace('{'.$value['column'].'}',$value['default_value'],$parameters);
+                   }
+                   else
+                   {
+                       var_dump($values);
+                       $values=explode(',',$value['values']);
+                       $sql_totals=str_ireplace('{'.$value['column'].'}',reset($values),$parameters);
+                   }
+               }
            }
        }
        $parameters= (array)json_decode($parameters,true);
@@ -81,7 +87,7 @@ class WidgetBase extends Controller
                }
            }
 
-           $parameters=call_user_func(array($this, 'getData'.$this->data_format), $parameters,$links,$variables);
+           $parameters=call_user_func(array($this, 'getData'.$this->data_format), $parameters,$links);
 
        }
 
@@ -98,13 +104,22 @@ class WidgetBase extends Controller
         transition: 1s display;
         transition-delay:1s;
         }
-        .widget-controls { display:none; background-color:rgba(255,255,255,0.8); }
+        .widget-controls { display:none; background-color:rgba(255,255,255,0.6); }
 
         #widget_'.$widget->id.':hover .widget-controls , #widget_'.$widget->id.'.hover .widget-controls { display:block; position: absolute; top:0px; right: 0px; z-index:2147483647; }
         </style>
 
         <div class="widget-controls"><a class="widget-control"   onclick="reset_'.$widget->id.'()"><i class="fa fa-times"></i></a>
         <a class="widget-control" onclick="update_'.$widget->id.'(\'set\')"><i class="fa fa-check-circle-o"></i></a></div>';
+
+
+
+       if($previewType=="builder")
+       {
+           echo '<script>
+$("#widget_'.$id.'").append("<div class=\"ajax-loader\" ><div style=\"text-align:center; font-size: 40px; font-weight: normal;left:50%; top:50%;\">'.$id.'</div></div>");
+</script>';
+       }
 
        $this->view->setVar("controls", $controls); 
 
@@ -116,19 +131,27 @@ class WidgetBase extends Controller
     
     }
 
-    public function renderAction($id)
+    public function renderAction($id,$type="dashboard")
     {
         $widget = Widget::findFirstByid($id);  
         $parameters= (array)json_decode($widget->parameters,true);
         $this->view->Disable();
         echo '<div id="widget_'.$id.'"></div>';
-        
+
         echo '<script>
 
         var reset_'.$widget->id.' = function(){';
         if(array_key_exists ("target_link",$parameters))
         {
-            echo 'update_dashboard("'.$parameters['link_table'].'","'.$parameters['target_link'].'", "","","");';
+            if(array_key_exists ("link_table",$parameters))
+            {
+                echo 'update_dashboard("'.$parameters['link_table'].'",\''.$parameters['target_link'].'\', "","","");';
+            }
+            else
+            {
+                echo 'update_dashboard("variable_set",\''.$parameters['target_link'].'\', "","","");';
+            }
+
         }
         echo '}; ';
 
@@ -144,12 +167,15 @@ catch(err) {
 $("#widget_'.$id.'").append("<div class=\"ajax-loader\"><div class=\'ajax-spinner-bars\'><div class=\'bar-1\'></div><div class=\'bar-2\'></div><div class=\'bar-3\'></div><div class=\'bar-4\'></div><div class=\'bar-5\'></div><div class=\'bar-6\'></div><div class=\'bar-7\'></div><div class=\'bar-8\'></div><div class=\'bar-9\'></div><div class=\'bar-10\'></div><div class=\'bar-11\'></div><div class=\'bar-12\'></div><div class=\'bar-13\'></div><div class=\'bar-14\'></div><div class=\'bar-15\'></div><div class=\'bar-16\'></div></div></div>");
 
 
-           xhr_'.$widget->id.' = $.post("/widgets/'.$widget->type.'/update/'.$id.'", { links: links , variables:variables}, function(data) {
+           xhr_'.$widget->id.' = $.post("/widgets/'.$widget->type.'/update/'.$id.'/'.$type.'", { links: links}, function(data) {
                  $("#widget_'.$id.'").replaceWith(data);
             });
             
           }; ';
         
+
+
+
         echo 'update_'.$widget->id.'();
 
         </script>';

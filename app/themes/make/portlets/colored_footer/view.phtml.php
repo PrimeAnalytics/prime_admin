@@ -1,4 +1,4 @@
-<div id="portlet_<?php echo $portlet->id; ?>" class="<?php echo $parm['width']; ?>" >     
+<div id="portlet_<?php echo $portlet->id; ?>"  >     
             <div >
               <div class="panel" >
                 <div class="panel-content">
